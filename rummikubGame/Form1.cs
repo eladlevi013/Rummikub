@@ -14,8 +14,14 @@ namespace rummikubGame
 {
     public partial class Form1 : Form
     {
-        private Button[,] tile_slot;
-        private Button[] cards;
+        const int STARTING_X_LOCATION = 85;
+        const int STARTING_Y_LOCATION = 350;
+
+        const int X_SPACE_BETWEEN_TILES = 80;
+        const int Y_SPACE_BETWEEN_TILES = 105;
+
+        private Slot[,] tile_slot;
+        private Tile[] tiles;
 
         public Form1()
         {
@@ -24,94 +30,150 @@ namespace rummikubGame
 
         private float getDistance(Button moving_card, Button empty_slot)
         {
+            // used to find the closet slot to a card
             return (float)Math.Sqrt(Math.Pow(moving_card.Location.X - empty_slot.Location.X, 2) + Math.Pow(moving_card.Location.Y - empty_slot.Location.Y, 2));
+        }
+
+        private void tile_MouseDown(object sender, MouseEventArgs e)
+        {
+            // focused tile, will be always at top
+            ((Button)sender).BringToFront();
+
+            // we are turning it off, because we want to be able to place to the current place if its the closest location
+            tile_slot[tiles[(int)((Button)sender).Tag].getLocation()[0], tiles[(int)((Button)sender).Tag].getLocation()[1]].changeState(false);
         }
 
         private void tile_MouseUp(object sender, MouseEventArgs e)
         {
+            // the card that we dragged with the mouse
             Button current_card = (Button)sender;
-            float min_distance = getDistance(current_card, tile_slot[0, 0]);
+
+            // Now we'll search the first empty slot, so we would know what is the the most close 
             int min_i = 0;
             int min_j = 0;
-            label1.Text = current_card.Location.ToString();
-            for (int i = 0; i < 2; i++)
+            Button first_empty_slot = null;
+            bool found_first_empty_slot = false;
+            for(int i=0; i<2 && found_first_empty_slot == false; i++)
             {
-                for (int j = 0; j < 10; j++)
+                for(int j=0; j<10 && found_first_empty_slot == false; j++)
                 {
-                    if (getDistance(current_card, tile_slot[i, j]) < min_distance)
+                    if (tile_slot[i,j].getState() == false)
                     {
-                        min_distance = getDistance(current_card, tile_slot[i, j]);
+                        first_empty_slot = tile_slot[i, j].getSlotButton();
+                        found_first_empty_slot = true;
                         min_i = i;
                         min_j = j;
                     }
                 }
             }
 
-            current_card.Location = tile_slot[min_i, min_j].Location;
+            // we'll calculate the distance between the card, and the first empty slot
+            float min_distance = getDistance(current_card, first_empty_slot);
+
+            // now, we'll calculate the distance between the card and all the empty slots, and we'll find the minimum
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    // if the distance is smaller, and the slot is available
+                    if (getDistance(current_card, tile_slot[i, j].getSlotButton()) < min_distance && tile_slot[i, j].getState() == false)
+                    {
+                        min_distance = getDistance(current_card, tile_slot[i, j].getSlotButton());
+                        min_i = i;
+                        min_j = j;
+                    }
+                }
+            }
+
+            // we made it empty, as we clicked_down to move the card, so now we have to make it non-empty again
+            //tile_slot[tiles[(int)((Button)sender).Tag].getLocation()[0], tiles[(int)((Button)sender).Tag].getLocation()[1]].changeState(true);
+
+            // update the location of the focused tile, to the location of the minimum distance that we found earlier
+            current_card.Location = tile_slot[min_i, min_j].getSlotButton().Location;
+
+            // now we need to update the status of the old slot to empty
+            tile_slot[tiles[(int)current_card.Tag].getLocation()[0], tiles[(int)current_card.Tag].getLocation()[1]].changeState(false);
+
+            // we'll change the status of the 'minimum-distance' slot(now contains the card)
+            tile_slot[min_i, min_j].changeState(true);
+            
+            // update the tile location(the location of the slot)
+            int[] updated_tile_location = { min_i, min_j };
+            tiles[(int)current_card.Tag].setLocation(updated_tile_location);
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             Random rnd = new Random();
-            int xx = 85, yy = 350;
-            tile_slot = new Button[2,10];
 
-            // Generating the cards
-            cards = new Button[14];
-
-            for (int i = 0; i < 14; i++)
-            {
-                cards[i] = new Button();
-                cards[i].Size = new Size(75, 100);
-                cards[i].Location = new Point(xx, yy);
-                cards[i].BackgroundImage = Image.FromFile("tile.png");
-                cards[i].BackgroundImageLayout = ImageLayout.Stretch;
-                cards[i].BringToFront();
-                cards[i].Draggable(true);
-                cards[i].FlatStyle = FlatStyle.Flat;
-                cards[i].FlatAppearance.BorderSize = 0;
-
-                cards[i].Text = rnd.Next(1,14).ToString();
-
-                int color_number = rnd.Next(4);
-                if(color_number == 0)
-                    cards[i].ForeColor = (Color.Blue);
-                else if(color_number == 1)
-                    cards[i].ForeColor = (Color.Black);
-                else if(color_number == 2)
-                    cards[i].ForeColor = (Color.Yellow);
-                else
-                    cards[i].ForeColor = (Color.Red);
-
-
-                cards[i].Font = new Font("Microsoft Sans Serif", 20);
-                cards[i].MouseUp += new MouseEventHandler(this.tile_MouseUp);
-                Controls.Add(cards[i]);
-                xx += 80;
-                if (i == 9) { yy += 105; xx = 85; }
-            }
-
-            xx = 85;
-            yy = 350;
             // Generating the slots
-            for (int i=0; i<2; i++)
+            int x_location = STARTING_X_LOCATION;
+            int y_location = STARTING_Y_LOCATION;
+            tile_slot = new Slot[2, 10];
+
+            for (int i = 0; i < 2; i++)
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    tile_slot[i,j] = new Button();
-                    tile_slot[i, j].BackgroundImage = Image.FromFile("slot.png");
-                    tile_slot[i, j].BackgroundImageLayout = ImageLayout.Stretch;
-                    tile_slot[i,j].FlatStyle = FlatStyle.Flat;
-                    tile_slot[i,j].FlatAppearance.BorderSize = 0;
-                    tile_slot[i,j].Size = new Size(75, 100);
-                    tile_slot[i,j].Location = new Point(xx, yy);
-                    tile_slot[i, j].SendToBack();
-                    Controls.Add(tile_slot[i,j]);
-                    xx += 80;
+                    tile_slot[i, j] = new Slot();
+                    tile_slot[i, j].getSlotButton().BackgroundImage = Image.FromFile("slot.png");
+                    tile_slot[i, j].getSlotButton().BackgroundImageLayout = ImageLayout.Stretch;
+                    tile_slot[i, j].getSlotButton().FlatStyle = FlatStyle.Flat;
+                    tile_slot[i, j].getSlotButton().FlatAppearance.BorderSize = 0;
+                    tile_slot[i, j].getSlotButton().Size = new Size(75, 100);
+                    tile_slot[i, j].getSlotButton().Location = new Point(x_location, y_location);
+                    tile_slot[i, j].changeState(false); // slot is available
+                    Controls.Add(tile_slot[i, j].getSlotButton());
+                    x_location += X_SPACE_BETWEEN_TILES;
                 }
-                yy += 105;
-                xx = 85;
+                y_location += Y_SPACE_BETWEEN_TILES;
+                x_location = STARTING_X_LOCATION;
             }
+
+            // Generating the tiles
+            x_location = STARTING_X_LOCATION;
+            y_location = STARTING_Y_LOCATION;
+            tiles = new Tile[14];
+
+            for (int i = 0; i < 14; i++)
+            {
+                // change the slots current state to 'not-empty'
+                if (i < 14) {
+                    tile_slot[i / 10, i % 10].changeState(true);
+                }
+
+                int[] start_location = {i/10, i%10};
+                tiles[i] = new Tile(rnd.Next(4), rnd.Next(1, 14), start_location);
+                tiles[i].getTileButton().Size = new Size(75, 100);
+                tiles[i].getTileButton().Location = new Point(x_location, y_location);
+                tiles[i].getTileButton().BackgroundImage = Image.FromFile("tile.png");
+                tiles[i].getTileButton().BackgroundImageLayout = ImageLayout.Stretch;
+                tiles[i].getTileButton().Draggable(true); // usage of the extension
+                tiles[i].getTileButton().FlatStyle = FlatStyle.Flat;
+                tiles[i].getTileButton().FlatAppearance.BorderSize = 0;
+                tiles[i].getTileButton().Text = rnd.Next(1, 14).ToString();
+
+                if (tiles[i].getColor() == 0)
+                    tiles[i].getTileButton().ForeColor = (Color.Blue);
+                else if (tiles[i].getColor() == 1)
+                    tiles[i].getTileButton().ForeColor = (Color.Black);
+                else if (tiles[i].getColor() == 2)
+                    tiles[i].getTileButton().ForeColor = (Color.Yellow);
+                else
+                    tiles[i].getTileButton().ForeColor = (Color.Red);
+
+                tiles[i].getTileButton().Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
+                tiles[i].getTileButton().MouseUp += new MouseEventHandler(this.tile_MouseUp);
+                tiles[i].getTileButton().MouseDown += new MouseEventHandler(this.tile_MouseDown);
+                Controls.Add(tiles[i].getTileButton());
+                tiles[i].getTileButton().BringToFront();
+                tiles[i].getTileButton().Tag = i;
+
+                x_location += X_SPACE_BETWEEN_TILES;
+                if (i == 9) { y_location += Y_SPACE_BETWEEN_TILES; x_location = STARTING_X_LOCATION; }
+            }
+
+            // this will send back the panel(the board)
             board.SendToBack();
         }
 
