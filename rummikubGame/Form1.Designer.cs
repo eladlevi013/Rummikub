@@ -32,7 +32,7 @@
             this.board = new System.Windows.Forms.Panel();
             this.dropped_tiles_btn = new System.Windows.Forms.Button();
             this.pool_btn = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.current_pool_size = new System.Windows.Forms.Label();
             this.data_indicator = new System.Windows.Forms.Label();
             this.data_indicator_2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -70,14 +70,15 @@
             this.pool_btn.UseVisualStyleBackColor = false;
             this.pool_btn.Click += new System.EventHandler(this.pool_btn_Click);
             // 
-            // label1
+            // current_pool_size
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(768, 236);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(59, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "102 in pool";
+            this.current_pool_size.AutoSize = true;
+            this.current_pool_size.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.current_pool_size.Location = new System.Drawing.Point(760, 236);
+            this.current_pool_size.Name = "current_pool_size";
+            this.current_pool_size.Size = new System.Drawing.Size(67, 13);
+            this.current_pool_size.TabIndex = 5;
+            this.current_pool_size.Text = "x tiles in pool";
             // 
             // data_indicator
             // 
@@ -107,7 +108,7 @@
             this.ClientSize = new System.Drawing.Size(975, 613);
             this.Controls.Add(this.data_indicator_2);
             this.Controls.Add(this.data_indicator);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.current_pool_size);
             this.Controls.Add(this.pool_btn);
             this.Controls.Add(this.dropped_tiles_btn);
             this.Controls.Add(this.board);
@@ -125,7 +126,7 @@
         private System.Windows.Forms.Panel board;
         private System.Windows.Forms.Button dropped_tiles_btn;
         private System.Windows.Forms.Button pool_btn;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label current_pool_size;
         private System.Windows.Forms.Label data_indicator;
         private System.Windows.Forms.Label data_indicator_2;
     }

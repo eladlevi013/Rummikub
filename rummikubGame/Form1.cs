@@ -14,14 +14,17 @@ namespace rummikubGame
 {
     public partial class Form1 : Form
     {
+        static int TAG_NUMBER = 0;
+        Pool pool;
+
         const int STARTING_X_LOCATION = 70;
         const int STARTING_Y_LOCATION = 345;
 
-        const int X_SPACE_BETWEEN_TILES = 85;
-        const int Y_SPACE_BETWEEN_TILES = 115;
+        const int X_SPACE_BETWEEN_TileButtonS = 85;
+        const int Y_SPACE_BETWEEN_TileButtonS = 115;
 
-        private Slot[,] tile_slot; 
-        private List<Tile> tiles; 
+        private Slot[,] TileButton_slot; 
+        private Dictionary<int, TileButton> TileButtons;
 
         public Form1()
         {
@@ -34,96 +37,102 @@ namespace rummikubGame
             return (float)Math.Sqrt(Math.Pow(moving_card.Location.X - empty_slot.Location.X, 2) + Math.Pow(moving_card.Location.Y - empty_slot.Location.Y, 2));
         }
 
-        private void tile_MouseDown(object sender, MouseEventArgs e)
+        private void TileButton_MouseDown(object sender, MouseEventArgs e)
         {
-            // focused tile, will be always at top
+            // focused TileButton, will be always at top
             ((Button)sender).BringToFront();
 
-            for(int i=0; i<tiles.Count; i++)
+            for(int i=0; i<TileButtons.Keys.Count; i++)
             {
-                if(((Button)sender).Tag == tiles[i].getTileButton().Tag)
+                if(((Button)sender).Tag == TileButtons[TileButtons.Keys.ElementAt(i)].getTileButton().Tag)
                 {
                     // we are turning it off, because we want to be able to place to the current place if its the closest location
-                    tile_slot[tiles[(int)((Button)sender).Tag].getLocation()[0], tiles[(int)((Button)sender).Tag].getLocation()[1]].changeState(false);
+                    TileButton_slot[TileButtons[(int)((Button)sender).Tag].getLocation()[0], TileButtons[(int)((Button)sender).Tag].getLocation()[1]].changeState(false);
                 }
             }
         }
 
-        private void tile_MouseUp(object sender, MouseEventArgs e)
+        private void TileButton_MouseUp(object sender, MouseEventArgs e)
         {
             // the card that we dragged with the mouse
             Button current_card = (Button)sender;
 
-            // first, we would like to check if the user wanted to put the tile on the drop_tile location
-            if (getDistance(current_card, dropped_tiles_btn) < 100)
+            if (TileButtons.ContainsKey((int)current_card.Tag))
             {
-                current_card.Location = new Point(dropped_tiles_btn.Location.X+10, dropped_tiles_btn.Location.Y+18);
-                current_card.Draggable(false);
-                int[] current_location = { -1, -1 };
-                tiles[(int)current_card.Tag].setLocation(current_location);
-                tiles.Remove(tiles[(int)current_card.Tag]);
-            }
-            // otherwise we would like to search the first empty slot to put in the tile
-            else
-            {
-                // Now we'll search the first empty slot, so we would know what is the the most close 
-                int min_i = 0;
-                int min_j = 0;
-                Button first_empty_slot = null;
-                bool found_first_empty_slot = false;
-                for (int i = 0; i < 2 && found_first_empty_slot == false; i++)
+                // first, we would like to check if the user wanted to put the TileButton on the drop_TileButton location
+                if (getDistance(current_card, dropped_tiles_btn) < 100)
                 {
-                    for (int j = 0; j < 10 && found_first_empty_slot == false; j++)
+                    current_card.Location = new Point(dropped_tiles_btn.Location.X + 10, dropped_tiles_btn.Location.Y + 18);
+                    current_card.Draggable(false);
+                    int[] current_location = { -1, -1 };
+                    TileButtons[(int)current_card.Tag].setLocation(current_location);
+                    TileButtons.Remove((int)current_card.Tag);
+                }
+                // otherwise we would like to search the first empty slot to put in the TileButton
+                else
+                {
+                    // Now we'll search the first empty slot, so we would know what is the the most close 
+                    int min_i = 0;
+                    int min_j = 0;
+                    Button first_empty_slot = null;
+                    bool found_first_empty_slot = false;
+                    for (int i = 0; i < 2 && found_first_empty_slot == false; i++)
                     {
-                        if (tile_slot[i, j].getState() == false)
+                        for (int j = 0; j < 10 && found_first_empty_slot == false; j++)
                         {
-                            first_empty_slot = tile_slot[i, j].getSlotButton(); 
-                            found_first_empty_slot = true;
-                            min_i = i;
-                            min_j = j;
+                            if (TileButton_slot[i, j].getState() == false)
+                            {
+                                first_empty_slot = TileButton_slot[i, j].getSlotButton();
+                                found_first_empty_slot = true;
+                                min_i = i;
+                                min_j = j;
+                            }
                         }
                     }
-                }
 
-                // we'll calculate the distance between the card, and the first empty slot
-                float min_distance = getDistance(current_card, first_empty_slot);
+                    // we'll calculate the distance between the card, and the first empty slot
+                    float min_distance = getDistance(current_card, first_empty_slot);
 
-                // now, we'll calculate the distance between the card and all the empty slots, and we'll find the minimum
-                for (int i = 0; i < 2; i++)
-                {
-                    for (int j = 0; j < 10; j++)
+                    // now, we'll calculate the distance between the card and all the empty slots, and we'll find the minimum
+                    for (int i = 0; i < 2; i++)
                     {
-                        // if the distance is smaller, and the slot is available
-                        if (getDistance(current_card, tile_slot[i, j].getSlotButton()) < min_distance && tile_slot[i, j].getState() == false)
+                        for (int j = 0; j < 10; j++)
                         {
-                            min_distance = getDistance(current_card, tile_slot[i, j].getSlotButton());
-                            min_i = i;
-                            min_j = j;
+                            // if the distance is smaller, and the slot is available
+                            if (getDistance(current_card, TileButton_slot[i, j].getSlotButton()) < min_distance && TileButton_slot[i, j].getState() == false)
+                            {
+                                min_distance = getDistance(current_card, TileButton_slot[i, j].getSlotButton());
+                                min_i = i;
+                                min_j = j;
+                            }
                         }
                     }
+
+                    // we made it empty, as we clicked_down to move the card, so now we have to make it non-empty again
+                    //TileButton_slot[TileButtons[(int)((Button)sender).Tag].getLocation()[0], TileButtons[(int)((Button)sender).Tag].getLocation()[1]].changeState(true);
+
+                    // update the location of the focused TileButton, to the location of the minimum distance that we found earlier
+                    current_card.Location = TileButton_slot[min_i, min_j].getSlotButton().Location;
+
+                    // now we need to update the status of the old slot to empty
+                    TileButton_slot[TileButtons[(int)current_card.Tag].getLocation()[0], TileButtons[(int)current_card.Tag].getLocation()[1]].changeState(false);
+
+                    // we'll change the status of the 'minimum-distance' slot(now contains the card)
+                    TileButton_slot[min_i, min_j].changeState(true);
+
+                    // update the TileButton location(the location of the slot)
+                    int[] updated_TileButton_location = { min_i, min_j };
+                    TileButtons[(int)current_card.Tag].setLocation(updated_TileButton_location);
                 }
-
-                // we made it empty, as we clicked_down to move the card, so now we have to make it non-empty again
-                //tile_slot[tiles[(int)((Button)sender).Tag].getLocation()[0], tiles[(int)((Button)sender).Tag].getLocation()[1]].changeState(true);
-
-                // update the location of the focused tile, to the location of the minimum distance that we found earlier
-                current_card.Location = tile_slot[min_i, min_j].getSlotButton().Location;
-
-                // now we need to update the status of the old slot to empty
-                tile_slot[tiles[(int)current_card.Tag].getLocation()[0], tiles[(int)current_card.Tag].getLocation()[1]].changeState(false);
-
-                // we'll change the status of the 'minimum-distance' slot(now contains the card)
-                tile_slot[min_i, min_j].changeState(true);
-
-                // update the tile location(the location of the slot)
-                int[] updated_tile_location = { min_i, min_j };
-                tiles[(int)current_card.Tag].setLocation(updated_tile_location);
             }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // change the style of the drop_tiles_location
+            // Generate pool cards
+            pool = new Pool();
+
+            // change the style of the drop_TileButtons_location
             dropped_tiles_btn.FlatStyle = FlatStyle.Flat;
             dropped_tiles_btn.FlatAppearance.BorderSize = 0;
             dropped_tiles_btn.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
@@ -144,77 +153,82 @@ namespace rummikubGame
             // Generating the slots
             int x_location = STARTING_X_LOCATION;
             int y_location = STARTING_Y_LOCATION;
-            tile_slot = new Slot[2, 10];
+            TileButton_slot = new Slot[2, 10];
 
             for (int i = 0; i < 2; i++)
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    tile_slot[i, j] = new Slot();
-                    tile_slot[i, j].getSlotButton().BackgroundImage = Image.FromFile("slot.png");
-                    tile_slot[i, j].getSlotButton().BackgroundImageLayout = ImageLayout.Stretch;
-                    tile_slot[i, j].getSlotButton().FlatStyle = FlatStyle.Flat;
-                    tile_slot[i, j].getSlotButton().FlatAppearance.BorderSize = 0;
-                    tile_slot[i, j].getSlotButton().Size = new Size(75, 100);
-                    tile_slot[i, j].getSlotButton().Location = new Point(x_location, y_location);
-                    tile_slot[i, j].changeState(false); // slot is available
-                    Controls.Add(tile_slot[i, j].getSlotButton());
-                    x_location += X_SPACE_BETWEEN_TILES;
+                    TileButton_slot[i, j] = new Slot();
+                    TileButton_slot[i, j].getSlotButton().BackgroundImage = Image.FromFile("slot.png");
+                    TileButton_slot[i, j].getSlotButton().BackgroundImageLayout = ImageLayout.Stretch;
+                    TileButton_slot[i, j].getSlotButton().FlatStyle = FlatStyle.Flat;
+                    TileButton_slot[i, j].getSlotButton().FlatAppearance.BorderSize = 0;
+                    TileButton_slot[i, j].getSlotButton().Size = new Size(75, 100);
+                    TileButton_slot[i, j].getSlotButton().Location = new Point(x_location, y_location);
+                    TileButton_slot[i, j].changeState(false); // slot is available
+                    Controls.Add(TileButton_slot[i, j].getSlotButton());
+                    x_location += X_SPACE_BETWEEN_TileButtonS;
                 }
-                y_location += Y_SPACE_BETWEEN_TILES;
+                y_location += Y_SPACE_BETWEEN_TileButtonS;
                 x_location = STARTING_X_LOCATION;
             }
 
-            // Generating the tiles
+            // Generating the TileButtons
             x_location = STARTING_X_LOCATION;
             y_location = STARTING_Y_LOCATION;
-            tiles = new List<Tile>();
+            TileButtons = new Dictionary<int, TileButton>();
 
             for (int i = 0; i < 14; i++)
             {
                 // change the slots current state to 'not-empty'
                 if (i < 14) {
-                    tile_slot[i / 10, i % 10].changeState(true);
+                    TileButton_slot[i / 10, i % 10].changeState(true);
                 }
 
                 int[] start_location = {i/10, i%10};
-                tiles.Add(new Tile(rnd.Next(4), rnd.Next(1, 14), start_location));
-                tiles[i].getTileButton().Size = new Size(75, 100);
-                tiles[i].getTileButton().Location = new Point(x_location, y_location);
-                tiles[i].getTileButton().BackgroundImage = Image.FromFile("tile.png");
-                tiles[i].getTileButton().BackgroundImageLayout = ImageLayout.Stretch;
-                tiles[i].getTileButton().Draggable(true); // usage of the extension
-                tiles[i].getTileButton().FlatStyle = FlatStyle.Flat;
-                tiles[i].getTileButton().FlatAppearance.BorderSize = 0;
-                tiles[i].getTileButton().Text = rnd.Next(1, 14).ToString();
+                Tile current_tile_from_pool = pool.getTile();
+                TileButtons[TAG_NUMBER] = (new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), start_location));
+                TileButtons[TAG_NUMBER].getTileButton().Size = new Size(75, 100);
+                TileButtons[TAG_NUMBER].getTileButton().Location = new Point(x_location, y_location);
+                TileButtons[TAG_NUMBER].getTileButton().BackgroundImage = Image.FromFile("Tile.png");
+                TileButtons[TAG_NUMBER].getTileButton().BackgroundImageLayout = ImageLayout.Stretch;
+                TileButtons[TAG_NUMBER].getTileButton().Draggable(true); // usage of the extension
+                TileButtons[TAG_NUMBER].getTileButton().FlatStyle = FlatStyle.Flat;
+                TileButtons[TAG_NUMBER].getTileButton().FlatAppearance.BorderSize = 0;
+                TileButtons[TAG_NUMBER].getTileButton().Text = rnd.Next(1, 14).ToString();
 
-                if (tiles[i].getColor() == 0)
-                    tiles[i].getTileButton().ForeColor = (Color.Blue);
-                else if (tiles[i].getColor() == 1)
-                    tiles[i].getTileButton().ForeColor = (Color.Black);
-                else if (tiles[i].getColor() == 2)
-                    tiles[i].getTileButton().ForeColor = (Color.Yellow);
+                if (TileButtons[TAG_NUMBER].getColor() == 0)
+                    TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Blue);
+                else if (TileButtons[TAG_NUMBER].getColor() == 1)
+                    TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Black);
+                else if (TileButtons[TAG_NUMBER].getColor() == 2)
+                    TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Yellow);
                 else
-                    tiles[i].getTileButton().ForeColor = (Color.Red);
+                    TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Red);
 
-                tiles[i].getTileButton().Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
-                tiles[i].getTileButton().MouseUp += new MouseEventHandler(this.tile_MouseUp);
-                tiles[i].getTileButton().MouseDown += new MouseEventHandler(this.tile_MouseDown);
-                Controls.Add(tiles[i].getTileButton());
-                tiles[i].getTileButton().BringToFront();
-                tiles[i].getTileButton().Tag = i;
+                TileButtons[TAG_NUMBER].getTileButton().Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
+                TileButtons[TAG_NUMBER].getTileButton().MouseUp += new MouseEventHandler(this.TileButton_MouseUp);
+                TileButtons[TAG_NUMBER].getTileButton().MouseDown += new MouseEventHandler(this.TileButton_MouseDown);
+                Controls.Add(TileButtons[TAG_NUMBER].getTileButton());
+                TileButtons[TAG_NUMBER].getTileButton().BringToFront();
+                TileButtons[TAG_NUMBER].getTileButton().Tag = TAG_NUMBER;
 
-                x_location += X_SPACE_BETWEEN_TILES;
-                if (i == 9) { y_location += Y_SPACE_BETWEEN_TILES; x_location = STARTING_X_LOCATION; }
+                x_location += X_SPACE_BETWEEN_TileButtonS;
+                if (i == 9) { y_location += Y_SPACE_BETWEEN_TileButtonS; x_location = STARTING_X_LOCATION; }
+                TAG_NUMBER++;
             }
 
             // this will send back the panel(the board)
             board.SendToBack();
+
+            // updates the current tiles in the queue
+            current_pool_size.Text = pool.getPoolSize() + " tiles in pool";
         }
 
-        private Slot[,] GetTile_slot()
+        private Slot[,] GetTileButton_slot()
         {
-            return tile_slot;
+            return TileButton_slot;
         }
 
         private void pool_btn_Click(object sender, EventArgs e)
@@ -224,19 +238,56 @@ namespace rummikubGame
             {
                 for (int j = 9; j >= 0 && !found_last_empty_location; j--)
                 {
-                    if (tile_slot[i, j].getState() == false)
+                    if (TileButton_slot[i, j].getState() == false)
                     {
-                        tile_slot[i, j].getSlotButton().Text = "EMPTY :)";
+                        TileButton_slot[i, j].getSlotButton().Text = "EMPTY :)";
+
+                        Tile tile_from_pool = pool.getTile();
+                        int[] location_arr = { i, j };
+                        TileButton new_tile = new TileButton(tile_from_pool.getColor(), tile_from_pool.getNumber(), location_arr);
+                        new_tile.getTileButton().Tag = TAG_NUMBER;
                         found_last_empty_location = true;
+                        TileButtons[TAG_NUMBER] = new_tile;
+
+                        TileButtons[TAG_NUMBER].getTileButton().Size = new Size(75, 100);
+                        TileButtons[TAG_NUMBER].getTileButton().Location = TileButton_slot[i, j].getSlotButton().Location;
+                        TileButtons[TAG_NUMBER].getTileButton().BackgroundImage = Image.FromFile("Tile.png");
+                        TileButtons[TAG_NUMBER].getTileButton().BackgroundImageLayout = ImageLayout.Stretch;
+                        TileButtons[TAG_NUMBER].getTileButton().Draggable(true); // usage of the extension
+                        TileButtons[TAG_NUMBER].getTileButton().FlatStyle = FlatStyle.Flat;
+                        TileButtons[TAG_NUMBER].getTileButton().FlatAppearance.BorderSize = 0;
+                        TileButtons[TAG_NUMBER].getTileButton().Text = new_tile.getNumber().ToString();
+
+                        if (TileButtons[TAG_NUMBER].getColor() == 0)
+                            TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Blue);
+                        else if (TileButtons[TAG_NUMBER].getColor() == 1)
+                            TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Black);
+                        else if (TileButtons[TAG_NUMBER].getColor() == 2)
+                            TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Yellow);
+                        else
+                            TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Red);
+
+                        TileButtons[TAG_NUMBER].getTileButton().Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
+                        TileButtons[TAG_NUMBER].getTileButton().MouseUp += new MouseEventHandler(this.TileButton_MouseUp);
+                        TileButtons[TAG_NUMBER].getTileButton().MouseDown += new MouseEventHandler(this.TileButton_MouseDown);
+                        Controls.Add(TileButtons[TAG_NUMBER].getTileButton());
+                        TileButtons[TAG_NUMBER].getTileButton().BringToFront();
+                        TileButtons[TAG_NUMBER].getTileButton().Tag = TAG_NUMBER;
+                        TileButton_slot[TileButtons[TAG_NUMBER].getLocation()[0], TileButtons[TAG_NUMBER].getLocation()[1]].changeState(true);
+
+                        // updates the current tiles in the queue
+                        current_pool_size.Text = pool.getPoolSize() + " tiles in pool";
+                        TAG_NUMBER++;
                     }
 
                 }
             }
-
+             
+            
             string test = "";
-            for (int i = 0; i < tiles.Count; i++)
+            for (int i = 0; i < TileButtons.Keys.Count; i++)
             {
-                test += tiles[i].ToString() + "\n";
+                test += TileButtons[TileButtons.Keys.ElementAt(i)].ToString() + "\n";
             }
             data_indicator_2.Text = test;
 
@@ -245,10 +296,11 @@ namespace rummikubGame
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    test1 += "[" + i + ", " + j + "]: " + tile_slot[i, j].ToString() + "\n";
+                    test1 += "[" + i + ", " + j + "]: " + TileButton_slot[i, j].ToString() + "\n";
                 }
             }
             data_indicator.Text = test1;
+            
         }
     }
 }
