@@ -20,8 +20,8 @@ namespace rummikubGame
         const int X_SPACE_BETWEEN_TILES = 85;
         const int Y_SPACE_BETWEEN_TILES = 115;
 
-        private Slot[,] tile_slot;
-        private Tile[] tiles;
+        private Slot[,] tile_slot; 
+        private List<Tile> tiles; 
 
         public Form1()
         {
@@ -39,8 +39,14 @@ namespace rummikubGame
             // focused tile, will be always at top
             ((Button)sender).BringToFront();
 
-            // we are turning it off, because we want to be able to place to the current place if its the closest location
-            tile_slot[tiles[(int)((Button)sender).Tag].getLocation()[0], tiles[(int)((Button)sender).Tag].getLocation()[1]].changeState(false);
+            for(int i=0; i<tiles.Count; i++)
+            {
+                if(((Button)sender).Tag == tiles[i].getTileButton().Tag)
+                {
+                    // we are turning it off, because we want to be able to place to the current place if its the closest location
+                    tile_slot[tiles[(int)((Button)sender).Tag].getLocation()[0], tiles[(int)((Button)sender).Tag].getLocation()[1]].changeState(false);
+                }
+            }
         }
 
         private void tile_MouseUp(object sender, MouseEventArgs e)
@@ -52,6 +58,10 @@ namespace rummikubGame
             if (getDistance(current_card, dropped_tiles_btn) < 100)
             {
                 current_card.Location = new Point(dropped_tiles_btn.Location.X+10, dropped_tiles_btn.Location.Y+18);
+                current_card.Draggable(false);
+                int[] current_location = { -1, -1 };
+                tiles[(int)current_card.Tag].setLocation(current_location);
+                tiles.Remove(tiles[(int)current_card.Tag]);
             }
             // otherwise we would like to search the first empty slot to put in the tile
             else
@@ -67,7 +77,7 @@ namespace rummikubGame
                     {
                         if (tile_slot[i, j].getState() == false)
                         {
-                            first_empty_slot = tile_slot[i, j].getSlotButton();
+                            first_empty_slot = tile_slot[i, j].getSlotButton(); 
                             found_first_empty_slot = true;
                             min_i = i;
                             min_j = j;
@@ -158,7 +168,7 @@ namespace rummikubGame
             // Generating the tiles
             x_location = STARTING_X_LOCATION;
             y_location = STARTING_Y_LOCATION;
-            tiles = new Tile[14];
+            tiles = new List<Tile>();
 
             for (int i = 0; i < 14; i++)
             {
@@ -168,7 +178,7 @@ namespace rummikubGame
                 }
 
                 int[] start_location = {i/10, i%10};
-                tiles[i] = new Tile(rnd.Next(4), rnd.Next(1, 14), start_location);
+                tiles.Add(new Tile(rnd.Next(4), rnd.Next(1, 14), start_location));
                 tiles[i].getTileButton().Size = new Size(75, 100);
                 tiles[i].getTileButton().Location = new Point(x_location, y_location);
                 tiles[i].getTileButton().BackgroundImage = Image.FromFile("tile.png");
@@ -202,9 +212,43 @@ namespace rummikubGame
             board.SendToBack();
         }
 
+        private Slot[,] GetTile_slot()
+        {
+            return tile_slot;
+        }
+
         private void pool_btn_Click(object sender, EventArgs e)
         {
+            bool found_last_empty_location = false;
+            for (int i = 1; i >= 0 && !found_last_empty_location; i--)
+            {
+                for (int j = 9; j >= 0 && !found_last_empty_location; j--)
+                {
+                    if (tile_slot[i, j].getState() == false)
+                    {
+                        tile_slot[i, j].getSlotButton().Text = "EMPTY :)";
+                        found_last_empty_location = true;
+                    }
 
+                }
+            }
+
+            string test = "";
+            for (int i = 0; i < tiles.Count; i++)
+            {
+                test += tiles[i].ToString() + "\n";
+            }
+            data_indicator_2.Text = test;
+
+            string test1 = "";
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    test1 += "[" + i + ", " + j + "]: " + tile_slot[i, j].ToString() + "\n";
+                }
+            }
+            data_indicator.Text = test1;
         }
     }
 }

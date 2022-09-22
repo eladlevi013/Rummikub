@@ -33,6 +33,8 @@
             this.dropped_tiles_btn = new System.Windows.Forms.Button();
             this.pool_btn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.data_indicator = new System.Windows.Forms.Label();
+            this.data_indicator_2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // board
@@ -77,12 +79,34 @@
             this.label1.TabIndex = 5;
             this.label1.Text = "102 in pool";
             // 
+            // data_indicator
+            // 
+            this.data_indicator.AutoSize = true;
+            this.data_indicator.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.data_indicator.Location = new System.Drawing.Point(12, 13);
+            this.data_indicator.Name = "data_indicator";
+            this.data_indicator.Size = new System.Drawing.Size(74, 13);
+            this.data_indicator.TabIndex = 6;
+            this.data_indicator.Text = "data_indicator";
+            // 
+            // data_indicator_2
+            // 
+            this.data_indicator_2.AutoSize = true;
+            this.data_indicator_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.data_indicator_2.Location = new System.Drawing.Point(124, 13);
+            this.data_indicator_2.Name = "data_indicator_2";
+            this.data_indicator_2.Size = new System.Drawing.Size(35, 13);
+            this.data_indicator_2.TabIndex = 7;
+            this.data_indicator_2.Text = "label2";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(975, 613);
+            this.Controls.Add(this.data_indicator_2);
+            this.Controls.Add(this.data_indicator);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pool_btn);
             this.Controls.Add(this.dropped_tiles_btn);
@@ -102,6 +126,8 @@
         private System.Windows.Forms.Button dropped_tiles_btn;
         private System.Windows.Forms.Button pool_btn;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label data_indicator;
+        private System.Windows.Forms.Label data_indicator_2;
     }
 }
 

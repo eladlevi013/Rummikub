@@ -32,5 +32,10 @@ namespace rummikubGame
         {
             return this.slot_button;
         }
+
+        public string ToString()
+        {
+            return "State: " + (this.slot_state) ;
+        }
     }
 }
