@@ -14,11 +14,11 @@ namespace rummikubGame
 {
     public partial class Form1 : Form
     {
-        const int STARTING_X_LOCATION = 85;
-        const int STARTING_Y_LOCATION = 350;
+        const int STARTING_X_LOCATION = 70;
+        const int STARTING_Y_LOCATION = 345;
 
-        const int X_SPACE_BETWEEN_TILES = 80;
-        const int Y_SPACE_BETWEEN_TILES = 105;
+        const int X_SPACE_BETWEEN_TILES = 85;
+        const int Y_SPACE_BETWEEN_TILES = 115;
 
         private Slot[,] tile_slot;
         private Tile[] tiles;
@@ -48,62 +48,87 @@ namespace rummikubGame
             // the card that we dragged with the mouse
             Button current_card = (Button)sender;
 
-            // Now we'll search the first empty slot, so we would know what is the the most close 
-            int min_i = 0;
-            int min_j = 0;
-            Button first_empty_slot = null;
-            bool found_first_empty_slot = false;
-            for(int i=0; i<2 && found_first_empty_slot == false; i++)
+            // first, we would like to check if the user wanted to put the tile on the drop_tile location
+            if (getDistance(current_card, dropped_tiles_btn) < 100)
             {
-                for(int j=0; j<10 && found_first_empty_slot == false; j++)
+                current_card.Location = new Point(dropped_tiles_btn.Location.X+10, dropped_tiles_btn.Location.Y+18);
+            }
+            // otherwise we would like to search the first empty slot to put in the tile
+            else
+            {
+                // Now we'll search the first empty slot, so we would know what is the the most close 
+                int min_i = 0;
+                int min_j = 0;
+                Button first_empty_slot = null;
+                bool found_first_empty_slot = false;
+                for (int i = 0; i < 2 && found_first_empty_slot == false; i++)
                 {
-                    if (tile_slot[i,j].getState() == false)
+                    for (int j = 0; j < 10 && found_first_empty_slot == false; j++)
                     {
-                        first_empty_slot = tile_slot[i, j].getSlotButton();
-                        found_first_empty_slot = true;
-                        min_i = i;
-                        min_j = j;
+                        if (tile_slot[i, j].getState() == false)
+                        {
+                            first_empty_slot = tile_slot[i, j].getSlotButton();
+                            found_first_empty_slot = true;
+                            min_i = i;
+                            min_j = j;
+                        }
                     }
                 }
-            }
 
-            // we'll calculate the distance between the card, and the first empty slot
-            float min_distance = getDistance(current_card, first_empty_slot);
+                // we'll calculate the distance between the card, and the first empty slot
+                float min_distance = getDistance(current_card, first_empty_slot);
 
-            // now, we'll calculate the distance between the card and all the empty slots, and we'll find the minimum
-            for (int i = 0; i < 2; i++)
-            {
-                for (int j = 0; j < 10; j++)
+                // now, we'll calculate the distance between the card and all the empty slots, and we'll find the minimum
+                for (int i = 0; i < 2; i++)
                 {
-                    // if the distance is smaller, and the slot is available
-                    if (getDistance(current_card, tile_slot[i, j].getSlotButton()) < min_distance && tile_slot[i, j].getState() == false)
+                    for (int j = 0; j < 10; j++)
                     {
-                        min_distance = getDistance(current_card, tile_slot[i, j].getSlotButton());
-                        min_i = i;
-                        min_j = j;
+                        // if the distance is smaller, and the slot is available
+                        if (getDistance(current_card, tile_slot[i, j].getSlotButton()) < min_distance && tile_slot[i, j].getState() == false)
+                        {
+                            min_distance = getDistance(current_card, tile_slot[i, j].getSlotButton());
+                            min_i = i;
+                            min_j = j;
+                        }
                     }
                 }
+
+                // we made it empty, as we clicked_down to move the card, so now we have to make it non-empty again
+                //tile_slot[tiles[(int)((Button)sender).Tag].getLocation()[0], tiles[(int)((Button)sender).Tag].getLocation()[1]].changeState(true);
+
+                // update the location of the focused tile, to the location of the minimum distance that we found earlier
+                current_card.Location = tile_slot[min_i, min_j].getSlotButton().Location;
+
+                // now we need to update the status of the old slot to empty
+                tile_slot[tiles[(int)current_card.Tag].getLocation()[0], tiles[(int)current_card.Tag].getLocation()[1]].changeState(false);
+
+                // we'll change the status of the 'minimum-distance' slot(now contains the card)
+                tile_slot[min_i, min_j].changeState(true);
+
+                // update the tile location(the location of the slot)
+                int[] updated_tile_location = { min_i, min_j };
+                tiles[(int)current_card.Tag].setLocation(updated_tile_location);
             }
-
-            // we made it empty, as we clicked_down to move the card, so now we have to make it non-empty again
-            //tile_slot[tiles[(int)((Button)sender).Tag].getLocation()[0], tiles[(int)((Button)sender).Tag].getLocation()[1]].changeState(true);
-
-            // update the location of the focused tile, to the location of the minimum distance that we found earlier
-            current_card.Location = tile_slot[min_i, min_j].getSlotButton().Location;
-
-            // now we need to update the status of the old slot to empty
-            tile_slot[tiles[(int)current_card.Tag].getLocation()[0], tiles[(int)current_card.Tag].getLocation()[1]].changeState(false);
-
-            // we'll change the status of the 'minimum-distance' slot(now contains the card)
-            tile_slot[min_i, min_j].changeState(true);
-            
-            // update the tile location(the location of the slot)
-            int[] updated_tile_location = { min_i, min_j };
-            tiles[(int)current_card.Tag].setLocation(updated_tile_location);
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // change the style of the drop_tiles_location
+            dropped_tiles_btn.FlatStyle = FlatStyle.Flat;
+            dropped_tiles_btn.FlatAppearance.BorderSize = 0;
+            dropped_tiles_btn.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
+
+            // set round corners of the board
+            board.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
+
+            // set background color
+            this.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
+
+            // set background color of pool btn
+            pool_btn.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
+            pool_btn.FlatStyle = FlatStyle.Flat;
+            pool_btn.FlatAppearance.BorderSize = 0;
+
             Random rnd = new Random();
 
             // Generating the slots
@@ -177,5 +202,9 @@ namespace rummikubGame
             board.SendToBack();
         }
 
+        private void pool_btn_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
