@@ -23,6 +23,8 @@ namespace rummikubGame
         const int X_SPACE_BETWEEN_TileButtonS = 85;
         const int Y_SPACE_BETWEEN_TileButtonS = 115;
 
+        const int DROPPED_CARD_LOCATION = -1;
+
         private Slot[,] TileButton_slot; 
         private Dictionary<int, TileButton> TileButtons;
 
@@ -42,8 +44,10 @@ namespace rummikubGame
             // focused TileButton, will be always at top
             ((Button)sender).BringToFront();
 
+            // we are iterating over the cards, because there is the option that the card in the dropped tiles
             for(int i=0; i<TileButtons.Keys.Count; i++)
             {
+                // it means that the card is in the tiles group that you can interact with
                 if(((Button)sender).Tag == TileButtons[TileButtons.Keys.ElementAt(i)].getTileButton().Tag)
                 {
                     // we are turning it off, because we want to be able to place to the current place if its the closest location
@@ -52,11 +56,24 @@ namespace rummikubGame
             }
         }
 
+        private void TileButton_MouseEnter(object sender, EventArgs e)
+        {
+            // bright effect when the mouse hovers over the tile
+            ((Button)sender).BackgroundImage = Image.FromFile("bright_tile.png");
+        }
+
+        private void TileButton_MouseLeave(object sender, EventArgs e)
+        {
+            // in order to make the tile normal after hovering over the card
+            ((Button)sender).BackgroundImage = Image.FromFile("tile.png");
+        }
+
         private void TileButton_MouseUp(object sender, MouseEventArgs e)
         {
             // the card that we dragged with the mouse
             Button current_card = (Button)sender;
 
+            // if the card is in our board
             if (TileButtons.ContainsKey((int)current_card.Tag))
             {
                 // first, we would like to check if the user wanted to put the TileButton on the drop_TileButton location
@@ -64,7 +81,7 @@ namespace rummikubGame
                 {
                     current_card.Location = new Point(dropped_tiles_btn.Location.X + 10, dropped_tiles_btn.Location.Y + 18);
                     current_card.Draggable(false);
-                    int[] current_location = { -1, -1 };
+                    int[] current_location = {DROPPED_CARD_LOCATION, DROPPED_CARD_LOCATION};
                     TileButtons[(int)current_card.Tag].setLocation(current_location);
                     TileButtons.Remove((int)current_card.Tag);
                 }
@@ -109,7 +126,7 @@ namespace rummikubGame
                     }
 
                     // we made it empty, as we clicked_down to move the card, so now we have to make it non-empty again
-                    //TileButton_slot[TileButtons[(int)((Button)sender).Tag].getLocation()[0], TileButtons[(int)((Button)sender).Tag].getLocation()[1]].changeState(true);
+                    TileButton_slot[TileButtons[(int)((Button)sender).Tag].getLocation()[0], TileButtons[(int)((Button)sender).Tag].getLocation()[1]].changeState(true);
 
                     // update the location of the focused TileButton, to the location of the minimum distance that we found earlier
                     current_card.Location = TileButton_slot[min_i, min_j].getSlotButton().Location;
@@ -196,7 +213,7 @@ namespace rummikubGame
                 TileButtons[TAG_NUMBER].getTileButton().Draggable(true); // usage of the extension
                 TileButtons[TAG_NUMBER].getTileButton().FlatStyle = FlatStyle.Flat;
                 TileButtons[TAG_NUMBER].getTileButton().FlatAppearance.BorderSize = 0;
-                TileButtons[TAG_NUMBER].getTileButton().Text = rnd.Next(1, 14).ToString();
+                TileButtons[TAG_NUMBER].getTileButton().Text = current_tile_from_pool.getNumber().ToString();
 
                 if (TileButtons[TAG_NUMBER].getColor() == 0)
                     TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Blue);
@@ -210,6 +227,9 @@ namespace rummikubGame
                 TileButtons[TAG_NUMBER].getTileButton().Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
                 TileButtons[TAG_NUMBER].getTileButton().MouseUp += new MouseEventHandler(this.TileButton_MouseUp);
                 TileButtons[TAG_NUMBER].getTileButton().MouseDown += new MouseEventHandler(this.TileButton_MouseDown);
+                TileButtons[TAG_NUMBER].getTileButton().MouseEnter += TileButton_MouseEnter;
+                TileButtons[TAG_NUMBER].getTileButton().MouseLeave += TileButton_MouseLeave;
+
                 Controls.Add(TileButtons[TAG_NUMBER].getTileButton());
                 TileButtons[TAG_NUMBER].getTileButton().BringToFront();
                 TileButtons[TAG_NUMBER].getTileButton().Tag = TAG_NUMBER;
@@ -226,11 +246,6 @@ namespace rummikubGame
             current_pool_size.Text = pool.getPoolSize() + " tiles in pool";
         }
 
-        private Slot[,] GetTileButton_slot()
-        {
-            return TileButton_slot;
-        }
-
         private void pool_btn_Click(object sender, EventArgs e)
         {
             bool found_last_empty_location = false;
@@ -240,8 +255,6 @@ namespace rummikubGame
                 {
                     if (TileButton_slot[i, j].getState() == false)
                     {
-                        TileButton_slot[i, j].getSlotButton().Text = "EMPTY :)";
-
                         Tile tile_from_pool = pool.getTile();
                         int[] location_arr = { i, j };
                         TileButton new_tile = new TileButton(tile_from_pool.getColor(), tile_from_pool.getNumber(), location_arr);
@@ -257,6 +270,8 @@ namespace rummikubGame
                         TileButtons[TAG_NUMBER].getTileButton().FlatStyle = FlatStyle.Flat;
                         TileButtons[TAG_NUMBER].getTileButton().FlatAppearance.BorderSize = 0;
                         TileButtons[TAG_NUMBER].getTileButton().Text = new_tile.getNumber().ToString();
+                        TileButtons[TAG_NUMBER].getTileButton().MouseEnter += TileButton_MouseEnter;
+                        TileButtons[TAG_NUMBER].getTileButton().MouseLeave += TileButton_MouseLeave;
 
                         if (TileButtons[TAG_NUMBER].getColor() == 0)
                             TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Blue);
@@ -283,11 +298,10 @@ namespace rummikubGame
                 }
             }
              
-            
             string test = "";
             for (int i = 0; i < TileButtons.Keys.Count; i++)
             {
-                test += TileButtons[TileButtons.Keys.ElementAt(i)].ToString() + "\n";
+                test += "index: " + TileButtons.Keys.ElementAt(i) + ", " + TileButtons[TileButtons.Keys.ElementAt(i)].ToString() + "\n";
             }
             data_indicator_2.Text = test;
 

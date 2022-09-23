@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.board = new System.Windows.Forms.Panel();
             this.dropped_tiles_btn = new System.Windows.Forms.Button();
@@ -35,6 +36,7 @@
             this.current_pool_size = new System.Windows.Forms.Label();
             this.data_indicator = new System.Windows.Forms.Label();
             this.data_indicator_2 = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // board
@@ -100,6 +102,8 @@
             this.data_indicator_2.TabIndex = 7;
             this.data_indicator_2.Text = "label2";
             // 
+            // timer1
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -129,6 +133,7 @@
         private System.Windows.Forms.Label current_pool_size;
         private System.Windows.Forms.Label data_indicator;
         private System.Windows.Forms.Label data_indicator_2;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

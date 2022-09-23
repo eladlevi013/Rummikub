@@ -15,7 +15,7 @@ namespace rummikubGame
         public Pool()
         {
             const int NUMBER_OF_TIMES = 2;
-            const int COLORS_COUNT = 1;
+            const int COLORS_COUNT = 4;
             const int N = 13;
 
             List<Tile> tiles_list = new List<Tile>();
