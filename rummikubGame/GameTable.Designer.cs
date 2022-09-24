@@ -1,6 +1,6 @@
 ﻿namespace rummikubGame
 {
-    partial class Form1
+    partial class GameTable
     {
         /// <summary>
         /// Required designer variable.
@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.board = new System.Windows.Forms.Panel();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameTable));
+            this.board_panel = new System.Windows.Forms.Panel();
             this.dropped_tiles_btn = new System.Windows.Forms.Button();
             this.pool_btn = new System.Windows.Forms.Button();
             this.current_pool_size = new System.Windows.Forms.Label();
@@ -41,15 +41,15 @@
             this.SortByColor_btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // board
+            // board_panel
             // 
-            this.board.AllowDrop = true;
-            this.board.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("board.BackgroundImage")));
-            this.board.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.board.Location = new System.Drawing.Point(12, 300);
-            this.board.Name = "board";
-            this.board.Size = new System.Drawing.Size(951, 303);
-            this.board.TabIndex = 2;
+            this.board_panel.AllowDrop = true;
+            this.board_panel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("board_panel.BackgroundImage")));
+            this.board_panel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.board_panel.Location = new System.Drawing.Point(12, 300);
+            this.board_panel.Name = "board_panel";
+            this.board_panel.Size = new System.Drawing.Size(951, 303);
+            this.board_panel.TabIndex = 2;
             // 
             // dropped_tiles_btn
             // 
@@ -126,7 +126,7 @@
             this.SortByColor_btn.UseVisualStyleBackColor = false;
             this.SortByColor_btn.Click += new System.EventHandler(this.SortByColor_btn_Click);
             // 
-            // Form1
+            // GameTable
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -139,10 +139,10 @@
             this.Controls.Add(this.current_pool_size);
             this.Controls.Add(this.pool_btn);
             this.Controls.Add(this.dropped_tiles_btn);
-            this.Controls.Add(this.board);
+            this.Controls.Add(this.board_panel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "Form1";
+            this.Name = "GameTable";
             this.Text = "Rummikub";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
@@ -151,7 +151,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.Panel board;
+        private System.Windows.Forms.Panel board_panel;
         private System.Windows.Forms.Button dropped_tiles_btn;
         private System.Windows.Forms.Button pool_btn;
         private System.Windows.Forms.Label current_pool_size;
