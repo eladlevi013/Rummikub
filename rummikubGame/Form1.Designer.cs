@@ -37,6 +37,8 @@
             this.data_indicator = new System.Windows.Forms.Label();
             this.data_indicator_2 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.SortByValue_btn = new System.Windows.Forms.Button();
+            this.SortByColor_btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // board
@@ -102,14 +104,38 @@
             this.data_indicator_2.TabIndex = 7;
             this.data_indicator_2.Text = "label2";
             // 
-            // timer1
+            // SortByValue_btn
+            // 
+            this.SortByValue_btn.BackColor = System.Drawing.Color.Sienna;
+            this.SortByValue_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("SortByValue_btn.BackgroundImage")));
+            this.SortByValue_btn.Location = new System.Drawing.Point(333, 601);
+            this.SortByValue_btn.Name = "SortByValue_btn";
+            this.SortByValue_btn.Size = new System.Drawing.Size(147, 29);
+            this.SortByValue_btn.TabIndex = 8;
+            this.SortByValue_btn.Text = "Sort By Value";
+            this.SortByValue_btn.UseVisualStyleBackColor = false;
+            this.SortByValue_btn.Click += new System.EventHandler(this.SortByValue_btn_Click);
+            // 
+            // SortByColor_btn
+            // 
+            this.SortByColor_btn.BackColor = System.Drawing.Color.Sienna;
+            this.SortByColor_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("SortByColor_btn.BackgroundImage")));
+            this.SortByColor_btn.Location = new System.Drawing.Point(499, 601);
+            this.SortByColor_btn.Name = "SortByColor_btn";
+            this.SortByColor_btn.Size = new System.Drawing.Size(147, 29);
+            this.SortByColor_btn.TabIndex = 9;
+            this.SortByColor_btn.Text = "Sort By Color";
+            this.SortByColor_btn.UseVisualStyleBackColor = false;
+            this.SortByColor_btn.Click += new System.EventHandler(this.SortByColor_btn_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(975, 613);
+            this.ClientSize = new System.Drawing.Size(975, 641);
+            this.Controls.Add(this.SortByValue_btn);
+            this.Controls.Add(this.SortByColor_btn);
             this.Controls.Add(this.data_indicator_2);
             this.Controls.Add(this.data_indicator);
             this.Controls.Add(this.current_pool_size);
@@ -134,6 +160,8 @@
         private System.Windows.Forms.Label data_indicator;
         private System.Windows.Forms.Label data_indicator_2;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Button SortByValue_btn;
+        private System.Windows.Forms.Button SortByColor_btn;
     }
 }
 

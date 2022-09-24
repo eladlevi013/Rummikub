@@ -165,6 +165,12 @@ namespace rummikubGame
             pool_btn.FlatStyle = FlatStyle.Flat;
             pool_btn.FlatAppearance.BorderSize = 0;
 
+            // set button flat design
+            SortByColor_btn.FlatStyle = FlatStyle.Flat;
+            SortByColor_btn.FlatAppearance.BorderSize = 0;
+            SortByValue_btn.FlatStyle = FlatStyle.Flat;
+            SortByValue_btn.FlatAppearance.BorderSize = 0;
+
             Random rnd = new Random();
 
             // Generating the slots
@@ -315,6 +321,40 @@ namespace rummikubGame
             }
             data_indicator.Text = test1;
             
+        }
+
+        private void ArrangeCardsOnBoard(List<TileButton> sorted_cards)
+        {
+            int card_index = 0;
+            for(int i=0; i<2; i++)
+            {
+                for(int j=0; j<10; j++)
+                {
+                    TileButton_slot[i, j].changeState(false);
+                    if (card_index < sorted_cards.Count())
+                    {
+                        sorted_cards[card_index].getTileButton().Location = TileButton_slot[i, j].getSlotButton().Location;
+                        TileButton_slot[i, j].changeState(true);
+                        int[] location_arr = { i, j };
+                        sorted_cards[card_index].setLocation(location_arr);
+                    }
+                    card_index++;
+                }
+            }
+        }
+
+        private void SortByValue_btn_Click(object sender, EventArgs e)
+        {
+            List<TileButton> sorted_cards = TileButtons.Values.ToList();
+            sorted_cards = sorted_cards.OrderBy(card => card.getNumber()).ToList();
+            ArrangeCardsOnBoard(sorted_cards);
+        }
+
+        private void SortByColor_btn_Click(object sender, EventArgs e)
+        {
+            List<TileButton> sorted_cards = TileButtons.Values.ToList();
+            sorted_cards = sorted_cards.OrderBy(card => card.getColor()).ToList();
+            ArrangeCardsOnBoard(sorted_cards);
         }
     }
 }
