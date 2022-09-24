@@ -134,12 +134,18 @@ namespace rummikubGame
                     TileButtons[(int)current_card.Tag].setLocation(updated_TileButton_location);
                 }
             }
+
+            if(checkWinner() == true)
+            {
+                MessageBox.Show("You Won!");
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             // Generate pool cards
             pool = new Pool();
+
 
             // change the style of the drop_TileButtons_location
             dropped_tiles_btn.FlatStyle = FlatStyle.Flat;
@@ -212,7 +218,7 @@ namespace rummikubGame
 
             // this will send back the panel(the board)
             board.SendToBack();
-
+            developerData();
             updatePoolSizeText();
         }
 
@@ -220,6 +226,101 @@ namespace rummikubGame
         {
             // updates the current tiles in the queue
             current_pool_size.Text = pool.getPoolSize() + " tiles in pool";
+        }
+
+        private bool checkWinner()
+        {
+            List<TileButton> topBoard_tiles = new List<TileButton>();
+            List<TileButton> bottomBoard_tiles = new List<TileButton>();
+            List<List<TileButton>> melds = new List<List<TileButton>>();
+
+            for (int i=0; i<TileButtons.Values.ToList().Count(); i++)
+            {
+                if (TileButtons.Values.ToList()[i].getLocation()[0] == 0)
+                {
+                    topBoard_tiles.Add(TileButtons.Values.ToList()[i]);
+                }
+                else
+                {
+                    bottomBoard_tiles.Add(TileButtons.Values.ToList()[i]);
+                }
+            }
+
+            // after we have two lists, we will sort them by value and analyze the melds
+            topBoard_tiles = topBoard_tiles.OrderBy(card => card.getLocation()[1]).ToList();
+            bottomBoard_tiles = bottomBoard_tiles.OrderBy(card => card.getLocation()[1]).ToList();
+            getSequencesFromTileList(topBoard_tiles, melds);
+            getSequencesFromTileList(bottomBoard_tiles, melds);
+
+            // now var-melds has all the melds
+            // if all the melds in the list are fine, the user won
+            for(int i=0; i<melds.Count(); i++)
+            {
+                if (!isLegalMeld(melds[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private bool isLegalMeld(List<TileButton> meld)
+        {
+            /*
+             Legal meld, can be:
+                - group(same number - different colors)
+                - run(same color - different numbers(accending order))
+             */
+
+            if (meld.Count() < 3)
+                return false;
+
+            bool isRun = true;
+            int color = meld[0].getColor();
+            int value = meld[0].getNumber();
+
+            for(int i=1; i<meld.Count(); i++)
+            {
+                if (meld[i].getNumber() != value + i || meld[i].getColor() != color)
+                {
+                    isRun = false; break;
+                }
+            }
+            if (isRun) return true;
+            if (meld.Count() > 4) return false;
+
+            for(int i=0; i<meld.Count()-1; i++)
+            {
+                if (meld[i + 1].getNumber() != value)
+                    return false;
+                for(int j=i+1; j<meld.Count(); j++)
+                {
+                    if (meld[i].getColor() == meld[j].getColor())
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        private void getSequencesFromTileList(List<TileButton> tiles_sequence, List<List<TileButton>> melds)
+        {
+            List<TileButton> meld = new List<TileButton>();
+            for (int i = 0; i < tiles_sequence.Count(); i++) // inserting the melds of the upper board
+            {
+                if (meld.Count() != 0 && meld[meld.Count - 1].getLocation()[1] + 1 == tiles_sequence[i].getLocation()[1])
+                {
+                    meld.Add(tiles_sequence[i]);
+                }
+                else
+                {
+                    if (meld.Count != 0)
+                        melds.Add(meld);
+                    meld = new List<TileButton>();
+                    meld.Add(tiles_sequence[i]);
+                }
+            }
+            if (meld.Count != 0)
+                melds.Add(meld);
         }
 
         private void pool_btn_Click(object sender, EventArgs e)
@@ -241,7 +342,11 @@ namespace rummikubGame
 
                 }
             }
+            developerData();
+        }
 
+        private void developerData()
+        {
             string test = "";
             for (int i = 0; i < TileButtons.Keys.Count; i++)
             {

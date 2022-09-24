@@ -90,9 +90,8 @@
             this.data_indicator.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.data_indicator.Location = new System.Drawing.Point(12, 13);
             this.data_indicator.Name = "data_indicator";
-            this.data_indicator.Size = new System.Drawing.Size(74, 13);
+            this.data_indicator.Size = new System.Drawing.Size(0, 13);
             this.data_indicator.TabIndex = 6;
-            this.data_indicator.Text = "data_indicator";
             // 
             // data_indicator_2
             // 
@@ -100,9 +99,8 @@
             this.data_indicator_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.data_indicator_2.Location = new System.Drawing.Point(124, 13);
             this.data_indicator_2.Name = "data_indicator_2";
-            this.data_indicator_2.Size = new System.Drawing.Size(35, 13);
+            this.data_indicator_2.Size = new System.Drawing.Size(0, 13);
             this.data_indicator_2.TabIndex = 7;
-            this.data_indicator_2.Text = "label2";
             // 
             // SortByValue_btn
             // 
@@ -133,7 +131,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(975, 641);
+            this.ClientSize = new System.Drawing.Size(978, 641);
             this.Controls.Add(this.SortByValue_btn);
             this.Controls.Add(this.SortByColor_btn);
             this.Controls.Add(this.data_indicator_2);
