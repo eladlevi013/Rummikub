@@ -21,6 +21,7 @@ namespace rummikubGame
         const int X_SPACE_BETWEEN_TileButtonS = 85;
         const int Y_SPACE_BETWEEN_TileButtonS = 115;
         const int DROPPED_CARD_LOCATION = -1; // when the card is no longer in board
+        const int RUMMIKUB_CARDS_NUMBER = 14;
 
         public Slot[,] getTileButton_slot()
         {
@@ -38,11 +39,10 @@ namespace rummikubGame
             int x_location = STARTING_X_LOCATION;
             int y_location = STARTING_Y_LOCATION;
             TileButton_slot = new Slot[2, 10];
-
             for (int i = 0; i < 2; i++)
             {
                 for (int j = 0; j < 10; j++)
-                {
+                { // Generate a single slotButton
                     TileButton_slot[i, j] = new Slot();
                     TileButton_slot[i, j].getSlotButton().BackgroundImage = Image.FromFile("slot.png");
                     TileButton_slot[i, j].getSlotButton().BackgroundImageLayout = ImageLayout.Stretch;
@@ -62,24 +62,20 @@ namespace rummikubGame
             x_location = STARTING_X_LOCATION;
             y_location = STARTING_Y_LOCATION;
             TileButtons = new Dictionary<int, TileButton>();
-
-            for (int i = 0; i < 14; i++)
+            for (int i = 0; i < RUMMIKUB_CARDS_NUMBER; i++)
             {
                 // change the slots current state to 'not-empty'
-                if (i < 14)
+                if (i < RUMMIKUB_CARDS_NUMBER)
                 {
                     TileButton_slot[i / 10, i % 10].changeState(true);
                 }
 
                 int[] start_location = { i / 10, i % 10 };
-                Tile current_tile_from_pool = GameTable.pool.getTile();
                 GenerateNewTile(start_location);
-
                 x_location += X_SPACE_BETWEEN_TileButtonS;
                 if (i == 9) { y_location += Y_SPACE_BETWEEN_TileButtonS; x_location = STARTING_X_LOCATION; }
                 TAG_NUMBER++;
             }
-            tookCard = false;
         }
 
         public void GenerateNewTile_byClickingPool(int[] slot_location)
@@ -258,8 +254,14 @@ namespace rummikubGame
             // after we have two lists, we will sort them by value and analyze the melds
             topBoard_tiles = topBoard_tiles.OrderBy(card => card.getLocation()[1]).ToList();
             bottomBoard_tiles = bottomBoard_tiles.OrderBy(card => card.getLocation()[1]).ToList();
-            getSequencesFromTileList(topBoard_tiles, melds);
-            getSequencesFromTileList(bottomBoard_tiles, melds);
+
+            bool singleTileMeld = false;
+            getSequencesFromTileList(topBoard_tiles, melds, singleTileMeld);
+            getSequencesFromTileList(bottomBoard_tiles, melds, singleTileMeld);
+
+            // if there is even one meld of one card, we would like to return false
+            if (singleTileMeld == true) 
+                return false;
 
             List<List<Tile>> converted_melds_computer_format = new List<List<Tile>>();
             for(int i=0; i<melds.Count(); i++)
@@ -280,7 +282,7 @@ namespace rummikubGame
             return new_tiles_format;
         }
 
-        private static void getSequencesFromTileList(List<TileButton> tiles_sequence, List<List<TileButton>> melds)
+        private static void getSequencesFromTileList(List<TileButton> tiles_sequence, List<List<TileButton>> melds, bool hasMeldOfSingleCard)   
         {
             List<TileButton> meld = new List<TileButton>();
             for (int i = 0; i < tiles_sequence.Count(); i++) // inserting the melds of the upper board
@@ -293,7 +295,13 @@ namespace rummikubGame
                 {
                     if (meld.Count != 0)
                         melds.Add(meld);
-                    meld = new List<TileButton>();
+
+                    if (meld.Count == 1)
+                    {
+                        hasMeldOfSingleCard = true;
+                        return;
+                    }
+                        meld = new List<TileButton>();
                     meld.Add(tiles_sequence[i]);
                 }
             }

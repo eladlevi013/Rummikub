@@ -42,28 +42,24 @@ namespace rummikubGame
             humanPlayer = new HumanPlayer("Player Default Name"); // create the humanPlayer object
             ComputerPlayer = new ComputerPlayer();
 
+            /* Graphical Changes */
             // change the style of the drop_TileButtons_location
             dropped_tiles_btn.FlatStyle = FlatStyle.Flat;
             dropped_tiles_btn.FlatAppearance.BorderSize = 0;
             dropped_tiles_btn.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
-
             // set round corners of the board
             board_panel.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
-
             // set background color
             this.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
-
             // set background color of pool btn
             pool_btn.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
             pool_btn.FlatStyle = FlatStyle.Flat;
             pool_btn.FlatAppearance.BorderSize = 0;
-
             // set button flat design
             SortByColor_btn.FlatStyle = FlatStyle.Flat;
             SortByColor_btn.FlatAppearance.BorderSize = 0;
             SortByValue_btn.FlatStyle = FlatStyle.Flat;
             SortByValue_btn.FlatAppearance.BorderSize = 0;            
-
             // this will send back the panel(the board)
             board_panel.SendToBack();
             developerData();
@@ -151,14 +147,12 @@ namespace rummikubGame
                         int[] location_arr = { i, j };
                         humanPlayer.board.GenerateNewTile_byClickingPool(location_arr);
                         found_last_empty_location = true;
-
                         updatePoolSizeText();
                         Board.TAG_NUMBER++;
                     }
 
                 }
             }
-            Board.tookCard = true;
             developerData();
         }
 
@@ -170,7 +164,6 @@ namespace rummikubGame
                 test += "index: " + humanPlayer.board.getTilesDictionary().Keys.ElementAt(i) + ", " + humanPlayer.board.getTilesDictionary()[humanPlayer.board.getTilesDictionary().Keys.ElementAt(i)].ToString() + "\n";
             }
             data_indicator_2.Text = test;
-
             string test1 = "";
             for (int i = 0; i < 2; i++)
             {
