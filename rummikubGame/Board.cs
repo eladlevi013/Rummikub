@@ -256,12 +256,14 @@ namespace rummikubGame
             bottomBoard_tiles = bottomBoard_tiles.OrderBy(card => card.getLocation()[1]).ToList();
 
             bool singleTileMeld = false;
-            getSequencesFromTileList(topBoard_tiles, melds, singleTileMeld);
-            getSequencesFromTileList(bottomBoard_tiles, melds, singleTileMeld);
+            getSequencesFromTileList(topBoard_tiles, melds, ref singleTileMeld);
+            getSequencesFromTileList(bottomBoard_tiles, melds, ref singleTileMeld);
 
             // if there is even one meld of one card, we would like to return false
-            if (singleTileMeld == true) 
+            if (singleTileMeld == true)
+            {
                 return false;
+            }
 
             List<List<Tile>> converted_melds_computer_format = new List<List<Tile>>();
             for(int i=0; i<melds.Count(); i++)
@@ -282,7 +284,7 @@ namespace rummikubGame
             return new_tiles_format;
         }
 
-        private static void getSequencesFromTileList(List<TileButton> tiles_sequence, List<List<TileButton>> melds, bool hasMeldOfSingleCard)   
+        private static void getSequencesFromTileList(List<TileButton> tiles_sequence, List<List<TileButton>> melds, ref bool hasMeldOfSingleCard)   
         {
             List<TileButton> meld = new List<TileButton>();
             for (int i = 0; i < tiles_sequence.Count(); i++) // inserting the melds of the upper board
@@ -307,6 +309,12 @@ namespace rummikubGame
             }
             if (meld.Count != 0)
                 melds.Add(meld);
+
+            if (meld.Count == 1)
+            {
+                hasMeldOfSingleCard = true;
+                return;
+            }
         }
 
         public void ArrangeCardsOnBoard(List<TileButton> sorted_cards)
