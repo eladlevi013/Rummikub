@@ -6,7 +6,23 @@ using System.Threading.Tasks;
 
 namespace rummikubGame
 {
-    internal class ComputerPlayer
+    public class ComputerPlayer
     {
+        public Tile[] tiles;
+
+        public ComputerPlayer()
+        {
+            
+        }
+
+        public void play()
+        {
+
+        }
+
+        public void firstArrange()
+        {
+
+        }
     }
 }

@@ -11,6 +11,9 @@ namespace rummikubGame
     public class Board
     {
         public static int TAG_NUMBER = 0; // every card has tag that indicates the index on the dictionary
+        private Slot[,] TileButton_slot;  // 2d array of the slots of the cards
+        private Dictionary<int, TileButton> TileButtons; // dictionary of the tiles<index(tag), TileButton(class)>
+        public static bool tookCard = false;
 
         // const values
         const int STARTING_X_LOCATION = 70;
@@ -18,10 +21,6 @@ namespace rummikubGame
         const int X_SPACE_BETWEEN_TileButtonS = 85;
         const int Y_SPACE_BETWEEN_TileButtonS = 115;
         const int DROPPED_CARD_LOCATION = -1; // when the card is no longer in board
-
-        public Slot[,] TileButton_slot;  // 2d array of the slots of the cards
-        public Dictionary<int, TileButton> TileButtons; // dictionary of the tiles<index(tag), TileButton(class)>
-        public static bool tookCard = false;
 
         public Slot[,] getTileButton_slot()
         {
@@ -38,7 +37,6 @@ namespace rummikubGame
             // Generating the slots
             int x_location = STARTING_X_LOCATION;
             int y_location = STARTING_Y_LOCATION;
-
             TileButton_slot = new Slot[2, 10];
 
             for (int i = 0; i < 2; i++)
@@ -150,6 +148,7 @@ namespace rummikubGame
         {
             ((Button)sender).BackgroundImage = Image.FromFile("tile.png"); // in order to make the tile normal after hovering over the card
         }
+
         private float getDistance(Button moving_card, Button empty_slot)
         {
             // used to find the closet slot to a card
@@ -173,6 +172,7 @@ namespace rummikubGame
                     // after we dropped a card, it is the end of the turn
                     tookCard = false;
                     GameTable.current_turn = GameTable.COMPUTER_PLAYER_TURN;
+                    GameTable.ComputerPlayer.play();
                 }
                 // otherwise we would like to search the first empty slot to put in the TileButton
                 else
@@ -231,13 +231,13 @@ namespace rummikubGame
                     TileButtons[(int)current_card.Tag].setLocation(updated_TileButton_location);
                 }
             }
-            if (checkWinner() == true)
+            if (checkWinner_humanPlayer() == true)
             {
                 MessageBox.Show("You Won!");
             }
         }
 
-        public bool checkWinner()
+        public bool checkWinner_humanPlayer()
         {
             List<TileButton> topBoard_tiles = new List<TileButton>();
             List<TileButton> bottomBoard_tiles = new List<TileButton>();
@@ -261,54 +261,23 @@ namespace rummikubGame
             getSequencesFromTileList(topBoard_tiles, melds);
             getSequencesFromTileList(bottomBoard_tiles, melds);
 
-            // now var-melds has all the melds
-            // if all the melds in the list are fine, the user won
-            for (int i = 0; i < melds.Count(); i++)
+            List<List<Tile>> converted_melds_computer_format = new List<List<Tile>>();
+            for(int i=0; i<melds.Count(); i++)
             {
-                if (!isLegalMeld(melds[i]))
-                {
-                    return false;
-                }
+                converted_melds_computer_format.Add(convertTilesButtonListToComputerFormat(melds[i]));
             }
-            return true;
+
+            return GameTable.checkWinner(converted_melds_computer_format);
         }
 
-        private static bool isLegalMeld(List<TileButton> meld)
+        private static List<Tile> convertTilesButtonListToComputerFormat(List<TileButton> tiles)
         {
-            /*
-             Legal meld, can be:
-                - group(same number - different colors)
-                - run(same color - different numbers(accending order))
-             */
-
-            if (meld.Count() < 3)
-                return false;
-
-            bool isRun = true;
-            int color = meld[0].getColor();
-            int value = meld[0].getNumber();
-
-            for (int i = 1; i < meld.Count(); i++)
+            List<Tile> new_tiles_format = new List<Tile>();
+            for(int i=0; i<tiles.Count(); i++)
             {
-                if (meld[i].getNumber() != value + i || meld[i].getColor() != color)
-                {
-                    isRun = false; break;
-                }
+                new_tiles_format.Add(tiles[i]);
             }
-            if (isRun) return true;
-            if (meld.Count() > 4) return false;
-
-            for (int i = 0; i < meld.Count() - 1; i++)
-            {
-                if (meld[i + 1].getNumber() != value)
-                    return false;
-                for (int j = i + 1; j < meld.Count(); j++)
-                {
-                    if (meld[i].getColor() == meld[j].getColor())
-                        return false;
-                }
-            }
-            return true;
+            return new_tiles_format;
         }
 
         private static void getSequencesFromTileList(List<TileButton> tiles_sequence, List<List<TileButton>> melds)

@@ -16,13 +16,15 @@ namespace rummikubGame
     public partial class GameTable : Form
     {
         // consts
-        public static int COMPUTER_PLAYER_TURN = 0;
-        public static int HUMAN_PLAYER_TURN = 1;
+        public const int COMPUTER_PLAYER_TURN = 0;
+        public const int HUMAN_PLAYER_TURN = 1;
 
         public static Form GameTableContext; // used in order to add buttons from other classes
         public static Pool pool; // the pool of cards
         public static Button dropped_tiles; // dropped_tiles button, used in the mouseUp
-        public HumanPlayer humanPlayer; // player
+
+        public HumanPlayer humanPlayer; // human-player
+        public static ComputerPlayer ComputerPlayer; // computer-player
         public static int current_turn;
 
         public GameTable()
@@ -38,6 +40,7 @@ namespace rummikubGame
             // Generate pool cards
             pool = new Pool(); // create pool object
             humanPlayer = new HumanPlayer("Player Default Name"); // create the humanPlayer object
+            ComputerPlayer = new ComputerPlayer();
 
             // change the style of the drop_TileButtons_location
             dropped_tiles_btn.FlatStyle = FlatStyle.Flat;
@@ -81,6 +84,58 @@ namespace rummikubGame
         private void updatePoolSizeText()
         {
             current_pool_size.Text = pool.getPoolSize() + " tiles in pool"; // updates the current tiles in the queue
+        }
+
+        public static bool checkWinner(List<List<Tile>> melds) 
+        {
+            // now var-melds has all the melds
+            // if all the melds in the list are fine, the user won
+            for (int i = 0; i < melds.Count(); i++)
+            {
+                if (!GameTable.isLegalMeld(melds[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static bool isLegalMeld(List<Tile> meld)
+        {
+            /*
+             Legal meld, can be:
+                - group(same number - different colors)
+                - run(same color - different numbers(accending order))
+             */
+
+            if (meld.Count() < 3)
+                return false;
+
+            bool isRun = true;
+            int color = meld[0].getColor();
+            int value = meld[0].getNumber();
+
+            for (int i = 1; i < meld.Count(); i++)
+            {
+                if (meld[i].getNumber() != value + i || meld[i].getColor() != color)
+                {
+                    isRun = false; break;
+                }
+            }
+            if (isRun) return true;
+            if (meld.Count() > 4) return false;
+
+            for (int i = 0; i < meld.Count() - 1; i++)
+            {
+                if (meld[i + 1].getNumber() != value)
+                    return false;
+                for (int j = i + 1; j < meld.Count(); j++)
+                {
+                    if (meld[i].getColor() == meld[j].getColor())
+                        return false;
+                }
+            }
+            return true;
         }
 
         private void pool_btn_Click(object sender, EventArgs e)
