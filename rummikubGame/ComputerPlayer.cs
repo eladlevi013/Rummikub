@@ -3,16 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace rummikubGame
 {
     public class ComputerPlayer
     {
-        public Tile[] tiles;
+        public List<Tile> tiles;
+        public List<Tile> hand;
 
         public ComputerPlayer()
         {
-            
+            tiles = new List<Tile>();
+            hand = new List<Tile>();
+
+            for (int i=0; i < 8; i++)
+            {
+                tiles.Add(GameTable.pool.getTile());
+            }
+            tiles.Add(new Tile(0, 2));
+            tiles.Add(new Tile(1, 2));
+            tiles.Add(new Tile(2, 2));
+            tiles.Add(new Tile(3, 2));
+
+            tiles = tiles.OrderBy(card => card.getNumber()).ToList();
+            firstArrange();
         }
 
         public void play()
@@ -22,7 +37,99 @@ namespace rummikubGame
 
         public void firstArrange()
         {
+            List<List<Tile>> legalSets = new List<List<Tile>>();
+            legalSets.Add(new List<Tile>());
 
+            bool best_sets_number_found = false;
+            List<List<Tile>> result = null;
+
+            // we would like to stay with the most melds
+            for (int i = 4; i >= 1 && !best_sets_number_found; i--)
+            {
+                result = meldsSets(tiles, legalSets, 0, 0, i);
+            }
+
+            // add to hand
+            for(int i=0; i<tiles.Count(); i++)
+            {
+                if (tiles[i] != null)
+                    hand.Add(tiles[i]);
+            }
+
+            List<List<Tile>> test = extendSets(0, result);
+        }
+
+        /*
+         Create a set class, which contains the data of what type the set is(Group, Run)
+         for group we dont need to check the two of the ways to arrange
+         */
+        public List<List<Tile>> extendSets(int indexOfHandTile, List<List<Tile>> sequences)
+        {
+            if (indexOfHandTile >= hand.Count())
+                return sequences;
+
+            for(int i=0; i<sequences.Count(); i++)
+            {
+                List<Tile> tempSequenceAddRight = sequences[i].Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
+                tempSequenceAddRight.Add(hand[indexOfHandTile]);
+                if (GameTable.isLegalMeld(tempSequenceAddRight) == true) {
+                    sequences[i] = tempSequenceAddRight;
+                }
+
+                List<Tile> tempSequenceAddLeft = sequences[i].Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
+                tempSequenceAddLeft.Insert(0, hand[indexOfHandTile]);
+                if (GameTable.isLegalMeld(tempSequenceAddLeft) == true)
+                {
+                    sequences[i] = tempSequenceAddLeft;
+                }
+            }
+
+            return extendSets(indexOfHandTile + 1, sequences);
+        }
+
+        public List<List<Tile>> meldsSets(List<Tile> tiles, List<List<Tile>> sets, int meldStart, int checkFrom, int maxSets)
+        {
+            List<Tile> currSet = sets[sets.Count() - 1];
+            if (GameTable.isLegalMeld(currSet))
+            {
+                if (sets.Count() >= maxSets)
+                    return sets;
+                sets.Add(new List<Tile>());
+                List<List<Tile>> result = meldsSets(tiles, sets, meldStart + 1, meldStart + 1, maxSets);
+                if (result == null)
+                {
+
+                    sets.RemoveAt(sets.Count() - 1);
+                }
+                else
+                {
+                    return result;
+                }
+            }
+            if (GameTable.canBeLegal(currSet))
+            {
+                for (int i = checkFrom; i < tiles.Count(); i++)
+                {
+                    Tile t = tiles[i];
+
+                    // && !t.isJoker()
+                    if (t != null)
+                    {
+                        tiles[i] = null;
+                        currSet.Add(t);
+                        List<List<Tile>> result = meldsSets(tiles, sets, meldStart, i + 1, maxSets);
+                        if (result == null)
+                        {
+                            currSet.RemoveAt(currSet.Count() - 1);
+                            tiles[i] = t;
+                            meldStart++;
+                        }
+                        else
+                            return result;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

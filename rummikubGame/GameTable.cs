@@ -134,6 +134,24 @@ namespace rummikubGame
             return true;
         }
 
+        // 
+        public static bool canBeLegal(List<Tile> set)
+        {
+            if (set.Count() < 2)
+                return true;
+            if (set.Count() == 2)
+            {
+                Tile t1 = set[0];
+                Tile t2 = set[1];
+                if (t1.getNumber() + 1 == t2.getNumber() && t1.getColor() == t2.getColor())
+                    return true;
+                if (t1.getNumber() == t2.getNumber() && t1.getColor() != t2.getColor())
+                    return true;
+                return false;
+            }
+            return isLegalMeld(set);
+        }
+
         private void pool_btn_Click(object sender, EventArgs e)
         {
             // generate a card to the last-empty place in the board
@@ -148,7 +166,7 @@ namespace rummikubGame
                         humanPlayer.board.GenerateNewTile_byClickingPool(location_arr);
                         found_last_empty_location = true;
                         updatePoolSizeText();
-                        Board.TAG_NUMBER++;
+                        GraphicalBoard.TAG_NUMBER++;
                     }
 
                 }

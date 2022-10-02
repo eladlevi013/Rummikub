@@ -13,6 +13,11 @@ namespace rummikubGame
         protected int color;
         protected int number;
 
+        public Tile Clone(int color, int number)
+        {
+            return new Tile(color, number);
+        }
+
         public Tile(int color, int number)
         {
             this.color = color;

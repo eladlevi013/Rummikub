@@ -8,11 +8,11 @@ using System.Windows.Forms;
 
 namespace rummikubGame
 {
-    public class Board
+    public class GraphicalBoard
     {
         public static int TAG_NUMBER = 0; // every card has tag that indicates the index on the dictionary
-        private Slot[,] TileButton_slot;  // 2d array of the slots of the cards
-        private Dictionary<int, TileButton> TileButtons; // dictionary of the tiles<index(tag), TileButton(class)>
+        public Slot[,] TileButton_slot;  // 2d-array of the slots of the cards
+        public Dictionary<int, TileButton> TileButtons; // dictionary of the tiles<index(tag), TileButton(class)>
         public static bool tookCard = false;
 
         // const values
@@ -33,7 +33,7 @@ namespace rummikubGame
             return TileButtons;
         }
 
-        public Board()
+        public GraphicalBoard()
         {
             // Generating the slots
             int x_location = STARTING_X_LOCATION;
