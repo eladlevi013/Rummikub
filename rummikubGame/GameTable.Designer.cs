@@ -39,6 +39,8 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SortByValue_btn = new System.Windows.Forms.Button();
             this.SortByColor_btn = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // board_panel
@@ -56,7 +58,7 @@
             this.dropped_tiles_btn.BackColor = System.Drawing.Color.Wheat;
             this.dropped_tiles_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dropped_tiles_btn.BackgroundImage")));
             this.dropped_tiles_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.dropped_tiles_btn.Location = new System.Drawing.Point(416, 94);
+            this.dropped_tiles_btn.Location = new System.Drawing.Point(416, 126);
             this.dropped_tiles_btn.Name = "dropped_tiles_btn";
             this.dropped_tiles_btn.Size = new System.Drawing.Size(98, 135);
             this.dropped_tiles_btn.TabIndex = 3;
@@ -67,7 +69,7 @@
             this.pool_btn.BackColor = System.Drawing.Color.Wheat;
             this.pool_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pool_btn.BackgroundImage")));
             this.pool_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pool_btn.Location = new System.Drawing.Point(748, 94);
+            this.pool_btn.Location = new System.Drawing.Point(748, 126);
             this.pool_btn.Name = "pool_btn";
             this.pool_btn.Size = new System.Drawing.Size(102, 135);
             this.pool_btn.TabIndex = 4;
@@ -78,7 +80,7 @@
             // 
             this.current_pool_size.AutoSize = true;
             this.current_pool_size.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.current_pool_size.Location = new System.Drawing.Point(760, 236);
+            this.current_pool_size.Location = new System.Drawing.Point(760, 268);
             this.current_pool_size.Name = "current_pool_size";
             this.current_pool_size.Size = new System.Drawing.Size(67, 13);
             this.current_pool_size.TabIndex = 5;
@@ -126,12 +128,36 @@
             this.SortByColor_btn.UseVisualStyleBackColor = false;
             this.SortByColor_btn.Click += new System.EventHandler(this.SortByColor_btn_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.label1.Location = new System.Drawing.Point(11, 104);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(112, 24);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Sequences:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.label2.Location = new System.Drawing.Point(12, 13);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(61, 24);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "Hand:";
+            // 
             // GameTable
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(978, 641);
+            this.BackColor = System.Drawing.Color.Green;
+            this.ClientSize = new System.Drawing.Size(973, 641);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.SortByValue_btn);
             this.Controls.Add(this.SortByColor_btn);
             this.Controls.Add(this.data_indicator_2);
@@ -160,6 +186,8 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button SortByValue_btn;
         private System.Windows.Forms.Button SortByColor_btn;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
 

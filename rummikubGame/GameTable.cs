@@ -32,6 +32,66 @@ namespace rummikubGame
             InitializeComponent();
         }
 
+        public void drawSingleComputerCard(Tile tile, Point point)
+        {
+            Button tileButton = new Button();
+            tileButton.Size = new Size(35, 40);
+            tileButton.BackgroundImage = Image.FromFile("Tile.png");
+            tileButton.BackgroundImageLayout = ImageLayout.Stretch;
+            tileButton.Draggable(true); // usage of the extension
+            tileButton.FlatStyle = FlatStyle.Flat;
+            tileButton.FlatAppearance.BorderSize = 0;
+            tileButton.Text = tile.getNumber().ToString();
+            tileButton.Location = point;
+
+            if (tile.getColor() == 0)
+                tileButton.ForeColor = (Color.Blue);
+            else if (tile.getColor() == 1)
+                tileButton.ForeColor = (Color.Black);
+            else if (tile.getColor() == 2)
+                tileButton.ForeColor = (Color.Yellow);
+            else
+                tileButton.ForeColor = (Color.Red);
+
+            tileButton.Font = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
+            GameTable.GameTableContext.Controls.Add(tileButton);
+            tileButton.BringToFront();
+        }
+
+        public void showComputerCards()
+        {
+            int starting_x_computer_tiles = 10;
+            int starting_y_computer_tiles = 50;
+
+            for(int i=0; i<ComputerPlayer.hand.Count(); i++)
+            {
+                Point tile_location = new Point(starting_x_computer_tiles, starting_y_computer_tiles);
+                if (ComputerPlayer.hand[i] != null)
+                {
+                    drawSingleComputerCard(ComputerPlayer.hand[i], tile_location);
+                    starting_x_computer_tiles += 40;
+                }
+            }
+
+            starting_x_computer_tiles = 10;
+            starting_y_computer_tiles = 140;
+            if (ComputerPlayer.extendedSets != null)
+            {
+                for (int i = 0; i < ComputerPlayer.extendedSets.Count(); i++)
+                {
+                    for (int j = 0; j < ComputerPlayer.extendedSets[i].Count(); j++)
+                    {
+                        Point tile_location = new Point(starting_x_computer_tiles, starting_y_computer_tiles);
+                        drawSingleComputerCard(ComputerPlayer.extendedSets[i][j], tile_location);
+                        starting_x_computer_tiles += 40;
+                    }
+                    starting_x_computer_tiles = 10;
+                    starting_y_computer_tiles += 50;
+                }
+            }
+        }
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
             GameTableContext = this; // updates the gameTable context
@@ -41,6 +101,7 @@ namespace rummikubGame
             pool = new Pool(); // create pool object
             humanPlayer = new HumanPlayer("Player Default Name"); // create the humanPlayer object
             ComputerPlayer = new ComputerPlayer();
+            showComputerCards();    
 
             /* Graphical Changes */
             // change the style of the drop_TileButtons_location
@@ -75,6 +136,10 @@ namespace rummikubGame
                 current_turn = HUMAN_PLAYER_TURN;
             */
             current_turn = HUMAN_PLAYER_TURN; // CHEAT
+
+            // delete
+            data_indicator.Visible = false;
+            data_indicator_2.Visible = false;
         }
 
         private void updatePoolSizeText()

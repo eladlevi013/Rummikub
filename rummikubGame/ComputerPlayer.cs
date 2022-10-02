@@ -11,23 +11,12 @@ namespace rummikubGame
     {
         public List<Tile> tiles;
         public List<Tile> hand;
+        public List<List<Tile>> extendedSets;
 
         public ComputerPlayer()
         {
             tiles = new List<Tile>();
             hand = new List<Tile>();
-
-
-            tiles.Add(new Tile(0, 4));
-            tiles.Add(new Tile(1, 4));
-            tiles.Add(new Tile(2, 4));
-
-            tiles.Add(new Tile(3, 1));
-            tiles.Add(new Tile(3, 2));
-            tiles.Add(new Tile(3, 3));
-
-            tiles.Add(new Tile(3, 4));
-            tiles.Add(new Tile(3, 5));
 
             // DELETE
             int AFTER_WE_DESTROYED_RANDOMNESS = tiles.Count();
@@ -65,8 +54,7 @@ namespace rummikubGame
                 if (tiles[i] != null)
                     hand.Add(tiles[i]);
             }
-
-            List<List<Tile>> extendedSets;
+;
             // makes sure to pick the best extended sequences
             if (result != null)
             {
@@ -81,7 +69,6 @@ namespace rummikubGame
                     }
                 }
             }
-            MessageBox.Show("!@#!@#!#");
         }
 
         public List<List<Tile>> CloneSets(List<List<Tile>> sets)
@@ -143,7 +130,6 @@ namespace rummikubGame
                     }
                 }
             }
-
             return extendSets(indexOfHandTile + 1, sequences, number_of_tiles_in_set);
         }
 
