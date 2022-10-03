@@ -9,12 +9,12 @@ namespace rummikubGame
     public class HumanPlayer
     {
         public string player_name;
-        public GraphicalBoard board;
+        public PlayerBoard board;
 
         public HumanPlayer(string player_name)
         {
             this.player_name = player_name;
-            board = new GraphicalBoard();
+            board = new PlayerBoard();
         }
 
         public string getPlayerName()

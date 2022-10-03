@@ -12,6 +12,7 @@ namespace rummikubGame
         public List<Tile> tiles;
         public List<Tile> hand;
         public List<List<Tile>> extendedSets;
+        public ComputerBoard board;
 
         public ComputerPlayer()
         {
@@ -27,6 +28,7 @@ namespace rummikubGame
 
             tiles = tiles.OrderBy(card => card.getNumber()).ToList();
             firstArrange();
+            board = new ComputerBoard(hand, extendedSets);
         }
 
         public void play()
