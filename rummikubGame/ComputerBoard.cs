@@ -40,8 +40,8 @@ namespace rummikubGame
 
         public void generateBoard()
         {
-            int starting_x_computer_tiles = 10;
-            int starting_y_computer_tiles = 50;
+            int starting_x_computer_tiles = 50;
+            int starting_y_computer_tiles = 80;
 
             for (int i = 0; i < hand.Count(); i++)
             {
@@ -53,8 +53,8 @@ namespace rummikubGame
                 }
             }
 
-            starting_x_computer_tiles = 10;
-            starting_y_computer_tiles = 140;
+            starting_x_computer_tiles = 50;
+            starting_y_computer_tiles = 170;
             if (sequences != null)
             {
                 for (int i = 0; i < sequences.Count(); i++)
@@ -65,7 +65,7 @@ namespace rummikubGame
                         drawSingleComputerCard(sequences[i][j], tile_location);
                         starting_x_computer_tiles += 40;
                     }
-                    starting_x_computer_tiles = 10;
+                    starting_x_computer_tiles = 50;
                     starting_y_computer_tiles += 50;
                 }
             }

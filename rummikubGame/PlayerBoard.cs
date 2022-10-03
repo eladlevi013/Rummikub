@@ -17,7 +17,7 @@ namespace rummikubGame
 
         // const values
         const int STARTING_X_LOCATION = 70;
-        const int STARTING_Y_LOCATION = 345;
+        const int STARTING_Y_LOCATION = 385;
         const int X_SPACE_BETWEEN_TileButtonS = 85;
         const int Y_SPACE_BETWEEN_TileButtonS = 115;
         const int DROPPED_CARD_LOCATION = -1; // when the card is no longer in board

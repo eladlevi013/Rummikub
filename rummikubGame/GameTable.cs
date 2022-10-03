@@ -209,12 +209,5 @@ namespace rummikubGame
             sorted_cards = sorted_cards.OrderBy(card => card.getColor()).ToList();
             humanPlayer.board.ArrangeCardsOnBoard(sorted_cards);
         }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            ComputerPlayer.board.deleteCards();
-            // ComputerPlayer.board.generateBoard();
-            ComputerPlayer = new ComputerPlayer();
-        }
     }
 }
