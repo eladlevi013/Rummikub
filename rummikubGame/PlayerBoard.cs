@@ -123,6 +123,12 @@ namespace rummikubGame
                     current_card.Draggable(false);
                     int[] current_location = {DROPPED_CARD_LOCATION, DROPPED_CARD_LOCATION};
                     TileButtons[(int)current_card.Tag].setLocation(current_location);
+
+                    // add the dropped card to stack
+                    Tile dropped_card = new Tile(TileButtons[(int)current_card.Tag].getColor(), TileButtons[(int)current_card.Tag].getNumber());
+                    GameTable.dropped_tiles_stack.Push(dropped_card);
+
+                    // remove the tiles button
                     TileButtons.Remove((int)current_card.Tag);
 
                     // after we dropped a card, it is the end of the turn

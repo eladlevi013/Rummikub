@@ -29,6 +29,8 @@ namespace rummikubGame
         public static ComputerPlayer ComputerPlayer; // computer-player
         public static int current_turn;
 
+        public static Stack<Tile> dropped_tiles_stack;
+
         public GameTable()
         {
             InitializeComponent();
@@ -36,6 +38,7 @@ namespace rummikubGame
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            dropped_tiles_stack = new Stack<Tile>();
             current_pool_size_label = current_pool_size;
             GameTableContext = this; // updates the gameTable context
             dropped_tiles = dropped_tiles_btn; // updates the dropped_tiles variable, so it'll be accessed outside that class
@@ -210,6 +213,7 @@ namespace rummikubGame
         private void button1_Click(object sender, EventArgs e)
         {
             ComputerPlayer.board.deleteCards();
+            // ComputerPlayer.board.generateBoard();
             ComputerPlayer = new ComputerPlayer();
         }
     }

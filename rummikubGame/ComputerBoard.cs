@@ -20,6 +20,16 @@ namespace rummikubGame
             throw new NotImplementedException();
         }
 
+        public void setHand(List<Tile> updated_hand)
+        {
+            this.hand = updated_hand;
+        }
+
+        public void setSequences(List<List<Tile>> updated_sequences)
+        {
+            this.sequences = updated_sequences;
+        }
+
         public ComputerBoard(List<Tile> hand, List<List<Tile>> sequences)
         {
             this.hand = hand;
