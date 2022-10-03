@@ -19,14 +19,23 @@ namespace rummikubGame
             tiles = new List<Tile>();
             hand = new List<Tile>();
 
-            tiles.Add(new Tile(1, 9));
-            tiles.Add(new Tile(1, 10));
-            tiles.Add(new Tile(1, 11));
-            tiles.Add(new Tile(1, 12));
+            //tiles.Add(new Tile(1, 9));
+            //tiles.Add(new Tile(1, 10));
+            //tiles.Add(new Tile(1, 11));
+            //tiles.Add(new Tile(1, 12));
 
-            tiles.Add(new Tile(3, 3));
-            tiles.Add(new Tile(3, 4));
-            tiles.Add(new Tile(3, 5));
+            //tiles.Add(new Tile(3, 3));
+            //tiles.Add(new Tile(3, 4));
+            //tiles.Add(new Tile(3, 5));
+            //tiles.Add(new Tile(3, 6));
+
+            //tiles.Add(new Tile(2, 3));
+            //tiles.Add(new Tile(2, 4));
+            //tiles.Add(new Tile(2, 5));
+
+            //tiles.Add(new Tile(0, 3));
+            //tiles.Add(new Tile(0, 4));
+            //tiles.Add(new Tile(0, 5));
 
             // DELETE
             int AFTER_WE_DESTROYED_RANDOMNESS = tiles.Count();
@@ -128,7 +137,9 @@ namespace rummikubGame
             board.setSequences(extendedSets);
             GameTable.current_turn = GameTable.HUMAN_PLAYER_TURN;
             GameTable.ComputerPlayer.board.deleteCards();
-            GameTable.ComputerPlayer.board.generateBoard();
+
+            if (GameTable.showComputerTilesGroupbox.Checked == true)
+                GameTable.ComputerPlayer.board.generateBoard();
         }
 
         public void firstArrange()

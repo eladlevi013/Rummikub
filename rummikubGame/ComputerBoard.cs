@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,8 @@ namespace rummikubGame
             this.hand = hand;
             this.sequences = sequences;
             drawn_computer_cards = new List<Button>();
-            generateBoard();
+            if(GameTable.showComputerTilesGroupbox.Checked == true)
+                generateBoard();
         }
 
         public void generateBoard()
@@ -65,7 +67,16 @@ namespace rummikubGame
                         drawSingleComputerCard(sequences[i][j], tile_location);
                         starting_x_computer_tiles += 40;
                     }
-                    starting_x_computer_tiles = 50;
+
+                    if (i == 2)
+                    {
+                        starting_x_computer_tiles = 250;
+                        starting_y_computer_tiles = 120;
+                    }
+                    else
+                    {
+                        starting_x_computer_tiles = 50;
+                    }
                     starting_y_computer_tiles += 50;
                 }
             }

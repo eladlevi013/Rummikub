@@ -29,6 +29,7 @@ namespace rummikubGame
         public static ComputerPlayer ComputerPlayer; // computer-player
         public static int current_turn;
 
+        public static CheckBox showComputerTilesGroupbox;
         public static Stack<Tile> dropped_tiles_stack;
 
         public GameTable()
@@ -38,6 +39,7 @@ namespace rummikubGame
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            showComputerTilesGroupbox = show_computer_tiles_checkbox;
             dropped_tiles_stack = new Stack<Tile>();
             current_pool_size_label = current_pool_size;
             GameTableContext = this; // updates the gameTable context
@@ -208,6 +210,21 @@ namespace rummikubGame
             List<TileButton> sorted_cards = humanPlayer.board.getTilesDictionary().Values.ToList();
             sorted_cards = sorted_cards.OrderBy(card => card.getColor()).ToList();
             humanPlayer.board.ArrangeCardsOnBoard(sorted_cards);
+        }
+
+        private void show_computer_tiles_checkbox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (show_computer_tiles_checkbox.Checked == false)
+            {
+                computerTiles_groupbox.Visible = false;
+                ComputerPlayer.board.deleteCards();
+            }
+            else
+            {
+                computerTiles_groupbox.Visible = true;
+                ComputerPlayer.board.generateBoard();
+            }
+
         }
     }
 }
