@@ -19,18 +19,23 @@ namespace rummikubGame
         // consts
         public const int COMPUTER_PLAYER_TURN = 0;
         public const int HUMAN_PLAYER_TURN = 1;
+        public const int RUMMIKUB_TILES_IN_GAME = 14;
+        public const int MAX_POSSIBLE_SEQUENCES_NUMBER = 4;
+        public const int DROPPED_TILE_LOCATION = -1;
 
+        // players
+        public static HumanPlayer humanPlayer; // human-player
+        public static ComputerPlayer ComputerPlayer; // computer-player
+
+        public static Label game_indicator;
         public static Label current_pool_size_label;
         public static Form GameTableContext; // used in order to add buttons from other classes
         public static Pool pool; // the pool of cards
         public static Button dropped_tiles; // dropped_tiles button, used in the mouseUp
-
-        public HumanPlayer humanPlayer; // human-player
-        public static ComputerPlayer ComputerPlayer; // computer-player
-        public static int current_turn;
-
-        public static CheckBox showComputerTilesGroupbox;
-        public static Stack<Tile> dropped_tiles_stack;
+        public static int current_turn; // indicates who should play now
+        public static bool game_over = false; // game is running or over
+        public static CheckBox showComputerTilesGroupbox; // groupBox show computer tiles
+        public static Stack<TileButton> dropped_tiles_stack; // the stack of dropped cards
 
         public GameTable()
         {
@@ -39,8 +44,9 @@ namespace rummikubGame
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            computerTiles_groupbox.BackColor = System.Drawing.ColorTranslator.FromHtml("#454691");
             showComputerTilesGroupbox = show_computer_tiles_checkbox;
-            dropped_tiles_stack = new Stack<Tile>();
+            dropped_tiles_stack = new Stack<TileButton>();
             current_pool_size_label = current_pool_size;
             GameTableContext = this; // updates the gameTable context
             dropped_tiles = dropped_tiles_btn; // updates the dropped_tiles variable, so it'll be accessed outside that class
@@ -72,16 +78,20 @@ namespace rummikubGame
             board_panel.SendToBack();
             developerData();
 
+            game_indicator = game_indicator_lbl;
             // the current turn
-            /*
             Random rnd = new Random();
-            int current_turn = rnd.Next(2);
+            current_turn = rnd.Next(0, 2);
             if (current_turn == COMPUTER_PLAYER_TURN)
-                current_turn = COMPUTER_PLAYER_TURN;
+            {
+                ComputerPlayer.play(null);
+                game_indicator_lbl.Text = "Computer's turn";
+            }
             else
-                current_turn = HUMAN_PLAYER_TURN;
-            */
-            current_turn = HUMAN_PLAYER_TURN; // CHEAT
+            {
+                game_indicator_lbl.Text = "Your turn";
+            }
+            current_turn = HUMAN_PLAYER_TURN;
 
             // delete
             data_indicator.Visible = false;

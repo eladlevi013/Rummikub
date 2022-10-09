@@ -43,6 +43,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.computerTiles_groupbox = new System.Windows.Forms.GroupBox();
             this.show_computer_tiles_checkbox = new System.Windows.Forms.CheckBox();
+            this.game_indicator_lbl = new System.Windows.Forms.Label();
             this.computerTiles_groupbox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -61,7 +62,7 @@
             this.dropped_tiles_btn.BackColor = System.Drawing.Color.Wheat;
             this.dropped_tiles_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dropped_tiles_btn.BackgroundImage")));
             this.dropped_tiles_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.dropped_tiles_btn.Location = new System.Drawing.Point(662, 126);
+            this.dropped_tiles_btn.Location = new System.Drawing.Point(669, 126);
             this.dropped_tiles_btn.Name = "dropped_tiles_btn";
             this.dropped_tiles_btn.Size = new System.Drawing.Size(98, 135);
             this.dropped_tiles_btn.TabIndex = 3;
@@ -162,7 +163,7 @@
             this.computerTiles_groupbox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.computerTiles_groupbox.Location = new System.Drawing.Point(30, 24);
             this.computerTiles_groupbox.Name = "computerTiles_groupbox";
-            this.computerTiles_groupbox.Size = new System.Drawing.Size(585, 304);
+            this.computerTiles_groupbox.Size = new System.Drawing.Size(589, 304);
             this.computerTiles_groupbox.TabIndex = 12;
             this.computerTiles_groupbox.TabStop = false;
             // 
@@ -179,12 +180,24 @@
             this.show_computer_tiles_checkbox.UseVisualStyleBackColor = true;
             this.show_computer_tiles_checkbox.CheckedChanged += new System.EventHandler(this.show_computer_tiles_checkbox_CheckedChanged);
             // 
+            // game_indicator_lbl
+            // 
+            this.game_indicator_lbl.AutoSize = true;
+            this.game_indicator_lbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.game_indicator_lbl.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.game_indicator_lbl.Location = new System.Drawing.Point(716, 47);
+            this.game_indicator_lbl.Name = "game_indicator_lbl";
+            this.game_indicator_lbl.Size = new System.Drawing.Size(157, 25);
+            this.game_indicator_lbl.TabIndex = 13;
+            this.game_indicator_lbl.Text = "Game Indicator";
+            // 
             // GameTable
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.RoyalBlue;
             this.ClientSize = new System.Drawing.Size(976, 695);
+            this.Controls.Add(this.game_indicator_lbl);
             this.Controls.Add(this.show_computer_tiles_checkbox);
             this.Controls.Add(this.SortByValue_btn);
             this.Controls.Add(this.SortByColor_btn);
@@ -221,6 +234,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox computerTiles_groupbox;
         private System.Windows.Forms.CheckBox show_computer_tiles_checkbox;
+        private System.Windows.Forms.Label game_indicator_lbl;
     }
 }
 

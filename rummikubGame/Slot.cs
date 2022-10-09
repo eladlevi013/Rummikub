@@ -11,7 +11,6 @@ namespace rummikubGame
     {
         private Button slot_button; // the actual button of the slot
         private bool slot_state; // false-empty, true-not empty
-
         public Slot()
         {
             this.slot_state = false;

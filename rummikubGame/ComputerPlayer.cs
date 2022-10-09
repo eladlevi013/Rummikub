@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -19,66 +20,96 @@ namespace rummikubGame
             tiles = new List<Tile>();
             hand = new List<Tile>();
 
-            //tiles.Add(new Tile(1, 9));
-            //tiles.Add(new Tile(1, 10));
-            //tiles.Add(new Tile(1, 11));
-            //tiles.Add(new Tile(1, 12));
-
-            //tiles.Add(new Tile(3, 3));
-            //tiles.Add(new Tile(3, 4));
-            //tiles.Add(new Tile(3, 5));
-            //tiles.Add(new Tile(3, 6));
-
-            //tiles.Add(new Tile(2, 3));
-            //tiles.Add(new Tile(2, 4));
-            //tiles.Add(new Tile(2, 5));
-
-            //tiles.Add(new Tile(0, 3));
-            //tiles.Add(new Tile(0, 4));
-            //tiles.Add(new Tile(0, 5));
-
-            // DELETE
+            // adds the random tiles
             int AFTER_WE_DESTROYED_RANDOMNESS = tiles.Count();
-            for (int i = 0; i < 14 - AFTER_WE_DESTROYED_RANDOMNESS; i++)
-            {
+            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME - AFTER_WE_DESTROYED_RANDOMNESS; i++)
                 tiles.Add(GameTable.pool.getTile());
-            }
 
-
-            // DELETE
-
-            tiles = tiles.OrderBy(card => card.getNumber()).ToList();
-            
+            // first arrange those random tiles in optimal way
             firstArrange();
+
+            // it takes care of the graphical representation of the tiles of the computer
             board = new ComputerBoard(hand, extendedSets);
         }
 
-        public void play()
+        public void firstArrange()
         {
-            // int optimal_solution_score = getNumberOfTilesInAllSets(extendedSets);
+            List<List<Tile>> legalSets = new List<List<Tile>>();
+            legalSets.Add(new List<Tile>());
+
+            // result gonna be with melds of 3
+            bool best_sets_number_found = false; List<List<Tile>> result = null;
+            for (int i = GameTable.MAX_POSSIBLE_SEQUENCES_NUMBER; i >= 1 && !best_sets_number_found; i--)
+            {
+                result = meldsSets(tiles, legalSets, 0, i);
+                if (result == null)
+                {
+                    legalSets = new List<List<Tile>>();
+                    legalSets.Add(new List<Tile>());
+                }
+                else
+                {
+                    best_sets_number_found = true;
+                }
+            }
+
+            // sets the hand(cards that are not in any sequence)
+            for (int i = 0; i < tiles.Count(); i++)
+            {
+                if (tiles[i] != null)
+                    hand.Add(tiles[i]);
+            }
+;
+            // extendedSets function is being called(makes sequences bigger from hand tiles)
+            if (result != null)
+            {
+                bool best_extended_sets_found = false;
+                for (int i = GameTable.RUMMIKUB_TILES_IN_GAME - hand.Count(); i >= 0 && !best_extended_sets_found; i--)
+                {
+                    List<List<Tile>> cloned_result = CloneSets(result);
+                    extendedSets = extendSets(0, cloned_result, i, hand);
+                    if (extendedSets != null)
+                    {
+                        best_extended_sets_found = true;
+                    }
+                }
+            }
+        }
+
+        public bool better_sequences_after_taking_new_tile(Tile to_be_replaced)
+        {
+            bool replced_card_better_result = false;
             List<Tile> optimal_solution_hand = hand;
             List<List<Tile>> optimal_solution_sequences = extendedSets;
-
             List<Tile> temp_tiles = new List<Tile>();
+            Tile optimal_dropped_tile = null;
+
+            /* 
+                filling the temp_tiles list
+            */
             for (int j = 0; j < hand.Count(); j++)
-            {
+            { // adds the hand cards to the temp_tiles list
                 if (hand[j] != null)
                     temp_tiles.Add(hand[j]);
             }
             if (extendedSets != null)
-            {
+            { // adds the tiles in sets to the temp_tiles list
                 for (int j = 0; j < extendedSets.Count(); j++)
                     for (int k = 0; k < extendedSets[j].Count(); k++)
                         temp_tiles.Add(extendedSets[j][k]);
             }
 
-            for (int i=0; i < 14; i++)
+            /*
+            now we'll replace 
+            */
+            for (int i = 0; i < 14; i++)
             {
                 List<List<Tile>> temp_extendedSets = new List<List<Tile>>();
                 List<Tile> temp_hand = new List<Tile>();
                 List<Tile> temp_tiles_copy = temp_tiles.Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
+                Tile dropped_tile = temp_tiles_copy[i];
 
-                temp_tiles_copy[i] = GameTable.dropped_tiles_stack.Peek();
+                temp_tiles_copy[i] = to_be_replaced;
 
                 // basically first arrange
                 List<List<Tile>> legalSets = new List<List<Tile>>();
@@ -90,7 +121,7 @@ namespace rummikubGame
                 // we would like to stay with the most melds
                 for (int j = 4; j >= 1 && !best_sets_number_found; j--)
                 {
-                    result = meldsSets(temp_tiles_copy, legalSets, 0, 0, j);
+                    result = meldsSets(temp_tiles_copy, legalSets, 0, j);
                     if (result == null)
                     {
                         legalSets = new List<List<Tile>>();
@@ -123,60 +154,87 @@ namespace rummikubGame
                 }
 
                 // check if the current situation is better than the optimal
-                if(getNumberOfTilesInAllSets(optimal_solution_sequences) < getNumberOfTilesInAllSets(temp_extendedSets))
+                if (getNumberOfTilesInAllSets(optimal_solution_sequences) < getNumberOfTilesInAllSets(temp_extendedSets))
                 {
                     optimal_solution_sequences = temp_extendedSets;
                     optimal_solution_hand = temp_hand;
+                    replced_card_better_result = true;
+                    optimal_dropped_tile = dropped_tile;
                 }
             }
 
-            extendedSets = optimal_solution_sequences;
-            hand = optimal_solution_hand;
+            if(replced_card_better_result == true)
+            {
+                extendedSets = optimal_solution_sequences;
+                hand = optimal_solution_hand;
 
-            board.setHand(hand);
-            board.setSequences(extendedSets);
+                int[] tile_in_dropped_tiles_location = { -1, -1 };
+                TileButton dropped_tile = new TileButton(optimal_dropped_tile.getColor(), optimal_dropped_tile.getNumber(), tile_in_dropped_tiles_location);
+                GameTable.dropped_tiles_stack.Push(dropped_tile);
+                return true;
+            }
+            return false;
+        }
+
+        public void play(Tile to_be_replaced)
+        {
+            if (to_be_replaced != null && better_sequences_after_taking_new_tile(to_be_replaced) == true) {
+                board.setHand(hand);
+                board.setSequences(extendedSets);
+                GameTable.humanPlayer.board.GenerateComputerThrownTile();
+            }
+            else // didnt find any better option
+            {
+                Random rnd_hand_index = new Random();
+                bool hand_null = true;
+                Tile random_tile_to_drop = null;
+                int random_tile_to_drop_index = 0;
+                while (hand_null)
+                {
+                    random_tile_to_drop_index = rnd_hand_index.Next(hand.Count());
+                    random_tile_to_drop = hand[random_tile_to_drop_index];
+                    if (random_tile_to_drop != null)
+                    {
+                        hand_null = false;
+                    }
+                }
+                hand.RemoveAt(random_tile_to_drop_index);
+
+                int[] tile_in_dropped_tiles_location = { -1, -1 };
+                GameTable.dropped_tiles_stack.Push(new TileButton(random_tile_to_drop.getColor(), random_tile_to_drop.getNumber(), tile_in_dropped_tiles_location));
+
+                GameTable.humanPlayer.board.GenerateComputerThrownTile();
+
+                Tile tile = GameTable.pool.getTile();
+                hand.Add(tile);
+                GameTable.ComputerPlayer.board.generateBoard();
+                // MessageBox.Show(tile.ToString());
+
+                Tile tile_from_pool = tile;
+                if (better_sequences_after_taking_new_tile(tile_from_pool) == true)
+                {
+                    // MessageBox.Show("WORKED - " + tile_from_pool.ToString());
+                    board.setHand(hand);
+                    board.setSequences(extendedSets);
+
+                    GameTable.humanPlayer.board.GenerateComputerThrownTile();
+                }
+            }
             GameTable.current_turn = GameTable.HUMAN_PLAYER_TURN;
+            GameTable.game_indicator.Text = "Your turn";
+            PlayerBoard.tookCard = false;
             GameTable.ComputerPlayer.board.deleteCards();
 
             if (GameTable.showComputerTilesGroupbox.Checked == true)
                 GameTable.ComputerPlayer.board.generateBoard();
-        }
 
-        public void firstArrange()
-        {
-            List<List<Tile>> legalSets = new List<List<Tile>>();
-            legalSets.Add(new List<Tile>());
-
-            bool best_sets_number_found = false;
-            List<List<Tile>> result = null;
-
-            // we would like to stay with the most melds
-            for (int i = 4; i >= 1 && !best_sets_number_found; i--)
+            // if the game is over, and the computer won
+            if (board.checkWinner() == true)
             {
-                result = meldsSets(tiles, legalSets, 0, 0, i);
+                GameTable.humanPlayer.board.disableHumanBoard();
+                GameTable.game_over = true;
             }
 
-            // add to hand
-            for (int i=0; i<tiles.Count(); i++)
-            {
-                if (tiles[i] != null)
-                    hand.Add(tiles[i]);
-            }
-;
-            // makes sure to pick the best extended sequences
-            if (result != null)
-            {
-                bool best_extended_sets_found = false;
-                for (int i = 14 - hand.Count(); i >= 0 && !best_extended_sets_found; i--)
-                {
-                    List<List<Tile>> cloned_result = CloneSets(result);
-                    extendedSets = extendSets(0, cloned_result, i, hand);
-                    if (extendedSets != null)
-                    {
-                        best_extended_sets_found = true;
-                    }
-                }
-            }
         }
 
         public List<List<Tile>> CloneSets(List<List<Tile>> sets)
@@ -244,7 +302,7 @@ namespace rummikubGame
             return extendSets(indexOfHandTile + 1, sequences, number_of_tiles_in_set, hand_tiles);
         }
 
-        public List<List<Tile>> meldsSets(List<Tile> tiles, List<List<Tile>> sets, int meldStart, int checkFrom, int maxSets)
+        public List<List<Tile>> meldsSets(List<Tile> tiles, List<List<Tile>> sets, int meldStart, int maxSets)
         {
             List<Tile> currSet = sets[sets.Count() - 1];
             if (GameTable.isLegalMeld(currSet))
@@ -252,7 +310,7 @@ namespace rummikubGame
                 if (sets.Count() >= maxSets)
                     return sets;
                 sets.Add(new List<Tile>());
-                List<List<Tile>> result = meldsSets(tiles, sets, meldStart + 1, meldStart + 1, maxSets);
+                List<List<Tile>> result = meldsSets(tiles, sets, meldStart + 1, maxSets);
                 if (result == null)
                 {
                     sets.RemoveAt(sets.Count() - 1);
@@ -272,7 +330,7 @@ namespace rummikubGame
                     {
                         tiles[i] = null;
                         currSet.Add(t);
-                        List<List<Tile>> result = meldsSets(tiles, sets, meldStart, i + 1, maxSets);
+                        List<List<Tile>> result = meldsSets(tiles, sets, meldStart, maxSets);
                         if (result == null)
                         {
                             currSet.RemoveAt(currSet.Count() - 1);
