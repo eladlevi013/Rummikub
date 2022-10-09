@@ -43,7 +43,7 @@ namespace rummikubGame
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        {
+        { // This is a test,- to be deleted
             computerTiles_groupbox.BackColor = System.Drawing.ColorTranslator.FromHtml("#454691");
             showComputerTilesGroupbox = show_computer_tiles_checkbox;
             dropped_tiles_stack = new Stack<TileButton>();

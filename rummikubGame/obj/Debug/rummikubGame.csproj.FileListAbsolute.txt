@@ -24,3 +24,15 @@ C:\Users\eladl\OneDrive\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rum
 C:\Users\eladl\OneDrive\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.exe
 C:\Users\eladl\OneDrive\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.pdb
 C:\Users\eladl\OneDrive\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.GameTable.resources
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\bin\Debug\rummikubGame.exe.config
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\bin\Debug\rummikubGame.exe
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\bin\Debug\rummikubGame.pdb
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\bin\Debug\Control.Draggable.dll
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.AssemblyReference.cache
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.GameTable.resources
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.Properties.Resources.resources
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.GenerateResource.cache
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.CoreCompileInputs.cache
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.CopyComplete
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.exe
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.pdb
