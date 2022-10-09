@@ -16,7 +16,7 @@ namespace rummikubGame
         List<Button> drawn_computer_cards;
 
         public bool checkWinner()
-        {
+        { // antoher
             // first we'll find the number of tiles in hand
             int hand_counter = 0;
             for(int hand_index =0; hand_index < hand.Count(); hand_index++)
