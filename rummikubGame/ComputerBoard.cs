@@ -11,12 +11,12 @@ namespace rummikubGame
 {
     public class ComputerBoard : Board
     {
-        List<Tile> hand;
-        List<List<Tile>> sequences;
-        List<Button> drawn_computer_cards;
+        private List<Tile> hand;
+        private List<List<Tile>> sequences;
+        private List<Button> drawn_computer_cards;
 
         public bool checkWinner()
-        { // antoher
+        {
             // first we'll find the number of tiles in hand
             int hand_counter = 0;
             for(int hand_index =0; hand_index < hand.Count(); hand_index++)
@@ -24,12 +24,8 @@ namespace rummikubGame
                 if (hand[hand_index] != null)
                     hand_counter += 1;
             }
-
             if (hand_counter == 0)
-            {
-                MessageBox.Show("Computer Won!");
                 return true;
-            }
             return false;
         }
 

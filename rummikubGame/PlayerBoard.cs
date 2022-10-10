@@ -16,7 +16,7 @@ namespace rummikubGame
         public Dictionary<int, TileButton> TileButtons; // dictionary of the tiles<index(tag), TileButton(class)>
         public static bool tookCard = false;
 
-        // const values
+        // Const values
         const int STARTING_X_LOCATION = 70;
         const int STARTING_Y_LOCATION = 395;
         const int X_SPACE_BETWEEN_TileButtonS = 85;
@@ -40,14 +40,14 @@ namespace rummikubGame
             GameTable.dropped_tiles_stack = new Stack<TileButton>();
         }
 
-        public void GenerateNewTile_byClickingPool(int[] slot_location)
+        public void GenerateNewTileByClickingPool(int[] slot_location)
         {
             if (tookCard == false && GameTable.HUMAN_PLAYER_TURN == GameTable.current_turn && GameTable.game_over == false)
             {
                 GenerateNewTile(slot_location);
-                tookCard = true;
+                tookCard = true; // prevent unlimited tile picking
                 if (GameTable.dropped_tiles_stack != null && GameTable.dropped_tiles_stack.Count() != 0)
-                {
+                { // last tile in stack will not be interactable after we generated another one(which means I chose in my turn to take a card from the pool)
                     GameTable.dropped_tiles_stack.Peek().getTileButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
                     GameTable.dropped_tiles_stack.Peek().getTileButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown);
                     GameTable.dropped_tiles_stack.Peek().getTileButton().Draggable(false);
@@ -58,9 +58,7 @@ namespace rummikubGame
         public void GenerateComputerThrownTile(Tile thrownTile)
         {
             if(GameTable.dropped_tiles_stack.Count() > 1)
-            {
                 GameTable.dropped_tiles_stack.Peek().getTileButton().Draggable(false);
-            }
 
             Tile current_tile_from_pool = thrownTile;
             int[] slot_location = { GameTable.DROPPED_TILE_LOCATION, GameTable.DROPPED_TILE_LOCATION };
@@ -145,10 +143,6 @@ namespace rummikubGame
                     // we are turning it off, because we want to be able to place to the current place if its the closest location
                     TileButton_slot[TileButtons[(int)((Button)sender).Tag].getLocation()[0], TileButtons[(int)((Button)sender).Tag].getLocation()[1]].changeState(false);
                 }
-                else {   // if we took the tile that the other player dropped from the dropped tiles
-                    // tookCard = true;
-                    // MessageBox.Show("Took Card!");
-                }
             }
         }
 
@@ -172,7 +166,7 @@ namespace rummikubGame
         {
             Button current_card = (Button)sender; // the card that we dragged with the mouse
             if (TileButtons.ContainsKey((int)current_card.Tag) || (GameTable.dropped_tiles_stack.Count > 0 && (int)GameTable.dropped_tiles_stack.Peek().getTileButton().Tag == (int)current_card.Tag)) // if the card is in our board
-            {
+            { // this is a test
                 // first, we would like to check if the user wanted to put the TileButton on the drop_TileButton location
                 if (getDistance(current_card, GameTable.dropped_tiles) < 100 && GameTable.current_turn == GameTable.HUMAN_PLAYER_TURN && tookCard == true && TileButtons.ContainsKey((int)current_card.Tag))
                 {

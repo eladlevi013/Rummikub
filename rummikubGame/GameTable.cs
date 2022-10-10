@@ -180,7 +180,7 @@ namespace rummikubGame
                     if (humanPlayer.board.getTileButton_slot()[i, j].getState() == false)
                     {
                         int[] location_arr = { i, j };
-                        humanPlayer.board.GenerateNewTile_byClickingPool(location_arr);
+                        humanPlayer.board.GenerateNewTileByClickingPool(location_arr);
                         found_last_empty_location = true;
                         PlayerBoard.TAG_NUMBER++;
                     }

@@ -186,7 +186,6 @@ namespace rummikubGame
                 GameTable.GameTableContext.Controls.Remove(GameTable.dropped_tiles_stack.Peek().getTileButton());
                 GameTable.dropped_tiles_stack.Push(popped_tile);
                 GameTable.humanPlayer.board.GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
-                MessageBox.Show("!#!#1313131313");
             }
             else // didnt find any better option
             {
@@ -232,7 +231,10 @@ namespace rummikubGame
             // if the game is over, and the computer won
             if (board.checkWinner() == true)
             {
+                MessageBox.Show("Computer Won!");
+                GameTable.game_indicator.Text = "Game Over - Computer Won";
                 GameTable.humanPlayer.board.disableHumanBoard();
+                GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
                 GameTable.game_over = true;
             }
 
