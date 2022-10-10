@@ -181,7 +181,12 @@ namespace rummikubGame
             if (to_be_replaced != null && better_sequences_after_taking_new_tile(to_be_replaced) == true) {
                 board.setHand(hand);
                 board.setSequences(extendedSets);
-                GameTable.humanPlayer.board.GenerateComputerThrownTile();
+
+                TileButton popped_tile = GameTable.dropped_tiles_stack.Pop();
+                GameTable.GameTableContext.Controls.Remove(GameTable.dropped_tiles_stack.Peek().getTileButton());
+                GameTable.dropped_tiles_stack.Push(popped_tile);
+                GameTable.humanPlayer.board.GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
+                MessageBox.Show("!#!#1313131313");
             }
             else // didnt find any better option
             {
@@ -200,24 +205,20 @@ namespace rummikubGame
                 }
                 hand.RemoveAt(random_tile_to_drop_index);
 
-                int[] tile_in_dropped_tiles_location = { -1, -1 };
-                GameTable.dropped_tiles_stack.Push(new TileButton(random_tile_to_drop.getColor(), random_tile_to_drop.getNumber(), tile_in_dropped_tiles_location));
 
-                GameTable.humanPlayer.board.GenerateComputerThrownTile();
+                GameTable.humanPlayer.board.GenerateComputerThrownTile(random_tile_to_drop);
 
                 Tile tile = GameTable.pool.getTile();
                 hand.Add(tile);
                 GameTable.ComputerPlayer.board.generateBoard();
-                // MessageBox.Show(tile.ToString());
 
                 Tile tile_from_pool = tile;
                 if (better_sequences_after_taking_new_tile(tile_from_pool) == true)
                 {
-                    // MessageBox.Show("WORKED - " + tile_from_pool.ToString());
                     board.setHand(hand);
                     board.setSequences(extendedSets);
-
-                    GameTable.humanPlayer.board.GenerateComputerThrownTile();
+                    
+                    GameTable.humanPlayer.board.GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
                 }
             }
             GameTable.current_turn = GameTable.HUMAN_PLAYER_TURN;

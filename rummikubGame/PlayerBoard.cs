@@ -55,9 +55,14 @@ namespace rummikubGame
             }
         }
 
-        public void GenerateComputerThrownTile()
+        public void GenerateComputerThrownTile(Tile thrownTile)
         {
-            Tile current_tile_from_pool = GameTable.dropped_tiles_stack.Peek();
+            if(GameTable.dropped_tiles_stack.Count() > 1)
+            {
+                GameTable.dropped_tiles_stack.Peek().getTileButton().Draggable(false);
+            }
+
+            Tile current_tile_from_pool = thrownTile;
             int[] slot_location = { GameTable.DROPPED_TILE_LOCATION, GameTable.DROPPED_TILE_LOCATION };
 
             TileButton computers_thrown_tile = new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), slot_location);
@@ -84,10 +89,9 @@ namespace rummikubGame
             computers_thrown_tile.getTileButton().MouseDown += new MouseEventHandler(this.TileButton_MouseDown);
             computers_thrown_tile.getTileButton().MouseEnter += TileButton_MouseEnter;
             computers_thrown_tile.getTileButton().MouseLeave += TileButton_MouseLeave;
-
+            computers_thrown_tile.getTileButton().Tag = TAG_NUMBER;
             GameTable.GameTableContext.Controls.Add(computers_thrown_tile.getTileButton());
             computers_thrown_tile.getTileButton().BringToFront();
-            computers_thrown_tile.getTileButton().Tag = TAG_NUMBER;
             TAG_NUMBER++;
             GameTable.dropped_tiles_stack.Push(computers_thrown_tile);
         }
@@ -167,7 +171,7 @@ namespace rummikubGame
         private void TileButton_MouseUp(object sender, MouseEventArgs e)
         {
             Button current_card = (Button)sender; // the card that we dragged with the mouse
-            if (TileButtons.ContainsKey((int)current_card.Tag) || (int)GameTable.dropped_tiles_stack.Peek().getTileButton().Tag == (int)current_card.Tag) // if the card is in our board
+            if (TileButtons.ContainsKey((int)current_card.Tag) || (GameTable.dropped_tiles_stack.Count > 0 && (int)GameTable.dropped_tiles_stack.Peek().getTileButton().Tag == (int)current_card.Tag)) // if the card is in our board
             {
                 // first, we would like to check if the user wanted to put the TileButton on the drop_TileButton location
                 if (getDistance(current_card, GameTable.dropped_tiles) < 100 && GameTable.current_turn == GameTable.HUMAN_PLAYER_TURN && tookCard == true && TileButtons.ContainsKey((int)current_card.Tag))
@@ -178,9 +182,7 @@ namespace rummikubGame
                     TileButtons[(int)current_card.Tag].setLocation(current_location);
 
                     // add the dropped card to stack
-                    int[] dropped_tiles_location = { -1, -1 };
-                    TileButton dropped_card = new TileButton(TileButtons[(int)current_card.Tag].getColor(), TileButtons[(int)current_card.Tag].getNumber(), dropped_tiles_location);
-                    GameTable.dropped_tiles_stack.Push(dropped_card);
+                    GameTable.dropped_tiles_stack.Push(TileButtons[(int)current_card.Tag]);
 
                     // remove the tiles button
                     TileButtons.Remove((int)current_card.Tag);
