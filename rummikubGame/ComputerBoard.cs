@@ -44,7 +44,7 @@ namespace rummikubGame
             this.hand = hand;
             this.sequences = sequences;
             drawn_computer_cards = new List<Button>();
-            if(GameTable.showComputerTilesGroupbox.Checked == true)
+            if(GameTable.global_view_computer_tiles_groupbox.Checked == true)
                 generateBoard();
         }
 
@@ -113,14 +113,14 @@ namespace rummikubGame
 
             tileButton.Font = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
             drawn_computer_cards.Add(tileButton);
-            GameTable.GameTableContext.Controls.Add(drawn_computer_cards[drawn_computer_cards.Count() - 1]);
+            GameTable.global_gametable_context.Controls.Add(drawn_computer_cards[drawn_computer_cards.Count() - 1]);
             tileButton.BringToFront();
         }
 
         public void deleteCards()
         {
             for (int i = 0; (drawn_computer_cards.Count != 0) && i < drawn_computer_cards.Count(); i++)
-                GameTable.GameTableContext.Controls.Remove(drawn_computer_cards[i]);
+                GameTable.global_gametable_context.Controls.Remove(drawn_computer_cards[i]);
         }
     }
 }

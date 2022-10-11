@@ -183,9 +183,9 @@ namespace rummikubGame
                 board.setSequences(extendedSets);
 
                 TileButton popped_tile = GameTable.dropped_tiles_stack.Pop();
-                GameTable.GameTableContext.Controls.Remove(GameTable.dropped_tiles_stack.Peek().getTileButton());
+                GameTable.global_gametable_context.Controls.Remove(GameTable.dropped_tiles_stack.Peek().getTileButton());
                 GameTable.dropped_tiles_stack.Push(popped_tile);
-                GameTable.humanPlayer.board.GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
+                GameTable.human_player.board.GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
             }
             else // didnt find any better option
             {
@@ -205,11 +205,11 @@ namespace rummikubGame
                 hand.RemoveAt(random_tile_to_drop_index);
 
 
-                GameTable.humanPlayer.board.GenerateComputerThrownTile(random_tile_to_drop);
+                GameTable.human_player.board.GenerateComputerThrownTile(random_tile_to_drop);
 
                 Tile tile = GameTable.pool.getTile();
                 hand.Add(tile);
-                GameTable.ComputerPlayer.board.generateBoard();
+                GameTable.computer_player.board.generateBoard();
 
                 Tile tile_from_pool = tile;
                 if (better_sequences_after_taking_new_tile(tile_from_pool) == true)
@@ -217,23 +217,23 @@ namespace rummikubGame
                     board.setHand(hand);
                     board.setSequences(extendedSets);
                     
-                    GameTable.humanPlayer.board.GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
+                    GameTable.human_player.board.GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
                 }
             }
             GameTable.current_turn = GameTable.HUMAN_PLAYER_TURN;
-            GameTable.game_indicator.Text = "Your turn";
+            GameTable.global_game_indicator_lbl.Text = "Your turn";
             PlayerBoard.tookCard = false;
-            GameTable.ComputerPlayer.board.deleteCards();
+            GameTable.computer_player.board.deleteCards();
 
-            if (GameTable.showComputerTilesGroupbox.Checked == true)
-                GameTable.ComputerPlayer.board.generateBoard();
+            if (GameTable.global_view_computer_tiles_groupbox.Checked == true)
+                GameTable.computer_player.board.generateBoard();
 
             // if the game is over, and the computer won
             if (board.checkWinner() == true)
             {
                 MessageBox.Show("Computer Won!");
-                GameTable.game_indicator.Text = "Game Over - Computer Won";
-                GameTable.humanPlayer.board.disableHumanBoard();
+                GameTable.global_game_indicator_lbl.Text = "Game Over - Computer Won";
+                GameTable.human_player.board.disableHumanBoard();
                 GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
                 GameTable.game_over = true;
             }
@@ -303,6 +303,23 @@ namespace rummikubGame
                 }
             }
             return extendSets(indexOfHandTile + 1, sequences, number_of_tiles_in_set, hand_tiles);
+        }
+
+        public static bool canBeLegal(List<Tile> set)
+        {
+            if (set.Count() < 2)
+                return true;
+            if (set.Count() == 2)
+            {
+                Tile t1 = set[0];
+                Tile t2 = set[1];
+                if (t1.getNumber() + 1 == t2.getNumber() && t1.getColor() == t2.getColor())
+                    return true;
+                if (t1.getNumber() == t2.getNumber() && t1.getColor() != t2.getColor())
+                    return true;
+                return false;
+            }
+            return GameTable.isLegalMeld(set);
         }
 
         public List<List<Tile>> meldsSets(List<Tile> tiles, List<List<Tile>> sets, int meldStart, int maxSets)

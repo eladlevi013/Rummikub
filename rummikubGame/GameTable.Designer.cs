@@ -33,12 +33,10 @@
             this.board_panel = new System.Windows.Forms.Panel();
             this.dropped_tiles_btn = new System.Windows.Forms.Button();
             this.pool_btn = new System.Windows.Forms.Button();
-            this.current_pool_size = new System.Windows.Forms.Label();
-            this.data_indicator = new System.Windows.Forms.Label();
-            this.data_indicator_2 = new System.Windows.Forms.Label();
+            this.current_pool_size_lbl = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.SortByValue_btn = new System.Windows.Forms.Button();
-            this.SortByColor_btn = new System.Windows.Forms.Button();
+            this.sort_value_btn = new System.Windows.Forms.Button();
+            this.sort_color_btn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.computerTiles_groupbox = new System.Windows.Forms.GroupBox();
@@ -80,57 +78,39 @@
             this.pool_btn.UseVisualStyleBackColor = false;
             this.pool_btn.Click += new System.EventHandler(this.pool_btn_Click);
             // 
-            // current_pool_size
+            // current_pool_size_lbl
             // 
-            this.current_pool_size.AutoSize = true;
-            this.current_pool_size.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.current_pool_size.Location = new System.Drawing.Point(835, 268);
-            this.current_pool_size.Name = "current_pool_size";
-            this.current_pool_size.Size = new System.Drawing.Size(67, 13);
-            this.current_pool_size.TabIndex = 5;
-            this.current_pool_size.Text = "x tiles in pool";
+            this.current_pool_size_lbl.AutoSize = true;
+            this.current_pool_size_lbl.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.current_pool_size_lbl.Location = new System.Drawing.Point(835, 268);
+            this.current_pool_size_lbl.Name = "current_pool_size_lbl";
+            this.current_pool_size_lbl.Size = new System.Drawing.Size(67, 13);
+            this.current_pool_size_lbl.TabIndex = 5;
+            this.current_pool_size_lbl.Text = "x tiles in pool";
             // 
-            // data_indicator
+            // sort_value_btn
             // 
-            this.data_indicator.AutoSize = true;
-            this.data_indicator.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.data_indicator.Location = new System.Drawing.Point(12, 13);
-            this.data_indicator.Name = "data_indicator";
-            this.data_indicator.Size = new System.Drawing.Size(0, 13);
-            this.data_indicator.TabIndex = 6;
+            this.sort_value_btn.BackColor = System.Drawing.Color.Sienna;
+            this.sort_value_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("sort_value_btn.BackgroundImage")));
+            this.sort_value_btn.Location = new System.Drawing.Point(333, 655);
+            this.sort_value_btn.Name = "sort_value_btn";
+            this.sort_value_btn.Size = new System.Drawing.Size(147, 29);
+            this.sort_value_btn.TabIndex = 8;
+            this.sort_value_btn.Text = "Sort By Value";
+            this.sort_value_btn.UseVisualStyleBackColor = false;
+            this.sort_value_btn.Click += new System.EventHandler(this.sort_value_btn_click);
             // 
-            // data_indicator_2
+            // sort_color_btn
             // 
-            this.data_indicator_2.AutoSize = true;
-            this.data_indicator_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.data_indicator_2.Location = new System.Drawing.Point(124, 13);
-            this.data_indicator_2.Name = "data_indicator_2";
-            this.data_indicator_2.Size = new System.Drawing.Size(0, 13);
-            this.data_indicator_2.TabIndex = 7;
-            // 
-            // SortByValue_btn
-            // 
-            this.SortByValue_btn.BackColor = System.Drawing.Color.Sienna;
-            this.SortByValue_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("SortByValue_btn.BackgroundImage")));
-            this.SortByValue_btn.Location = new System.Drawing.Point(333, 655);
-            this.SortByValue_btn.Name = "SortByValue_btn";
-            this.SortByValue_btn.Size = new System.Drawing.Size(147, 29);
-            this.SortByValue_btn.TabIndex = 8;
-            this.SortByValue_btn.Text = "Sort By Value";
-            this.SortByValue_btn.UseVisualStyleBackColor = false;
-            this.SortByValue_btn.Click += new System.EventHandler(this.SortByValue_btn_Click);
-            // 
-            // SortByColor_btn
-            // 
-            this.SortByColor_btn.BackColor = System.Drawing.Color.Sienna;
-            this.SortByColor_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("SortByColor_btn.BackgroundImage")));
-            this.SortByColor_btn.Location = new System.Drawing.Point(499, 655);
-            this.SortByColor_btn.Name = "SortByColor_btn";
-            this.SortByColor_btn.Size = new System.Drawing.Size(147, 29);
-            this.SortByColor_btn.TabIndex = 9;
-            this.SortByColor_btn.Text = "Sort By Color";
-            this.SortByColor_btn.UseVisualStyleBackColor = false;
-            this.SortByColor_btn.Click += new System.EventHandler(this.SortByColor_btn_Click);
+            this.sort_color_btn.BackColor = System.Drawing.Color.Sienna;
+            this.sort_color_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("sort_color_btn.BackgroundImage")));
+            this.sort_color_btn.Location = new System.Drawing.Point(499, 655);
+            this.sort_color_btn.Name = "sort_color_btn";
+            this.sort_color_btn.Size = new System.Drawing.Size(147, 29);
+            this.sort_color_btn.TabIndex = 9;
+            this.sort_color_btn.Text = "Sort By Color";
+            this.sort_color_btn.UseVisualStyleBackColor = false;
+            this.sort_color_btn.Click += new System.EventHandler(this.sort_color_btn_click);
             // 
             // label1
             // 
@@ -178,7 +158,7 @@
             this.show_computer_tiles_checkbox.TabIndex = 12;
             this.show_computer_tiles_checkbox.Text = "Show Computer Tiles";
             this.show_computer_tiles_checkbox.UseVisualStyleBackColor = true;
-            this.show_computer_tiles_checkbox.CheckedChanged += new System.EventHandler(this.show_computer_tiles_checkbox_CheckedChanged);
+            this.show_computer_tiles_checkbox.CheckedChanged += new System.EventHandler(this.show_computer_tiles_checkbox_change);
             // 
             // game_indicator_lbl
             // 
@@ -196,14 +176,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.RoyalBlue;
-            this.ClientSize = new System.Drawing.Size(976, 695);
+            this.ClientSize = new System.Drawing.Size(978, 695);
             this.Controls.Add(this.game_indicator_lbl);
             this.Controls.Add(this.show_computer_tiles_checkbox);
-            this.Controls.Add(this.SortByValue_btn);
-            this.Controls.Add(this.SortByColor_btn);
-            this.Controls.Add(this.data_indicator_2);
-            this.Controls.Add(this.data_indicator);
-            this.Controls.Add(this.current_pool_size);
+            this.Controls.Add(this.sort_value_btn);
+            this.Controls.Add(this.sort_color_btn);
+            this.Controls.Add(this.current_pool_size_lbl);
             this.Controls.Add(this.pool_btn);
             this.Controls.Add(this.dropped_tiles_btn);
             this.Controls.Add(this.board_panel);
@@ -224,12 +202,10 @@
         private System.Windows.Forms.Panel board_panel;
         private System.Windows.Forms.Button dropped_tiles_btn;
         private System.Windows.Forms.Button pool_btn;
-        private System.Windows.Forms.Label current_pool_size;
-        private System.Windows.Forms.Label data_indicator;
-        private System.Windows.Forms.Label data_indicator_2;
+        private System.Windows.Forms.Label current_pool_size_lbl;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Button SortByValue_btn;
-        private System.Windows.Forms.Button SortByColor_btn;
+        private System.Windows.Forms.Button sort_value_btn;
+        private System.Windows.Forms.Button sort_color_btn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox computerTiles_groupbox;

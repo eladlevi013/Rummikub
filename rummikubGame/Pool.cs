@@ -44,7 +44,7 @@ namespace rummikubGame
 
         public Tile getTile()
         {
-            GameTable.current_pool_size_label.Text = getPoolSize() - 1 + " tiles in pool"; // minus 1, because we havent removed any tile yet
+            GameTable.global_current_pool_size_lbl.Text = getPoolSize() - 1 + " tiles in pool"; // minus 1, because we havent removed any tile yet
             if (tilesQueue.Count() == 0) return null;
             return tilesQueue.Dequeue();
         }

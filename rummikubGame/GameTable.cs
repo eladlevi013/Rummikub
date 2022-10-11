@@ -22,19 +22,24 @@ namespace rummikubGame
         public const int RUMMIKUB_TILES_IN_GAME = 14;
         public const int MAX_POSSIBLE_SEQUENCES_NUMBER = 4;
         public const int DROPPED_TILE_LOCATION = -1;
+        public const int HUMAN_PLAYER_BOARD_HEIGHT = 2;
+        public const int HUMAN_PLAYER_BOARD_WIDTH = 10;
 
         // players
-        public static HumanPlayer humanPlayer; // human-player
-        public static ComputerPlayer ComputerPlayer; // computer-player
+        public static HumanPlayer human_player; // human-player
+        public static ComputerPlayer computer_player; // computer-player
 
-        public static Label game_indicator;
-        public static Label current_pool_size_label;
-        public static Form GameTableContext; // used in order to add buttons from other classes
-        public static Pool pool; // the pool of cards
-        public static Button dropped_tiles; // dropped_tiles button, used in the mouseUp
+        // UI global elements - needs to be accessed outside this class
+        public static Label global_game_indicator_lbl;
+        public static Label global_current_pool_size_lbl;
+        public static Form global_gametable_context; // used in order to add buttons from other classes
+        public static Button global_dropped_tiles_btn; // dropped_tiles button, used in the mouseUp
+        public static CheckBox global_view_computer_tiles_groupbox; // groupBox show computer tiles
+
+        // global variables
         public static int current_turn; // indicates who should play now
         public static bool game_over = false; // game is running or over
-        public static CheckBox showComputerTilesGroupbox; // groupBox show computer tiles
+        public static Pool pool; // the pool of cards
         public static Stack<TileButton> dropped_tiles_stack; // the stack of dropped cards
 
         public GameTable()
@@ -43,72 +48,65 @@ namespace rummikubGame
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        { // This is a test,- to be deleted
-            //this is a new change 
-            computerTiles_groupbox.BackColor = System.Drawing.ColorTranslator.FromHtml("#454691");
-            showComputerTilesGroupbox = show_computer_tiles_checkbox;
-            dropped_tiles_stack = new Stack<TileButton>();
-            current_pool_size_label = current_pool_size;
-            GameTableContext = this; // updates the gameTable context
-            dropped_tiles = dropped_tiles_btn; // updates the dropped_tiles variable, so it'll be accessed outside that class
+        {
+            // update global variables
+            global_view_computer_tiles_groupbox = show_computer_tiles_checkbox;
+            global_current_pool_size_lbl = current_pool_size_lbl;
+            global_gametable_context = this; // updates the gameTable context
+            global_dropped_tiles_btn = dropped_tiles_btn; // updates the dropped_tiles variable, so it'll be accessed outside that class
+            global_game_indicator_lbl = game_indicator_lbl;
 
-            // Generate pool cards
-            pool = new Pool(); // create pool object
-            humanPlayer = new HumanPlayer("Player Default Name"); // create the humanPlayer object
-            ComputerPlayer = new ComputerPlayer();
+            // create objects
+            dropped_tiles_stack = new Stack<TileButton>(); // empty dropped tiles
+            pool = new Pool(); // generate rummikub tiles
+            human_player = new HumanPlayer("Player Default Name"); 
+            computer_player = new ComputerPlayer();
 
-            /* Graphical Changes */
             // change the style of the drop_TileButtons_location
-            dropped_tiles_btn.FlatStyle = FlatStyle.Flat;
-            dropped_tiles_btn.FlatAppearance.BorderSize = 0;
-            dropped_tiles_btn.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
-            // set round corners of the board
-            board_panel.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
+            global_dropped_tiles_btn.FlatStyle = FlatStyle.Flat;
+            global_dropped_tiles_btn.FlatAppearance.BorderSize = 0;
+            global_dropped_tiles_btn.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
+
             // set background color
+            computerTiles_groupbox.BackColor = System.Drawing.ColorTranslator.FromHtml("#454691"); // chancing back color of groupbox
+            board_panel.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
             this.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
-            // set background color of pool btn
+
+            // sets design of the pool_btn
             pool_btn.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
             pool_btn.FlatStyle = FlatStyle.Flat;
             pool_btn.FlatAppearance.BorderSize = 0;
+
             // set button flat design
-            SortByColor_btn.FlatStyle = FlatStyle.Flat;
-            SortByColor_btn.FlatAppearance.BorderSize = 0;
-            SortByValue_btn.FlatStyle = FlatStyle.Flat;
-            SortByValue_btn.FlatAppearance.BorderSize = 0;            
+            sort_color_btn.FlatStyle = FlatStyle.Flat;
+            sort_color_btn.FlatAppearance.BorderSize = 0;
+            sort_value_btn.FlatStyle = FlatStyle.Flat;
+            sort_value_btn.FlatAppearance.BorderSize = 0;
+
             // this will send back the panel(the board)
             board_panel.SendToBack();
-            developerData();
 
-            game_indicator = game_indicator_lbl;
-            // the current turn
+            // Sets the starting player and start the game
             Random rnd = new Random();
             current_turn = rnd.Next(0, 2);
             if (current_turn == COMPUTER_PLAYER_TURN)
             {
-                ComputerPlayer.play(null);
+                computer_player.play(null);
                 game_indicator_lbl.Text = "Computer's turn";
             }
             else
             {
                 game_indicator_lbl.Text = "Your turn";
             }
-            current_turn = HUMAN_PLAYER_TURN;
-
-            // delete
-            data_indicator.Visible = false;
-            data_indicator_2.Visible = false;
         }
 
         public static bool checkWinner(List<List<Tile>> melds) 
         {
-            // now var-melds has all the melds
-            // if all the melds in the list are fine, the user won
+            // if all melds are good, user won
             for (int i = 0; i < melds.Count(); i++)
             {
                 if (!GameTable.isLegalMeld(melds[i]))
-                {
                     return false;
-                }
             }
             return true;
         }
@@ -135,13 +133,12 @@ namespace rummikubGame
                     isRun = false; break;
                 }
             }
-            if (isRun) return true;
-            if (meld.Count() > 4) return false;
+            if (isRun) return true; // 2+ run sequence
 
+            if (meld.Count() > 4) return false; // group of 4+ cannot be exists
             for (int i = 0; i < meld.Count() - 1; i++)
             {
-                if (meld[i + 1].getNumber() != value)
-                    return false;
+                if (meld[i + 1].getNumber() != value) return false; // its cannot be group
                 for (int j = i + 1; j < meld.Count(); j++)
                 {
                     if (meld[i].getColor() == meld[j].getColor())
@@ -151,91 +148,50 @@ namespace rummikubGame
             return true;
         }
 
-        // 
-        public static bool canBeLegal(List<Tile> set)
-        {
-            if (set.Count() < 2)
-                return true;
-            if (set.Count() == 2)
-            {
-                Tile t1 = set[0];
-                Tile t2 = set[1];
-                if (t1.getNumber() + 1 == t2.getNumber() && t1.getColor() == t2.getColor())
-                    return true;
-                if (t1.getNumber() == t2.getNumber() && t1.getColor() != t2.getColor())
-                    return true;
-                return false;
-            }
-            return isLegalMeld(set);
-        }
-
         private void pool_btn_Click(object sender, EventArgs e)
         {
             // generate a card to the last-empty place in the board
             bool found_last_empty_location = false;
-            for (int i = 1; i >= 0 && !found_last_empty_location; i--)
+            for (int i = HUMAN_PLAYER_BOARD_HEIGHT - 1; i >= 0 && !found_last_empty_location; i--)
             {
-                for (int j = 9; j >= 0 && !found_last_empty_location; j--)
+                for (int j = HUMAN_PLAYER_BOARD_WIDTH - 1; j >= 0 && !found_last_empty_location; j--)
                 {
-                    if (humanPlayer.board.getTileButton_slot()[i, j].getState() == false)
+                    if (human_player.board.getTileButton_slot()[i, j].getState() == false)
                     {
-                        int[] location_arr = { i, j };
-                        humanPlayer.board.GenerateNewTileByClickingPool(location_arr);
-                        found_last_empty_location = true;
-                        PlayerBoard.TAG_NUMBER++;
+                        int[] location_arr = { i, j }; // last empty place in board
+                        human_player.board.GenerateNewTileByClickingPool(location_arr); // generate tile in that location
+                        found_last_empty_location = true; // skip future iterations
                     }
-
                 }
             }
-            developerData();
         }
 
-        private void developerData()
+        private void sort_value_btn_click(object sender, EventArgs e)
         {
-            string test = "";
-            for (int i = 0; i < humanPlayer.board.getTilesDictionary().Keys.Count; i++)
-            {
-                test += "index: " + humanPlayer.board.getTilesDictionary().Keys.ElementAt(i) + ", " + humanPlayer.board.getTilesDictionary()[humanPlayer.board.getTilesDictionary().Keys.ElementAt(i)].ToString() + "\n";
-            }
-            data_indicator_2.Text = test;
-            string test1 = "";
-            for (int i = 0; i < 2; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-                    test1 += "[" + i + ", " + j + "]: " + humanPlayer.board.getTileButton_slot()[i, j].ToString() + "\n";
-                }
-            }
-            data_indicator.Text = test1;
-        }
-
-        private void SortByValue_btn_Click(object sender, EventArgs e)
-        {
-            List<TileButton> sorted_cards = humanPlayer.board.getTilesDictionary().Values.ToList();
+            List<TileButton> sorted_cards = human_player.board.getTilesDictionary().Values.ToList();
             sorted_cards = sorted_cards.OrderBy(card => card.getNumber()).ToList();
-            humanPlayer.board.ArrangeCardsOnBoard(sorted_cards);
+            human_player.board.ArrangeCardsOnBoard(sorted_cards);
         }
 
-        private void SortByColor_btn_Click(object sender, EventArgs e)
+        private void sort_color_btn_click(object sender, EventArgs e)
         {
-            List<TileButton> sorted_cards = humanPlayer.board.getTilesDictionary().Values.ToList();
+            List<TileButton> sorted_cards = human_player.board.getTilesDictionary().Values.ToList();
             sorted_cards = sorted_cards.OrderBy(card => card.getColor()).ToList();
-            humanPlayer.board.ArrangeCardsOnBoard(sorted_cards);
+            human_player.board.ArrangeCardsOnBoard(sorted_cards);
         }
 
-        private void show_computer_tiles_checkbox_CheckedChanged(object sender, EventArgs e)
-        {
+        private void show_computer_tiles_checkbox_change(object sender, EventArgs e)
+        {   // if to delete or create the graphical representation of the computer tiles
             if (show_computer_tiles_checkbox.Checked == false)
             {
                 computerTiles_groupbox.Visible = false;
-                ComputerPlayer.board.deleteCards();
+                computer_player.board.deleteCards();
             }
             else
             {
                 computerTiles_groupbox.Visible = true;
-                ComputerPlayer.board.generateBoard();
+                computer_player.board.generateBoard();
             }
-
         }
     }
 }

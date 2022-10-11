@@ -64,7 +64,7 @@ namespace rummikubGame
             int[] slot_location = { GameTable.DROPPED_TILE_LOCATION, GameTable.DROPPED_TILE_LOCATION };
 
             TileButton computers_thrown_tile = new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), slot_location);
-            computers_thrown_tile.getTileButton().Location = new Point(GameTable.dropped_tiles.Location.X + 10, GameTable.dropped_tiles.Location.Y + 18);
+            computers_thrown_tile.getTileButton().Location = new Point(GameTable.global_dropped_tiles_btn.Location.X + 10, GameTable.global_dropped_tiles_btn.Location.Y + 18);
             computers_thrown_tile.getTileButton().Size = new Size(75, 100);
             computers_thrown_tile.getTileButton().BackgroundImage = Image.FromFile("Tile.png");
             computers_thrown_tile.getTileButton().BackgroundImageLayout = ImageLayout.Stretch;
@@ -88,7 +88,7 @@ namespace rummikubGame
             computers_thrown_tile.getTileButton().MouseEnter += TileButton_MouseEnter;
             computers_thrown_tile.getTileButton().MouseLeave += TileButton_MouseLeave;
             computers_thrown_tile.getTileButton().Tag = TAG_NUMBER;
-            GameTable.GameTableContext.Controls.Add(computers_thrown_tile.getTileButton());
+            GameTable.global_gametable_context.Controls.Add(computers_thrown_tile.getTileButton());
             computers_thrown_tile.getTileButton().BringToFront();
             TAG_NUMBER++;
             GameTable.dropped_tiles_stack.Push(computers_thrown_tile);
@@ -126,7 +126,7 @@ namespace rummikubGame
             TileButtons[TAG_NUMBER].getTileButton().MouseEnter += TileButton_MouseEnter;
             TileButtons[TAG_NUMBER].getTileButton().MouseLeave += TileButton_MouseLeave;
 
-            GameTable.GameTableContext.Controls.Add(TileButtons[TAG_NUMBER].getTileButton());
+            GameTable.global_gametable_context.Controls.Add(TileButtons[TAG_NUMBER].getTileButton());
             TileButtons[TAG_NUMBER].getTileButton().BringToFront();
             TileButtons[TAG_NUMBER].getTileButton().Tag = TAG_NUMBER;
             TAG_NUMBER++;
@@ -168,9 +168,9 @@ namespace rummikubGame
             if (TileButtons.ContainsKey((int)current_card.Tag) || (GameTable.dropped_tiles_stack.Count > 0 && (int)GameTable.dropped_tiles_stack.Peek().getTileButton().Tag == (int)current_card.Tag)) // if the card is in our board
             { // this is a test
                 // first, we would like to check if the user wanted to put the TileButton on the drop_TileButton location
-                if (getDistance(current_card, GameTable.dropped_tiles) < 100 && GameTable.current_turn == GameTable.HUMAN_PLAYER_TURN && tookCard == true && TileButtons.ContainsKey((int)current_card.Tag))
+                if (getDistance(current_card, GameTable.global_dropped_tiles_btn) < 100 && GameTable.current_turn == GameTable.HUMAN_PLAYER_TURN && tookCard == true && TileButtons.ContainsKey((int)current_card.Tag))
                 {
-                    current_card.Location = new Point(GameTable.dropped_tiles.Location.X + 10, GameTable.dropped_tiles.Location.Y + 18);
+                    current_card.Location = new Point(GameTable.global_dropped_tiles_btn.Location.X + 10, GameTable.global_dropped_tiles_btn.Location.Y + 18);
                     current_card.Draggable(false);
                     int[] current_location = {DROPPED_CARD_LOCATION, DROPPED_CARD_LOCATION};
                     TileButtons[(int)current_card.Tag].setLocation(current_location);
@@ -184,13 +184,13 @@ namespace rummikubGame
                     // after we dropped a card, it is the end of the turn
                     tookCard = false;
                     GameTable.current_turn = GameTable.COMPUTER_PLAYER_TURN;
-                    GameTable.game_indicator.Text = "Computer's Turn";
+                    GameTable.global_game_indicator_lbl.Text = "Computer's Turn";
 
                     // sleep
                     Thread.Sleep(5);
 
                     // call the computerPlayer play function in another thread in order to prevent crashes
-                    GameTable.ComputerPlayer.play(GameTable.dropped_tiles_stack.Peek());
+                    GameTable.computer_player.play(GameTable.dropped_tiles_stack.Peek());
                 }
                 // otherwise we would like to search the first empty slot to put in the TileButton
                 else
@@ -394,7 +394,7 @@ namespace rummikubGame
                     TileButton_slot[i, j].getSlotButton().Size = new Size(75, 100);
                     TileButton_slot[i, j].getSlotButton().Location = new Point(x_location, y_location);
                     TileButton_slot[i, j].changeState(false); // slot is available
-                    GameTable.GameTableContext.Controls.Add(TileButton_slot[i, j].getSlotButton());
+                    GameTable.global_gametable_context.Controls.Add(TileButton_slot[i, j].getSlotButton());
                     x_location += X_SPACE_BETWEEN_TileButtonS;
                 }
                 y_location += Y_SPACE_BETWEEN_TileButtonS;
