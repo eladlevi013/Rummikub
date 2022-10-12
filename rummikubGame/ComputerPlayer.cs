@@ -189,40 +189,38 @@ namespace rummikubGame
             }
             else // didnt find any better option
             {
-                Random rnd_hand_index = new Random();
-                bool hand_null = true;
-                Tile random_tile_to_drop = null;
-                int random_tile_to_drop_index = 0;
-                while (hand_null)
-                {
-                    random_tile_to_drop_index = rnd_hand_index.Next(hand.Count());
-                    random_tile_to_drop = hand[random_tile_to_drop_index];
-                    if (random_tile_to_drop != null)
-                    {
-                        hand_null = false;
-                    }
-                }
-                hand.RemoveAt(random_tile_to_drop_index);
-
-
-                GameTable.human_player.board.GenerateComputerThrownTile(random_tile_to_drop);
-
                 Tile tile = GameTable.pool.getTile();
 
                 if (tile == null) // pool returns null tile
                     return;
 
-                hand.Add(tile);
-                GameTable.computer_player.board.generateBoard();
-
-                Tile tile_from_pool = tile;
-                if (better_sequences_after_taking_new_tile(tile_from_pool) == true)
+                if (better_sequences_after_taking_new_tile(tile) == true)
                 {
                     board.setHand(hand);
                     board.setSequences(extendedSets);
-                    
                     GameTable.human_player.board.GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
                 }
+                else
+                {
+                    Random rnd_hand_index = new Random();
+                    bool hand_null = true;
+                    Tile random_tile_to_drop = null;
+                    int random_tile_to_drop_index = 0;
+                    while (hand_null)
+                    {
+                        random_tile_to_drop_index = rnd_hand_index.Next(hand.Count());
+                        random_tile_to_drop = hand[random_tile_to_drop_index];
+                        if (random_tile_to_drop != null)
+                        {
+                            hand_null = false;
+                        }
+                    }
+                    hand.RemoveAt(random_tile_to_drop_index);
+                    hand.Add(tile);
+                    GameTable.human_player.board.GenerateComputerThrownTile(random_tile_to_drop);
+                }
+
+                GameTable.computer_player.board.generateBoard();
             }
             GameTable.current_turn = GameTable.HUMAN_PLAYER_TURN;
             GameTable.global_game_indicator_lbl.Text = "Your turn";

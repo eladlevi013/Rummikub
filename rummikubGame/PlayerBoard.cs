@@ -104,7 +104,7 @@ namespace rummikubGame
 
             TileButtons[TAG_NUMBER] = (new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), slot_location));
             TileButtons[TAG_NUMBER].getTileButton().Location = TileButton_slot[slot_location[0], slot_location[1]].getSlotButton().Location;
-            TileButton_slot[TileButtons[TAG_NUMBER].getLocation()[0], TileButtons[TAG_NUMBER].getLocation()[1]].changeState(true);
+            TileButton_slot[TileButtons[TAG_NUMBER].getSlotLocation()[0], TileButtons[TAG_NUMBER].getSlotLocation()[1]].changeState(true);
 
             TileButtons[TAG_NUMBER].getTileButton().Size = new Size(75, 100);
             TileButtons[TAG_NUMBER].getTileButton().BackgroundImage = Image.FromFile("Tile.png");
@@ -141,10 +141,10 @@ namespace rummikubGame
             for (int i = 0; i < TileButtons.Keys.Count; i++) // iterating over the cards, because there is the option that the card in the dropped tiles
             {
                 // it means that the card is in the tiles group that you can interact with
-                if (((Button)sender).Tag == TileButtons[TileButtons.Keys.ElementAt(i)].getTileButton().Tag && TileButtons[(int)((Button)sender).Tag].getLocation()[0] != -1 && TileButtons[(int)((Button)sender).Tag].getLocation()[1] != -1)
+                if (((Button)sender).Tag == TileButtons[TileButtons.Keys.ElementAt(i)].getTileButton().Tag && TileButtons[(int)((Button)sender).Tag].getSlotLocation()[0] != -1 && TileButtons[(int)((Button)sender).Tag].getSlotLocation()[1] != -1)
                 {
                     // we are turning it off, because we want to be able to place to the current place if its the closest location
-                    TileButton_slot[TileButtons[(int)((Button)sender).Tag].getLocation()[0], TileButtons[(int)((Button)sender).Tag].getLocation()[1]].changeState(false);
+                    TileButton_slot[TileButtons[(int)((Button)sender).Tag].getSlotLocation()[0], TileButtons[(int)((Button)sender).Tag].getSlotLocation()[1]].changeState(false);
                 }
             }
         }
@@ -176,7 +176,7 @@ namespace rummikubGame
                     current_card.Location = new Point(GameTable.global_dropped_tiles_btn.Location.X + 10, GameTable.global_dropped_tiles_btn.Location.Y + 18);
                     current_card.Draggable(false);
                     int[] current_location = {DROPPED_CARD_LOCATION, DROPPED_CARD_LOCATION};
-                    TileButtons[(int)current_card.Tag].setLocation(current_location);
+                    TileButtons[(int)current_card.Tag].setSlotLocation(current_location);
 
                     // add the dropped card to stack
                     GameTable.dropped_tiles_stack.Push(TileButtons[(int)current_card.Tag]);
@@ -242,15 +242,15 @@ namespace rummikubGame
                     }
 
                     // we made it empty, as we clicked_down to move the card, so now we have to make it non-empty again
-                    if(TileButtons.ContainsKey((int)current_card.Tag) && TileButtons[(int)((Button)sender).Tag].getLocation()[0] != -1 && TileButtons[(int)((Button)sender).Tag].getLocation()[1] != -1)
-                        TileButton_slot[TileButtons[(int)((Button)sender).Tag].getLocation()[0], TileButtons[(int)((Button)sender).Tag].getLocation()[1]].changeState(true);
+                    if(TileButtons.ContainsKey((int)current_card.Tag) && TileButtons[(int)((Button)sender).Tag].getSlotLocation()[0] != -1 && TileButtons[(int)((Button)sender).Tag].getSlotLocation()[1] != -1)
+                        TileButton_slot[TileButtons[(int)((Button)sender).Tag].getSlotLocation()[0], TileButtons[(int)((Button)sender).Tag].getSlotLocation()[1]].changeState(true);
 
                     // update the location of the focused TileButton, to the location of the minimum distance that we found earlier
                     current_card.Location = TileButton_slot[min_i, min_j].getSlotButton().Location;
 
                     // now we need to update the status of the old slot to empty
-                    if (TileButtons.ContainsKey((int)current_card.Tag) && TileButtons[(int)((Button)sender).Tag].getLocation()[0] != -1 && TileButtons[(int)((Button)sender).Tag].getLocation()[1] != -1)
-                        TileButton_slot[TileButtons[(int)current_card.Tag].getLocation()[0], TileButtons[(int)current_card.Tag].getLocation()[1]].changeState(false);
+                    if (TileButtons.ContainsKey((int)current_card.Tag) && TileButtons[(int)((Button)sender).Tag].getSlotLocation()[0] != -1 && TileButtons[(int)((Button)sender).Tag].getSlotLocation()[1] != -1)
+                        TileButton_slot[TileButtons[(int)current_card.Tag].getSlotLocation()[0], TileButtons[(int)current_card.Tag].getSlotLocation()[1]].changeState(false);
 
                     // we'll change the status of the 'minimum-distance' slot(now contains the card)
                     TileButton_slot[min_i, min_j].changeState(true);
@@ -258,7 +258,7 @@ namespace rummikubGame
                     // update the TileButton location(the location of the slot)
                     int[] updated_TileButton_location = { min_i, min_j };
                     if(TileButtons.ContainsKey((int)current_card.Tag))
-                        TileButtons[(int)current_card.Tag].setLocation(updated_TileButton_location);
+                        TileButtons[(int)current_card.Tag].setSlotLocation(updated_TileButton_location);
                 }
             }
             if (checkWinner() == true)
@@ -281,7 +281,7 @@ namespace rummikubGame
 
             for (int i = 0; i < TileButtons.Values.ToList().Count(); i++)
             {
-                if (TileButtons.Values.ToList()[i].getLocation()[0] == 0)
+                if (TileButtons.Values.ToList()[i].getSlotLocation()[0] == 0)
                 {
                     topBoard_tiles.Add(TileButtons.Values.ToList()[i]);
                 }
@@ -292,8 +292,8 @@ namespace rummikubGame
             }
 
             // after we have two lists, we will sort them by value and analyze the melds
-            topBoard_tiles = topBoard_tiles.OrderBy(card => card.getLocation()[1]).ToList();
-            bottomBoard_tiles = bottomBoard_tiles.OrderBy(card => card.getLocation()[1]).ToList();
+            topBoard_tiles = topBoard_tiles.OrderBy(card => card.getSlotLocation()[1]).ToList();
+            bottomBoard_tiles = bottomBoard_tiles.OrderBy(card => card.getSlotLocation()[1]).ToList();
 
             getSequencesFromTileList(topBoard_tiles, melds);
             getSequencesFromTileList(bottomBoard_tiles, melds);
@@ -334,7 +334,7 @@ namespace rummikubGame
             List<TileButton> meld = new List<TileButton>();
             for (int i = 0; i < tiles_sequence.Count(); i++) // inserting the melds of the upper board
             {
-                if (meld.Count() != 0 && meld[meld.Count - 1].getLocation()[1] + 1 == tiles_sequence[i].getLocation()[1])
+                if (meld.Count() != 0 && meld[meld.Count - 1].getSlotLocation()[1] + 1 == tiles_sequence[i].getSlotLocation()[1])
                 {
                     meld.Add(tiles_sequence[i]);
                 }
@@ -364,7 +364,7 @@ namespace rummikubGame
                         sorted_cards[card_index].getTileButton().Location = TileButton_slot[i, j].getSlotButton().Location;
                         TileButton_slot[i, j].changeState(true);
                         int[] location_arr = { i, j };
-                        sorted_cards[card_index].setLocation(location_arr);
+                        sorted_cards[card_index].setSlotLocation(location_arr);
                     }
                     card_index++;
                 }

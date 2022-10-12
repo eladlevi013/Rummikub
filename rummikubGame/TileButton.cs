@@ -10,11 +10,11 @@ namespace rummikubGame
     public class TileButton: Tile
     {
         private Button tile_button;
-        private int[] location;
+        private int[] slot_location;
 
-        public TileButton(int color, int number, int[] location): base(color, number)
+        public TileButton(int color, int number, int[] slot_location): base(color, number)
         {
-            this.location = location;
+            this.slot_location = slot_location;
             tile_button = new Button();
         }
 
@@ -23,19 +23,19 @@ namespace rummikubGame
             return this.tile_button;
         }
 
-        public int[] getLocation()
+        public int[] getSlotLocation()
         {
-            return this.location;
+            return this.slot_location;
         }
 
-        public void setLocation(int[] location)
+        public void setSlotLocation(int[] slot_location)
         {
-            this.location = location;
+            this.slot_location = slot_location;
         }
 
         public string ToString()
         {
-            return "Color: " + this.color + ", Value: " + this.number + ", location: [" + this.location[0] + ", " + this.location[1] + "]";
+            return "Color: " + this.color + ", Value: " + this.number + ", slot_location: [" + this.slot_location[0] + ", " + this.slot_location[1] + "]";
         }
     }
 }
