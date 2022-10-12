@@ -11,10 +11,9 @@ namespace rummikubGame
     public class Pool
     {
         private Queue<Tile> tilesQueue;
-
         public Pool()
         {
-            const int NUMBER_OF_TIMES = 2;
+            const int NUMBER_OF_TIMES = 1;
             const int COLORS_COUNT = 4;
             const int N = 13;
 
@@ -45,7 +44,18 @@ namespace rummikubGame
         public Tile getTile()
         {
             GameTable.global_current_pool_size_lbl.Text = getPoolSize() - 1 + " tiles in pool"; // minus 1, because we havent removed any tile yet
-            if (tilesQueue.Count() == 0) return null;
+            if (tilesQueue.Count() == 0)
+            {   // tilesQueue is empty - tiles are over
+                if (GameTable.computer_player.board.getHandTilesNumber() == GameTable.human_player.board.getHandTilesNumber())
+                    MessageBox.Show("Tie!");
+                else if (GameTable.computer_player.board.getHandTilesNumber() > GameTable.human_player.board.getHandTilesNumber())
+                    MessageBox.Show("You Won!");
+                else
+                    MessageBox.Show("Computer Won!");
+                GameTable.game_over = true;
+                GameTable.human_player.board.disableHumanBoard();
+                return null;
+            }
             return tilesQueue.Dequeue();
         }
 

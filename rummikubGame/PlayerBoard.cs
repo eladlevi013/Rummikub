@@ -266,6 +266,12 @@ namespace rummikubGame
 
         public bool checkWinner()
         {
+            List<List<Tile>> melds = meldsArrangedByPlayer();
+            return GameTable.checkWinner(melds);
+        }
+        
+        private List<List<Tile>> meldsArrangedByPlayer()
+        {
             List<TileButton> topBoard_tiles = new List<TileButton>();
             List<TileButton> bottomBoard_tiles = new List<TileButton>();
             List<List<TileButton>> melds = new List<List<TileButton>>();
@@ -286,23 +292,28 @@ namespace rummikubGame
             topBoard_tiles = topBoard_tiles.OrderBy(card => card.getLocation()[1]).ToList();
             bottomBoard_tiles = bottomBoard_tiles.OrderBy(card => card.getLocation()[1]).ToList();
 
-            bool singleTileMeld = false;
-            getSequencesFromTileList(topBoard_tiles, melds, ref singleTileMeld);
-            getSequencesFromTileList(bottomBoard_tiles, melds, ref singleTileMeld);
-
-            // if there is even one meld of one card, we would like to return false
-            if (singleTileMeld == true)
-            {
-                return false;
-            }
+            getSequencesFromTileList(topBoard_tiles, melds);
+            getSequencesFromTileList(bottomBoard_tiles, melds);
 
             List<List<Tile>> converted_melds_computer_format = new List<List<Tile>>();
-            for(int i=0; i<melds.Count(); i++)
+
+            for (int i = 0; i < melds.Count(); i++)
             {
                 converted_melds_computer_format.Add(convertTilesButtonListToComputerFormat(melds[i]));
             }
+            return converted_melds_computer_format;
+        }
 
-            return GameTable.checkWinner(converted_melds_computer_format);
+        public int getHandTilesNumber()
+        {
+            List<List<Tile>> melds = meldsArrangedByPlayer();
+            int tiles_in_sets = 0;
+
+            for(int set_index = 0; set_index < melds.Count(); set_index++)
+                if (GameTable.isLegalMeld(melds[set_index]))
+                    tiles_in_sets += melds[set_index].Count();
+
+            return GameTable.RUMMIKUB_TILES_IN_GAME - tiles_in_sets;
         }
 
         private static List<Tile> convertTilesButtonListToComputerFormat(List<TileButton> tiles)
@@ -315,7 +326,7 @@ namespace rummikubGame
             return new_tiles_format;
         }
 
-        private static void getSequencesFromTileList(List<TileButton> tiles_sequence, List<List<TileButton>> melds, ref bool hasMeldOfSingleCard)   
+        private static void getSequencesFromTileList(List<TileButton> tiles_sequence, List<List<TileButton>> melds)   
         {
             List<TileButton> meld = new List<TileButton>();
             for (int i = 0; i < tiles_sequence.Count(); i++) // inserting the melds of the upper board
@@ -329,23 +340,12 @@ namespace rummikubGame
                     if (meld.Count != 0)
                         melds.Add(meld);
 
-                    if (meld.Count == 1)
-                    {
-                        hasMeldOfSingleCard = true;
-                        return;
-                    }
-                        meld = new List<TileButton>();
+                    meld = new List<TileButton>();
                     meld.Add(tiles_sequence[i]);
                 }
             }
             if (meld.Count != 0)
                 melds.Add(meld);
-
-            if (meld.Count == 1)
-            {
-                hasMeldOfSingleCard = true;
-                return;
-            }
         }
 
         public void ArrangeCardsOnBoard(List<TileButton> sorted_cards)

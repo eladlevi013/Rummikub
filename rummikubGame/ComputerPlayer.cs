@@ -340,7 +340,7 @@ namespace rummikubGame
                     return result;
                 }
             }
-            if (GameTable.canBeLegal(currSet))
+            if (canBeLegal(currSet))
             {
                 for (int i = 0; i < tiles.Count(); i++)
                 {

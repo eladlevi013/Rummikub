@@ -15,6 +15,11 @@ namespace rummikubGame
         private List<List<Tile>> sequences;
         private List<Button> drawn_computer_cards;
 
+        public int getHandTilesNumber()
+        {
+            return GameTable.RUMMIKUB_TILES_IN_GAME - GameTable.computer_player.getNumberOfTilesInAllSets(sequences);
+        }
+
         public bool checkWinner()
         {
             // first we'll find the number of tiles in hand
