@@ -43,7 +43,6 @@ namespace rummikubGame
 
         public Tile getTile()
         {
-            GameTable.global_current_pool_size_lbl.Text = getPoolSize() - 1 + " tiles in pool"; // minus 1, because we havent removed any tile yet
             if (tilesQueue.Count() == 0)
             {   // tilesQueue is empty - tiles are over
                 if (GameTable.computer_player.board.getHandTilesNumber() == GameTable.human_player.board.getHandTilesNumber())
@@ -56,6 +55,7 @@ namespace rummikubGame
                 GameTable.human_player.board.disableHumanBoard();
                 return null;
             }
+            GameTable.global_current_pool_size_lbl.Text = getPoolSize() - 1 + " tiles in pool"; // minus 1, because we havent removed any tile yet
             return tilesQueue.Dequeue();
         }
 

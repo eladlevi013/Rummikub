@@ -99,6 +99,9 @@ namespace rummikubGame
             Tile current_tile_from_pool = null;
 
             current_tile_from_pool = GameTable.pool.getTile();
+            if (current_tile_from_pool == null)
+                return;
+
             TileButtons[TAG_NUMBER] = (new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), slot_location));
             TileButtons[TAG_NUMBER].getTileButton().Location = TileButton_slot[slot_location[0], slot_location[1]].getSlotButton().Location;
             TileButton_slot[TileButtons[TAG_NUMBER].getLocation()[0], TileButtons[TAG_NUMBER].getLocation()[1]].changeState(true);
@@ -373,6 +376,12 @@ namespace rummikubGame
             for(int i=0; i < TileButtons.Keys.ToList().Count(); i++)
             {
                 TileButtons[TileButtons.Keys.ElementAt(i)].getTileButton().Enabled = false;
+            }
+            if (GameTable.dropped_tiles_stack.Count > 0)
+            {
+                GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
+                GameTable.dropped_tiles_stack.Peek().getTileButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
+                GameTable.dropped_tiles_stack.Pop().getTileButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown); ;
             }
         }
 

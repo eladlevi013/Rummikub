@@ -208,6 +208,10 @@ namespace rummikubGame
                 GameTable.human_player.board.GenerateComputerThrownTile(random_tile_to_drop);
 
                 Tile tile = GameTable.pool.getTile();
+
+                if (tile == null) // pool returns null tile
+                    return;
+
                 hand.Add(tile);
                 GameTable.computer_player.board.generateBoard();
 
@@ -237,7 +241,6 @@ namespace rummikubGame
                 GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
                 GameTable.game_over = true;
             }
-
         }
 
         public List<List<Tile>> CloneSets(List<List<Tile>> sets)
