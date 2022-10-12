@@ -13,10 +13,12 @@ namespace rummikubGame
         private Queue<Tile> tilesQueue;
         public Pool()
         {
-            const int NUMBER_OF_TIMES = 1;
+            // consts
+            const int NUMBER_OF_TIMES = 2;
             const int COLORS_COUNT = 4;
-            const int N = 13;
+            const int N = 13; // numbers range
 
+            // the creation of the pool
             List<Tile> tiles_list = new List<Tile>();
             for (int times = 0; times < NUMBER_OF_TIMES; times++)
             {
@@ -28,12 +30,18 @@ namespace rummikubGame
                     }
                 }
             }
-            // tiles_list.Add(new Tile(1, 0)); // black Joker added
-            // tiles_list.Add(new Tile(3, 0)); // red Joker added
 
+            /*
+            in final project - add jokers
+                tiles_list.Add(new Tile(1, 0)); // black Joker added
+                tiles_list.Add(new Tile(3, 0)); // red Joker added
+            */
+
+            // make the list of tiles randomized
             Random rand = new Random();
             var randomized_list = tiles_list.OrderBy(c => rand.Next()).ToList();
 
+            // now insert that list into the queue
             tilesQueue = new Queue<Tile>();
             for(int i=0; i<randomized_list.Count; i++)
             {
@@ -44,7 +52,8 @@ namespace rummikubGame
         public Tile getTile()
         {
             if (tilesQueue.Count() == 0)
-            {   // tilesQueue is empty - tiles are over
+            {   
+                // tilesQueue is empty -> tiles are over -> game over -> decide who is the winner(fewer files in hand)
                 if (GameTable.computer_player.board.getHandTilesNumber() == GameTable.human_player.board.getHandTilesNumber())
                     MessageBox.Show("Tie!");
                 else if (GameTable.computer_player.board.getHandTilesNumber() > GameTable.human_player.board.getHandTilesNumber())

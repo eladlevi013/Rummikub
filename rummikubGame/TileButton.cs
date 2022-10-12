@@ -9,13 +9,13 @@ namespace rummikubGame
 {
     public class TileButton: Tile
     {
-        private Button tile_button;
-        private int[] slot_location;
+        private Button tile_button; // button element of the tile
+        private int[] slot_location; // location of the slot of the card
 
         public TileButton(int color, int number, int[] slot_location): base(color, number)
         {
             this.slot_location = slot_location;
-            tile_button = new Button();
+            this.tile_button = new Button();
         }
 
         public Button getTileButton()

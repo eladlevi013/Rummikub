@@ -213,7 +213,7 @@ namespace rummikubGame
                     {
                         for (int j = 0; j < 10 && found_first_empty_slot == false; j++)
                         {
-                            if (TileButton_slot[i, j].getState() == false)
+                            if (TileButton_slot[i, j].getState() == Slot.AVAILABLE)
                             {
                                 first_empty_slot = TileButton_slot[i, j].getSlotButton();
                                 found_first_empty_slot = true;
@@ -232,7 +232,7 @@ namespace rummikubGame
                         for (int j = 0; j < 10; j++)
                         {
                             // if the distance is smaller, and the slot is available
-                            if (getDistance(current_card, TileButton_slot[i, j].getSlotButton()) < min_distance && TileButton_slot[i, j].getState() == false)
+                            if (getDistance(current_card, TileButton_slot[i, j].getSlotButton()) < min_distance && TileButton_slot[i, j].getState() == Slot.AVAILABLE)
                             {
                                 min_distance = getDistance(current_card, TileButton_slot[i, j].getSlotButton());
                                 min_i = i;

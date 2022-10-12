@@ -156,7 +156,7 @@ namespace rummikubGame
             {
                 for (int j = HUMAN_PLAYER_BOARD_WIDTH - 1; j >= 0 && !found_last_empty_location; j--)
                 {
-                    if (human_player.board.getTileButton_slot()[i, j].getState() == false)
+                    if (human_player.board.getTileButton_slot()[i, j].getState() == Slot.AVAILABLE)
                     {
                         int[] location_arr = { i, j }; // last empty place in board
                         human_player.board.GenerateNewTileByClickingPool(location_arr); // generate tile in that location
