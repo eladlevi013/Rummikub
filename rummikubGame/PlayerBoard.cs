@@ -14,8 +14,8 @@ namespace rummikubGame
         // consts
         const int STARTING_X_LOCATION = 70;
         const int STARTING_Y_LOCATION = 395;
-        const int X_SPACE_BETWEEN_TileButtonS = 85;
-        const int Y_SPACE_BETWEEN_TileButtonS = 115;
+        const int X_SPACE_BETWEEN_TileButtons = 85;
+        const int Y_SPACE_BETWEEN_TileButtons = 115;
         const int DROPPED_CARD_LOCATION = -1; // when the card is no longer in board
         const int RUMMIKUB_CARDS_NUMBER = 14;
 
@@ -24,7 +24,7 @@ namespace rummikubGame
         public static bool tookCard = false;
 
         // board elements
-        private Slot[,] TileButton_slot;  // 2d-array of the slots of the cards
+        private Slot[,] TileButton_slot; // 2d-array of the slots of the cards
         private Dictionary<int, TileButton> TileButtons;
 
         public Slot[,] getTileButtonSlot()
@@ -51,8 +51,9 @@ namespace rummikubGame
                 tookCard = true; // prevent unlimited tile picking
                 GameTable.global_game_indicator_lbl.Text = GameTable.DROP_TILE_FROM_BOARD_MSG;
 
+                // tile in stack won't be interactable after we generated one
                 if (GameTable.dropped_tiles_stack != null && GameTable.dropped_tiles_stack.Count() != 0)
-                {   // tile in stack won't be interactable after we generated one
+                {
                     GameTable.dropped_tiles_stack.Peek().getTileButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
                     GameTable.dropped_tiles_stack.Peek().getTileButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown);
                     GameTable.dropped_tiles_stack.Peek().getTileButton().Draggable(false);
@@ -73,7 +74,7 @@ namespace rummikubGame
         }
 
         public void TileDesigner(TileButton tile, Tile tile_info)
-        {
+        {   // creates graphical tile(location should be set outside the function)
             tile.getTileButton().Size = new Size(75, 100);
             tile.getTileButton().BackgroundImage = Image.FromFile("Tile.png");
             tile.getTileButton().BackgroundImageLayout = ImageLayout.Stretch;
@@ -81,16 +82,10 @@ namespace rummikubGame
             tile.getTileButton().FlatStyle = FlatStyle.Flat;
             tile.getTileButton().FlatAppearance.BorderSize = 0;
             tile.getTileButton().Text = tile_info.getNumber().ToString();
-
-            if (tile.getColor() == 0)
-                tile.getTileButton().ForeColor = (Color.Blue);
-            else if (tile.getColor() == 1)
-                tile.getTileButton().ForeColor = (Color.Black);
-            else if (tile.getColor() == 2)
-                tile.getTileButton().ForeColor = (Color.Yellow);
-            else
-                tile.getTileButton().ForeColor = (Color.Red);
-
+            if (tile.getColor() == 0) tile.getTileButton().ForeColor = (Color.Blue);
+            else if (tile.getColor() == 1) tile.getTileButton().ForeColor = (Color.Black);
+            else if (tile.getColor() == 2) tile.getTileButton().ForeColor = (Color.Yellow);
+            else tile.getTileButton().ForeColor = (Color.Red);
             tile.getTileButton().Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
             tile.getTileButton().MouseUp += new MouseEventHandler(this.TileButton_MouseUp);
             tile.getTileButton().MouseDown += new MouseEventHandler(this.TileButton_MouseDown);
@@ -104,14 +99,15 @@ namespace rummikubGame
 
         private void TileButton_MouseDown(object sender, MouseEventArgs e)
         {
-            ((Button)sender).BringToFront(); // focused TileButton, will be always at top
+            Button current_card = (Button)sender;
+            current_card.BringToFront();
             for (int i = 0; i < TileButtons.Keys.Count; i++) // iterating over the cards, because there is the option that the card in the dropped tiles
             {
                 // it means that the card is in the tiles group that you can interact with
-                if (((Button)sender).Tag == TileButtons[TileButtons.Keys.ElementAt(i)].getTileButton().Tag && TileButtons[(int)((Button)sender).Tag].getSlotLocation()[0] != -1 && TileButtons[(int)((Button)sender).Tag].getSlotLocation()[1] != -1)
+                if (current_card.Tag == TileButtons[TileButtons.Keys.ElementAt(i)].getTileButton().Tag && TileButtons[(int)current_card.Tag].getSlotLocation()[0] != -1 && TileButtons[(int)((Button)sender).Tag].getSlotLocation()[1] != -1)
                 {
-                    // we are turning it off, because we want to be able to place to the current place if its the closest location
-                    TileButton_slot[TileButtons[(int)((Button)sender).Tag].getSlotLocation()[0], TileButtons[(int)((Button)sender).Tag].getSlotLocation()[1]].changeState(false);
+                    // we'll make it available in order to be able to place to the current place if its the closest location
+                    TileButton_slot[TileButtons[(int)((Button)sender).Tag].getSlotLocation()[0], TileButtons[(int)((Button)sender).Tag].getSlotLocation()[1]].changeState(Slot.AVAILABLE);
                 }
             }
         }
@@ -136,7 +132,7 @@ namespace rummikubGame
         {
             Button current_card = (Button)sender; // the card that we dragged with the mouse
             if (TileButtons.ContainsKey((int)current_card.Tag) || (GameTable.dropped_tiles_stack.Count > 0 && (int)GameTable.dropped_tiles_stack.Peek().getTileButton().Tag == (int)current_card.Tag)) // if the card is in our board
-            { // this is a test
+            {
                 // first, we would like to check if the user wanted to put the TileButton on the drop_TileButton location
                 if (getDistance(current_card, GameTable.global_dropped_tiles_btn) < 100 && GameTable.current_turn == GameTable.HUMAN_PLAYER_TURN && tookCard == true && TileButtons.ContainsKey((int)current_card.Tag))
                 {
@@ -373,9 +369,9 @@ namespace rummikubGame
                     TileButton_slot[i, j].getSlotButton().Location = new Point(x_location, y_location);
                     TileButton_slot[i, j].changeState(false); // slot is available
                     GameTable.global_gametable_context.Controls.Add(TileButton_slot[i, j].getSlotButton());
-                    x_location += X_SPACE_BETWEEN_TileButtonS;
+                    x_location += X_SPACE_BETWEEN_TileButtons;
                 }
-                y_location += Y_SPACE_BETWEEN_TileButtonS;
+                y_location += Y_SPACE_BETWEEN_TileButtons;
                 x_location = STARTING_X_LOCATION;
             }
 
@@ -395,8 +391,8 @@ namespace rummikubGame
 
                 int[] start_location = { i / 10, i % 10 };
                 GenerateNewTileToSlotLocation(start_location);
-                x_location += X_SPACE_BETWEEN_TileButtonS;
-                if (i == 9) { y_location += Y_SPACE_BETWEEN_TileButtonS; x_location = STARTING_X_LOCATION; }
+                x_location += X_SPACE_BETWEEN_TileButtons;
+                if (i == 9) { y_location += Y_SPACE_BETWEEN_TileButtons; x_location = STARTING_X_LOCATION; }
                 TAG_NUMBER++;
             }
         }

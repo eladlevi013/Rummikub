@@ -11,8 +11,10 @@ namespace rummikubGame
 {
     public class ComputerBoard : Board
     {
-        private List<Tile> hand;
-        private List<List<Tile>> sequences;
+        // variables of the board
+        public List<Tile> tiles;
+        public List<Tile> hand;
+        public List<List<Tile>> sequences;
         private List<Button> drawn_computer_cards;
 
         public int getHandTilesNumber()
@@ -34,30 +36,23 @@ namespace rummikubGame
             return false;
         }
 
-        public void setHand(List<Tile> updated_hand)
+        public ComputerBoard()
         {
-            this.hand = updated_hand;
-        }
-
-        public void setSequences(List<List<Tile>> updated_sequences)
-        {
-            this.sequences = updated_sequences;
-        }
-
-        public ComputerBoard(List<Tile> hand, List<List<Tile>> sequences)
-        {
-            this.hand = hand;
-            this.sequences = sequences;
             drawn_computer_cards = new List<Button>();
-            if(GameTable.global_view_computer_tiles_groupbox.Checked == true)
-                generateBoard();
+            tiles = new List<Tile>();
+            hand = new List<Tile>();
+
+            // fills the tiles list
+            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
+                tiles.Add(GameTable.pool.getTile());
         }
 
         public void generateBoard()
-        {
+        {   // draws the tiles of the computer
             int starting_x_computer_tiles = 50;
             int starting_y_computer_tiles = 80;
 
+            // draws the hand tiles
             for (int i = 0; i < hand.Count(); i++)
             {
                 Point tile_location = new Point(starting_x_computer_tiles, starting_y_computer_tiles);
@@ -68,6 +63,7 @@ namespace rummikubGame
                 }
             }
 
+            // draws the sequences tiles
             starting_x_computer_tiles = 50;
             starting_y_computer_tiles = 170;
             if (sequences != null)
@@ -80,14 +76,13 @@ namespace rummikubGame
                         drawSingleComputerCard(sequences[i][j], tile_location);
                         starting_x_computer_tiles += 40;
                     }
-
                     if (i == 2)
-                    {
+                    {   // if there are alot of sequences continue drawing in another area
                         starting_x_computer_tiles = 250;
                         starting_y_computer_tiles = 120;
                     }
                     else
-                    {
+                    {   // in any other situation start at the next line
                         starting_x_computer_tiles = 50;
                     }
                     starting_y_computer_tiles += 50;
@@ -96,7 +91,7 @@ namespace rummikubGame
         }
 
         public void drawSingleComputerCard(Tile tile, Point point)
-        {
+        {   // draws the given tile at the given location
             Button tileButton = new Button();
             tileButton.Size = new Size(35, 40);
             tileButton.BackgroundImage = Image.FromFile("Tile.png");
@@ -106,24 +101,18 @@ namespace rummikubGame
             tileButton.FlatAppearance.BorderSize = 0;
             tileButton.Text = tile.getNumber().ToString();
             tileButton.Location = point;
-
-            if (tile.getColor() == 0)
-                tileButton.ForeColor = (Color.Blue);
-            else if (tile.getColor() == 1)
-                tileButton.ForeColor = (Color.Black);
-            else if (tile.getColor() == 2)
-                tileButton.ForeColor = (Color.Yellow);
-            else
-                tileButton.ForeColor = (Color.Red);
-
+            if (tile.getColor() == 0) tileButton.ForeColor = (Color.Blue);
+            else if (tile.getColor() == 1) tileButton.ForeColor = (Color.Black);
+            else if (tile.getColor() == 2) tileButton.ForeColor = (Color.Yellow);
+            else tileButton.ForeColor = (Color.Red);
             tileButton.Font = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
             drawn_computer_cards.Add(tileButton);
             GameTable.global_gametable_context.Controls.Add(drawn_computer_cards[drawn_computer_cards.Count() - 1]);
             tileButton.BringToFront();
         }
 
-        public void deleteCards()
-        {
+        public void deleteCardsVisibility()
+        {   // deletes the visibility of the computer tiles
             for (int i = 0; (drawn_computer_cards.Count != 0) && i < drawn_computer_cards.Count(); i++)
                 GameTable.global_gametable_context.Controls.Remove(drawn_computer_cards[i]);
         }

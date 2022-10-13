@@ -192,7 +192,7 @@ namespace rummikubGame
             if (show_computer_tiles_checkbox.Checked == false)
             {
                 computerTiles_groupbox.Visible = false;
-                computer_player.board.deleteCards();
+                computer_player.board.deleteCardsVisibility();
             }
             else
             {

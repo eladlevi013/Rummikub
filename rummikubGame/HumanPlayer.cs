@@ -14,7 +14,7 @@ namespace rummikubGame
         public HumanPlayer(string player_name)
         {
             this.player_name = player_name;
-            board = new PlayerBoard();
+            board = new PlayerBoard(); // generate the board of the human player
         }
 
         public string getPlayerName()
