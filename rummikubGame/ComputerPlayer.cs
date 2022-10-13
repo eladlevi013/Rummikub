@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -185,7 +186,7 @@ namespace rummikubGame
                 TileButton popped_tile = GameTable.dropped_tiles_stack.Pop();
                 GameTable.global_gametable_context.Controls.Remove(GameTable.dropped_tiles_stack.Peek().getTileButton());
                 GameTable.dropped_tiles_stack.Push(popped_tile);
-                GameTable.human_player.board.GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
+                GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
             }
             else // didnt find any better option
             {
@@ -198,7 +199,7 @@ namespace rummikubGame
                 {
                     board.setHand(hand);
                     board.setSequences(extendedSets);
-                    GameTable.human_player.board.GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
+                    GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
                 }
                 else
                 {
@@ -217,13 +218,13 @@ namespace rummikubGame
                     }
                     hand.RemoveAt(random_tile_to_drop_index);
                     hand.Add(tile);
-                    GameTable.human_player.board.GenerateComputerThrownTile(random_tile_to_drop);
+                    GenerateComputerThrownTile(random_tile_to_drop);
                 }
 
                 GameTable.computer_player.board.generateBoard();
             }
             GameTable.current_turn = GameTable.HUMAN_PLAYER_TURN;
-            GameTable.global_game_indicator_lbl.Text = "Your turn";
+            GameTable.global_game_indicator_lbl.Text = GameTable.TAKE_TILE_FROM_POOL_STACK_MSG;
             PlayerBoard.tookCard = false;
             GameTable.computer_player.board.deleteCards();
 
@@ -265,6 +266,20 @@ namespace rummikubGame
                     sum += sequences[i].Count();
             }
             return sum;
+        }
+
+        public void GenerateComputerThrownTile(Tile thrownTile)
+        {
+            if (GameTable.dropped_tiles_stack.Count() > 1)
+                GameTable.dropped_tiles_stack.Peek().getTileButton().Draggable(false);
+
+            Tile current_tile_from_pool = thrownTile;
+            int[] slot_location = { GameTable.DROPPED_TILE_LOCATION, GameTable.DROPPED_TILE_LOCATION };
+
+            TileButton computers_thrown_tile = new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), slot_location);
+            computers_thrown_tile.getTileButton().Location = new Point(GameTable.global_dropped_tiles_btn.Location.X + 10, GameTable.global_dropped_tiles_btn.Location.Y + 18);
+            GameTable.human_player.board.TileDesigner(computers_thrown_tile, current_tile_from_pool);
+            GameTable.dropped_tiles_stack.Push(computers_thrown_tile);
         }
 
         /*

@@ -162,14 +162,15 @@
             // 
             // game_indicator_lbl
             // 
-            this.game_indicator_lbl.AutoSize = true;
-            this.game_indicator_lbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.game_indicator_lbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.game_indicator_lbl.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.game_indicator_lbl.Location = new System.Drawing.Point(718, 56);
+            this.game_indicator_lbl.Location = new System.Drawing.Point(625, 47);
             this.game_indicator_lbl.Name = "game_indicator_lbl";
-            this.game_indicator_lbl.Size = new System.Drawing.Size(157, 25);
+            this.game_indicator_lbl.Size = new System.Drawing.Size(341, 61);
             this.game_indicator_lbl.TabIndex = 13;
             this.game_indicator_lbl.Text = "Game Indicator";
+            this.game_indicator_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.game_indicator_lbl.UseMnemonic = false;
             // 
             // GameTable
             // 

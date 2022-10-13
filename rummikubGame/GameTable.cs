@@ -25,6 +25,10 @@ namespace rummikubGame
         public const int HUMAN_PLAYER_BOARD_HEIGHT = 2;
         public const int HUMAN_PLAYER_BOARD_WIDTH = 10;
 
+        // game indicator messages
+        public static String TAKE_TILE_FROM_POOL_STACK_MSG = "Your turn - take tile from pool/stack";
+        public static String DROP_TILE_FROM_BOARD_MSG = "Your turn - drop tile from board";
+
         // players
         public static HumanPlayer human_player; // human-player
         public static ComputerPlayer computer_player; // computer-player
@@ -45,6 +49,9 @@ namespace rummikubGame
         public GameTable()
         {
             InitializeComponent();
+
+            // should reduce flickering
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -91,8 +98,8 @@ namespace rummikubGame
             current_turn = rnd.Next(0, 2);
             if (current_turn == COMPUTER_PLAYER_TURN)
             {
-                computer_player.play(null);
                 game_indicator_lbl.Text = "Computer's turn";
+                computer_player.play(null);
             }
             else
             {
@@ -156,7 +163,7 @@ namespace rummikubGame
             {
                 for (int j = HUMAN_PLAYER_BOARD_WIDTH - 1; j >= 0 && !found_last_empty_location; j--)
                 {
-                    if (human_player.board.getTileButton_slot()[i, j].getState() == Slot.AVAILABLE)
+                    if (human_player.board.getTileButtonSlot()[i, j].getState() == Slot.AVAILABLE)
                     {
                         int[] location_arr = { i, j }; // last empty place in board
                         human_player.board.GenerateNewTileByClickingPool(location_arr); // generate tile in that location

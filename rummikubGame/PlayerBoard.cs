@@ -11,12 +11,7 @@ namespace rummikubGame
 {
     public class PlayerBoard : Board
     {
-        public static int TAG_NUMBER = 0; // every card has tag that indicates the index on the dictionary
-        public Slot[,] TileButton_slot;  // 2d-array of the slots of the cards
-        public Dictionary<int, TileButton> TileButtons; // dictionary of the tiles<index(tag), TileButton(class)>
-        public static bool tookCard = false;
-
-        // Const values
+        // consts
         const int STARTING_X_LOCATION = 70;
         const int STARTING_Y_LOCATION = 395;
         const int X_SPACE_BETWEEN_TileButtonS = 85;
@@ -24,7 +19,15 @@ namespace rummikubGame
         const int DROPPED_CARD_LOCATION = -1; // when the card is no longer in board
         const int RUMMIKUB_CARDS_NUMBER = 14;
 
-        public Slot[,] getTileButton_slot()
+        // statics
+        public static int TAG_NUMBER = 0; // every card has tag that indicates the index on the dictionary
+        public static bool tookCard = false;
+
+        // board elements
+        private Slot[,] TileButton_slot;  // 2d-array of the slots of the cards
+        private Dictionary<int, TileButton> TileButtons;
+
+        public Slot[,] getTileButtonSlot()
         {
             return TileButton_slot;
         }
@@ -44,10 +47,12 @@ namespace rummikubGame
         {
             if (tookCard == false && GameTable.HUMAN_PLAYER_TURN == GameTable.current_turn && GameTable.game_over == false)
             {
-                GenerateNewTile(slot_location);
+                GenerateNewTileToSlotLocation(slot_location);
                 tookCard = true; // prevent unlimited tile picking
+                GameTable.global_game_indicator_lbl.Text = GameTable.DROP_TILE_FROM_BOARD_MSG;
+
                 if (GameTable.dropped_tiles_stack != null && GameTable.dropped_tiles_stack.Count() != 0)
-                { // last tile in stack will not be interactable after we generated another one(which means I chose in my turn to take a card from the pool)
+                {   // tile in stack won't be interactable after we generated one
                     GameTable.dropped_tiles_stack.Peek().getTileButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
                     GameTable.dropped_tiles_stack.Peek().getTileButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown);
                     GameTable.dropped_tiles_stack.Peek().getTileButton().Draggable(false);
@@ -55,83 +60,45 @@ namespace rummikubGame
             }
         }
 
-        public void GenerateComputerThrownTile(Tile thrownTile)
+        private void GenerateNewTileToSlotLocation(int[] slot_location)
         {
-            if(GameTable.dropped_tiles_stack.Count() > 1)
-                GameTable.dropped_tiles_stack.Peek().getTileButton().Draggable(false);
-
-            Tile current_tile_from_pool = thrownTile;
-            int[] slot_location = { GameTable.DROPPED_TILE_LOCATION, GameTable.DROPPED_TILE_LOCATION };
-
-            TileButton computers_thrown_tile = new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), slot_location);
-            computers_thrown_tile.getTileButton().Location = new Point(GameTable.global_dropped_tiles_btn.Location.X + 10, GameTable.global_dropped_tiles_btn.Location.Y + 18);
-            computers_thrown_tile.getTileButton().Size = new Size(75, 100);
-            computers_thrown_tile.getTileButton().BackgroundImage = Image.FromFile("Tile.png");
-            computers_thrown_tile.getTileButton().BackgroundImageLayout = ImageLayout.Stretch;
-            computers_thrown_tile.getTileButton().Draggable(true); // usage of the extension
-            computers_thrown_tile.getTileButton().FlatStyle = FlatStyle.Flat;
-            computers_thrown_tile.getTileButton().FlatAppearance.BorderSize = 0;
-            computers_thrown_tile.getTileButton().Text = current_tile_from_pool.getNumber().ToString();
-
-            if (computers_thrown_tile.getColor() == 0)
-                computers_thrown_tile.getTileButton().ForeColor = (Color.Blue);
-            else if (computers_thrown_tile.getColor() == 1)
-                computers_thrown_tile.getTileButton().ForeColor = (Color.Black);
-            else if (computers_thrown_tile.getColor() == 2)
-                computers_thrown_tile.getTileButton().ForeColor = (Color.Yellow);
-            else
-                computers_thrown_tile.getTileButton().ForeColor = (Color.Red);
-
-            computers_thrown_tile.getTileButton().Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
-            computers_thrown_tile.getTileButton().MouseUp += new MouseEventHandler(this.TileButton_MouseUp);
-            computers_thrown_tile.getTileButton().MouseDown += new MouseEventHandler(this.TileButton_MouseDown);
-            computers_thrown_tile.getTileButton().MouseEnter += TileButton_MouseEnter;
-            computers_thrown_tile.getTileButton().MouseLeave += TileButton_MouseLeave;
-            computers_thrown_tile.getTileButton().Tag = TAG_NUMBER;
-            GameTable.global_gametable_context.Controls.Add(computers_thrown_tile.getTileButton());
-            computers_thrown_tile.getTileButton().BringToFront();
-            TAG_NUMBER++;
-            GameTable.dropped_tiles_stack.Push(computers_thrown_tile);
-        }
-
-        public void GenerateNewTile(int[] slot_location)
-        {
-            Tile current_tile_from_pool = null;
-
-            current_tile_from_pool = GameTable.pool.getTile();
+            Tile current_tile_from_pool = GameTable.pool.getTile();
             if (current_tile_from_pool == null)
                 return;
 
             TileButtons[TAG_NUMBER] = (new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), slot_location));
             TileButtons[TAG_NUMBER].getTileButton().Location = TileButton_slot[slot_location[0], slot_location[1]].getSlotButton().Location;
             TileButton_slot[TileButtons[TAG_NUMBER].getSlotLocation()[0], TileButtons[TAG_NUMBER].getSlotLocation()[1]].changeState(true);
+            TileDesigner(TileButtons[TAG_NUMBER], current_tile_from_pool);
+        }
 
-            TileButtons[TAG_NUMBER].getTileButton().Size = new Size(75, 100);
-            TileButtons[TAG_NUMBER].getTileButton().BackgroundImage = Image.FromFile("Tile.png");
-            TileButtons[TAG_NUMBER].getTileButton().BackgroundImageLayout = ImageLayout.Stretch;
-            TileButtons[TAG_NUMBER].getTileButton().Draggable(true); // usage of the extension
-            TileButtons[TAG_NUMBER].getTileButton().FlatStyle = FlatStyle.Flat;
-            TileButtons[TAG_NUMBER].getTileButton().FlatAppearance.BorderSize = 0;
-            TileButtons[TAG_NUMBER].getTileButton().Text = current_tile_from_pool.getNumber().ToString();
+        public void TileDesigner(TileButton tile, Tile tile_info)
+        {
+            tile.getTileButton().Size = new Size(75, 100);
+            tile.getTileButton().BackgroundImage = Image.FromFile("Tile.png");
+            tile.getTileButton().BackgroundImageLayout = ImageLayout.Stretch;
+            tile.getTileButton().Draggable(true); // usage of the extension
+            tile.getTileButton().FlatStyle = FlatStyle.Flat;
+            tile.getTileButton().FlatAppearance.BorderSize = 0;
+            tile.getTileButton().Text = tile_info.getNumber().ToString();
 
-            if (TileButtons[TAG_NUMBER].getColor() == 0)
-                TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Blue);
-            else if (TileButtons[TAG_NUMBER].getColor() == 1)
-                TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Black);
-            else if (TileButtons[TAG_NUMBER].getColor() == 2)
-                TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Yellow);
+            if (tile.getColor() == 0)
+                tile.getTileButton().ForeColor = (Color.Blue);
+            else if (tile.getColor() == 1)
+                tile.getTileButton().ForeColor = (Color.Black);
+            else if (tile.getColor() == 2)
+                tile.getTileButton().ForeColor = (Color.Yellow);
             else
-                TileButtons[TAG_NUMBER].getTileButton().ForeColor = (Color.Red);
+                tile.getTileButton().ForeColor = (Color.Red);
 
-            TileButtons[TAG_NUMBER].getTileButton().Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
-            TileButtons[TAG_NUMBER].getTileButton().MouseUp += new MouseEventHandler(this.TileButton_MouseUp);
-            TileButtons[TAG_NUMBER].getTileButton().MouseDown += new MouseEventHandler(this.TileButton_MouseDown);
-            TileButtons[TAG_NUMBER].getTileButton().MouseEnter += TileButton_MouseEnter;
-            TileButtons[TAG_NUMBER].getTileButton().MouseLeave += TileButton_MouseLeave;
-
-            GameTable.global_gametable_context.Controls.Add(TileButtons[TAG_NUMBER].getTileButton());
-            TileButtons[TAG_NUMBER].getTileButton().BringToFront();
-            TileButtons[TAG_NUMBER].getTileButton().Tag = TAG_NUMBER;
+            tile.getTileButton().Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
+            tile.getTileButton().MouseUp += new MouseEventHandler(this.TileButton_MouseUp);
+            tile.getTileButton().MouseDown += new MouseEventHandler(this.TileButton_MouseDown);
+            tile.getTileButton().MouseEnter += TileButton_MouseEnter;
+            tile.getTileButton().MouseLeave += TileButton_MouseLeave;
+            tile.getTileButton().Tag = TAG_NUMBER;
+            GameTable.global_gametable_context.Controls.Add(tile.getTileButton());
+            tile.getTileButton().BringToFront();
             TAG_NUMBER++;
         }
 
@@ -202,6 +169,7 @@ namespace rummikubGame
                     {
                         TileButtons[(int)current_card.Tag] = GameTable.dropped_tiles_stack.Peek();
                         tookCard = true;
+                        GameTable.global_game_indicator_lbl.Text = GameTable.DROP_TILE_FROM_BOARD_MSG;
                     }
 
                     // Now we'll search the first empty slot, so we would know what is the the most close 
@@ -264,6 +232,7 @@ namespace rummikubGame
             if (checkWinner() == true)
             {
                 MessageBox.Show("You Won!");
+                GameTable.global_game_indicator_lbl.Text = "Game Over - You Won";
             }
         }
 
@@ -425,7 +394,7 @@ namespace rummikubGame
                 }
 
                 int[] start_location = { i / 10, i % 10 };
-                GenerateNewTile(start_location);
+                GenerateNewTileToSlotLocation(start_location);
                 x_location += X_SPACE_BETWEEN_TileButtonS;
                 if (i == 9) { y_location += Y_SPACE_BETWEEN_TileButtonS; x_location = STARTING_X_LOCATION; }
                 TAG_NUMBER++;
