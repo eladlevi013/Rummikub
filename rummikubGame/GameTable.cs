@@ -22,8 +22,12 @@ namespace rummikubGame
         public const int RUMMIKUB_TILES_IN_GAME = 14;
         public const int MAX_POSSIBLE_SEQUENCES_NUMBER = 4;
         public const int DROPPED_TILE_LOCATION = -1;
+
+        // graphical consts
         public const int HUMAN_PLAYER_BOARD_HEIGHT = 2;
         public const int HUMAN_PLAYER_BOARD_WIDTH = 10;
+        public const int TILE_WIDTH = 75;
+        public const int TILE_HEIGHT = 100;
 
         // game indicator messages
         public static String TAKE_TILE_FROM_POOL_STACK_MSG = "Your turn - take tile from pool/stack";
