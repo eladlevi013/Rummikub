@@ -12,7 +12,7 @@ namespace rummikubGame
     public class ComputerBoard : Board
     {
         // variables of the board
-        public List<Tile> tiles;
+        public List<Tile> starting_tiles;
         public List<Tile> hand;
         public List<List<Tile>> sequences;
         private List<Button> drawn_computer_cards;
@@ -39,12 +39,12 @@ namespace rummikubGame
         public ComputerBoard()
         {
             drawn_computer_cards = new List<Button>();
-            tiles = new List<Tile>();
+            starting_tiles = new List<Tile>();
             hand = new List<Tile>();
 
             // fills the tiles list
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
-                tiles.Add(GameTable.pool.getTile());
+                starting_tiles.Add(GameTable.pool.getTile());
         }
 
         public void generateBoard()
@@ -115,6 +115,20 @@ namespace rummikubGame
         {   // deletes the visibility of the computer tiles
             for (int i = 0; (drawn_computer_cards.Count != 0) && i < drawn_computer_cards.Count(); i++)
                 GameTable.global_gametable_context.Controls.Remove(drawn_computer_cards[i]);
+        }
+
+        public void GenerateComputerThrownTile(Tile thrownTile)
+        {
+            if (GameTable.dropped_tiles_stack.Count() > 1)
+                GameTable.dropped_tiles_stack.Peek().getTileButton().Draggable(false);
+
+            Tile current_tile_from_pool = thrownTile;
+            int[] slot_location = { GameTable.DROPPED_TILE_LOCATION, GameTable.DROPPED_TILE_LOCATION };
+
+            TileButton computers_thrown_tile = new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), slot_location);
+            computers_thrown_tile.getTileButton().Location = new Point(GameTable.global_dropped_tiles_btn.Location.X + 10, GameTable.global_dropped_tiles_btn.Location.Y + 18);
+            GameTable.human_player.board.TileDesigner(computers_thrown_tile, current_tile_from_pool);
+            GameTable.dropped_tiles_stack.Push(computers_thrown_tile);
         }
     }
 }

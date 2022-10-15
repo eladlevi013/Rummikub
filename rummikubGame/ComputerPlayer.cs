@@ -18,23 +18,24 @@ namespace rummikubGame
             // it takes care of the graphical representation of the tiles of the computer
             board = new ComputerBoard();
 
-            // first arrange those random tiles in optimal way
+            // arrange given tiles in optimal way
             firstArrange();
 
+            // draw the tiles on the screen
             if (GameTable.global_view_computer_tiles_groupbox.Checked == true)
                 board.generateBoard();
         }
 
         public void firstArrange()
         {
-            List<List<Tile>> legalSets = new List<List<Tile>>();
-            legalSets.Add(new List<Tile>());
+            bool best_sets_number_found = false; 
+            List<List<Tile>> result = null;
 
-            // result gonna be with melds of 3
-            bool best_sets_number_found = false; List<List<Tile>> result = null;
+            // result will be melds of 3 tiles
+            List<List<Tile>> legalSets = new List<List<Tile>>(); legalSets.Add(new List<Tile>()); // meldSets parameter
             for (int i = GameTable.MAX_POSSIBLE_SEQUENCES_NUMBER; i >= 1 && !best_sets_number_found; i--)
             {
-                result = meldsSets(board.tiles, legalSets, 0, i);
+                result = meldsSets(board.starting_tiles, legalSets, 0, i);
                 if (result == null)
                 {
                     legalSets = new List<List<Tile>>();
@@ -47,10 +48,10 @@ namespace rummikubGame
             }
 
             // sets the hand(cards that are not in any sequence)
-            for (int i = 0; i < board.tiles.Count(); i++)
+            for (int i = 0; i < board.starting_tiles.Count(); i++)
             {
-                if (board.tiles[i] != null)
-                    board.hand.Add(board.tiles[i]);
+                if (board.starting_tiles[i] != null)
+                    board.hand.Add(board.starting_tiles[i]);
             }
 ;
             // extendedSets function is being called(makes sequences bigger from hand tiles)
@@ -69,66 +70,63 @@ namespace rummikubGame
             }
         }
 
-        public bool better_sequences_after_taking_new_tile(Tile to_be_replaced)
+        public bool better_sequences_after_taking_new_tile(Tile new_tile)
         {
             bool replced_card_better_result = false;
             List<Tile> optimal_solution_hand = board.hand;
             List<List<Tile>> optimal_solution_sequences = board.sequences;
-            List<Tile> temp_tiles = new List<Tile>();
+            List<Tile> starting_tiles = new List<Tile>();
             Tile optimal_dropped_tile = null;
 
-            /* 
-                filling the temp_tiles list
-            */
+            // starting_tiles will be a list of all of the tiles
             for (int j = 0; j < board.hand.Count(); j++)
-            { // adds the hand cards to the temp_tiles list
+            { 
+                // adds the hand cards to the temp_tiles list
                 if (board.hand[j] != null)
-                    temp_tiles.Add(board.hand[j]);
+                    starting_tiles.Add(board.hand[j]);
             }
             if (board.sequences != null)
             { // adds the tiles in sets to the temp_tiles list
                 for (int j = 0; j < board.sequences.Count(); j++)
                     for (int k = 0; k < board.sequences[j].Count(); k++)
-                        temp_tiles.Add(board.sequences[j][k]);
+                        starting_tiles.Add(board.sequences[j][k]);
             }
 
-            /*
-            now we'll replace 
-            */
-            for (int i = 0; i < 14; i++)
+            // replacing every tile in starting_tiles with the given paramter in order to get better result
+            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
             {
+                // we want copy of starting tiles because result function makes some tiles null and we would not like it to be affect the next iteration
+                List<Tile> starting_tiles_copy = starting_tiles.Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
                 List<List<Tile>> temp_extendedSets = new List<List<Tile>>();
                 List<Tile> temp_hand = new List<Tile>();
-                List<Tile> temp_tiles_copy = temp_tiles.Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
-                Tile dropped_tile = temp_tiles_copy[i];
+                Tile dropped_tile = starting_tiles_copy[i];
 
-                temp_tiles_copy[i] = to_be_replaced;
+                // replacing starting tile at index i, in order to see if its getting better result
+                starting_tiles_copy[i] = new_tile;
 
-                // basically first arrange
-                List<List<Tile>> legalSets = new List<List<Tile>>();
-                legalSets.Add(new List<Tile>());
-
+                // Similar proccess as firstArrange
+                List<List<Tile>> legalSets = new List<List<Tile>>(); legalSets.Add(new List<Tile>());
                 bool best_sets_number_found = false;
                 List<List<Tile>> result = null;
-
-                // we would like to stay with the most melds
-                for (int j = 4; j >= 1 && !best_sets_number_found; j--)
+                for (int j = GameTable.RUMMIKUB_TILES_IN_GAME; j >= 1 && !best_sets_number_found; j--)
                 {
-                    result = meldsSets(temp_tiles_copy, legalSets, 0, j);
+                    result = meldsSets(starting_tiles_copy, legalSets, 0, j);
                     if (result == null)
                     {
                         legalSets = new List<List<Tile>>();
                         legalSets.Add(new List<Tile>());
                     }
                     else
+                    {
                         best_sets_number_found = true;
+                    }
                 }
 
                 // add to hand
-                for (int j = 0; j < temp_tiles_copy.Count(); j++)
+                for (int j = 0; j < starting_tiles_copy.Count(); j++)
                 {
-                    if (temp_tiles_copy[j] != null)
-                        temp_hand.Add(temp_tiles[j]);
+                    if (starting_tiles_copy[j] != null)
+                        temp_hand.Add(starting_tiles_copy[j]);
                 }
 ;
                 // makes sure to pick the best extended sequences
@@ -156,14 +154,21 @@ namespace rummikubGame
                 }
             }
 
-            if(replced_card_better_result == true)
+            /* if we found a better option than the starting point:
+                 * 1. replace the global sequences,hand parameters
+                 * 2. delete last tile from stack, draw dropped_card on stack
+                 * 3. return true
+            */
+            if (replced_card_better_result == true)
             {
                 board.sequences = optimal_solution_sequences;
                 board.hand = optimal_solution_hand;
 
-                int[] tile_in_dropped_tiles_location = { -1, -1 };
+                if(GameTable.dropped_tiles_stack.Count() > 0)
+                    GameTable.global_gametable_context.Controls.Remove(GameTable.dropped_tiles_stack.Peek().getTileButton());
+                int[] tile_in_dropped_tiles_location = { GameTable.DROPPED_TILE_LOCATION, GameTable.DROPPED_TILE_LOCATION };
                 TileButton dropped_tile = new TileButton(optimal_dropped_tile.getColor(), optimal_dropped_tile.getNumber(), tile_in_dropped_tiles_location);
-                GameTable.dropped_tiles_stack.Push(dropped_tile);
+                board.GenerateComputerThrownTile(dropped_tile);
                 return true;
             }
             return false;
@@ -171,25 +176,21 @@ namespace rummikubGame
 
         public void play(Tile to_be_replaced)
         {
-            if (to_be_replaced != null && better_sequences_after_taking_new_tile(to_be_replaced) == true) {
-                TileButton popped_tile = GameTable.dropped_tiles_stack.Pop();
-                GameTable.global_gametable_context.Controls.Remove(GameTable.dropped_tiles_stack.Peek().getTileButton());
-                GameTable.dropped_tiles_stack.Push(popped_tile);
-                GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
-            }
-            else // didnt find any better option
+            // didnt find better arrangement
+            if(!better_sequences_after_taking_new_tile(to_be_replaced))
             {
                 Tile tile = GameTable.pool.getTile();
-
-                if (tile == null) // pool returns null tile
+                if (tile == null) // pool is empty
                     return;
 
+                // better option with tile from pool
                 if (better_sequences_after_taking_new_tile(tile) == true)
                 {
-                    GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
+                    board.GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
                 }
                 else
                 {
+                    // if tile from pool didnt gave us better result drop random tile from hand
                     Random rnd_hand_index = new Random();
                     bool hand_null = true;
                     Tile random_tile_to_drop = null;
@@ -205,11 +206,11 @@ namespace rummikubGame
                     }
                     board.hand.RemoveAt(random_tile_to_drop_index);
                     board.hand.Add(tile);
-                    GenerateComputerThrownTile(random_tile_to_drop);
+                    board.GenerateComputerThrownTile(random_tile_to_drop);
                 }
-
-                GameTable.computer_player.board.generateBoard();
             }
+
+            // done in both cases(better option or not)
             GameTable.current_turn = GameTable.HUMAN_PLAYER_TURN;
             GameTable.global_game_indicator_lbl.Text = GameTable.TAKE_TILE_FROM_POOL_STACK_MSG;
             PlayerBoard.tookCard = false;
@@ -255,20 +256,6 @@ namespace rummikubGame
             return sum;
         }
 
-        public void GenerateComputerThrownTile(Tile thrownTile)
-        {
-            if (GameTable.dropped_tiles_stack.Count() > 1)
-                GameTable.dropped_tiles_stack.Peek().getTileButton().Draggable(false);
-
-            Tile current_tile_from_pool = thrownTile;
-            int[] slot_location = { GameTable.DROPPED_TILE_LOCATION, GameTable.DROPPED_TILE_LOCATION };
-
-            TileButton computers_thrown_tile = new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), slot_location);
-            computers_thrown_tile.getTileButton().Location = new Point(GameTable.global_dropped_tiles_btn.Location.X + 10, GameTable.global_dropped_tiles_btn.Location.Y + 18);
-            GameTable.human_player.board.TileDesigner(computers_thrown_tile, current_tile_from_pool);
-            GameTable.dropped_tiles_stack.Push(computers_thrown_tile);
-        }
-
         /*
          Create a set class, which contains the data of what type the set is(Group, Run)
          for group we dont need to check the two of the ways to arrange
@@ -282,6 +269,7 @@ namespace rummikubGame
                 else 
                     return null;
             }
+
             for (int i=0; i<sequences.Count(); i++)
             {
                 if (hand_tiles[indexOfHandTile] != null)
