@@ -28,6 +28,9 @@ namespace rummikubGame
 
         public void firstArrange()
         {
+            // sorting the tiles in order to get 1,2,3 
+            board.starting_tiles = board.starting_tiles.OrderBy(card => card.getNumber()).ToList();
+
             bool best_sets_number_found = false; 
             List<List<Tile>> result = null;
 
@@ -35,7 +38,7 @@ namespace rummikubGame
             List<List<Tile>> legalSets = new List<List<Tile>>(); legalSets.Add(new List<Tile>()); // meldSets parameter
             for (int i = GameTable.MAX_POSSIBLE_SEQUENCES_NUMBER; i >= 1 && !best_sets_number_found; i--)
             {
-                result = meldsSets(board.starting_tiles, legalSets, 0, i);
+                result = meldsSets(board.starting_tiles, ref legalSets, 0, i);
                 if (result == null)
                 {
                     legalSets = new List<List<Tile>>();
@@ -57,16 +60,8 @@ namespace rummikubGame
             // extendedSets function is being called(makes sequences bigger from hand tiles)
             if (result != null)
             {
-                bool best_extended_sets_found = false;
-                for (int i = GameTable.RUMMIKUB_TILES_IN_GAME - board.hand.Count(); i >= 0 && !best_extended_sets_found; i--)
-                {
-                    List<List<Tile>> cloned_result = CloneSets(result);
-                    board.sequences = extendSets(0, cloned_result, i, board.hand);
-                    if (board.sequences != null)
-                    {
-                        best_extended_sets_found = true;
-                    }
-                }
+                extendSets(ref result, ref board.hand);
+                board.sequences = result;
             }
         }
 
@@ -110,7 +105,7 @@ namespace rummikubGame
                 List<List<Tile>> result = null;
                 for (int j = GameTable.RUMMIKUB_TILES_IN_GAME; j >= 1 && !best_sets_number_found; j--)
                 {
-                    result = meldsSets(starting_tiles_copy, legalSets, 0, j);
+                    result = meldsSets(starting_tiles_copy,  ref legalSets, 0, j);
                     if (result == null)
                     {
                         legalSets = new List<List<Tile>>();
@@ -132,16 +127,8 @@ namespace rummikubGame
                 // makes sure to pick the best extended sequences
                 if (result != null)
                 {
-                    bool best_extended_sets_found = false;
-                    for (int j = 14 - temp_hand.Count(); j >= 0 && !best_extended_sets_found; j--)
-                    {
-                        List<List<Tile>> cloned_result = CloneSets(result);
-                        temp_extendedSets = extendSets(0, cloned_result, j, temp_hand);
-                        if (temp_extendedSets != null)
-                        {
-                            best_extended_sets_found = true;
-                        }
-                    }
+                    extendSets(ref result, ref temp_hand);
+                    temp_extendedSets = result;
                 }
 
                 // check if the current situation is better than the optimal
@@ -260,40 +247,37 @@ namespace rummikubGame
          Create a set class, which contains the data of what type the set is(Group, Run)
          for group we dont need to check the two of the ways to arrange
          */
-        public List<List<Tile>> extendSets(int indexOfHandTile, List<List<Tile>> sequences, int number_of_tiles_in_set, List<Tile> hand_tiles)
+        public void extendSets(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
         {
-            if (indexOfHandTile >= hand_tiles.Count())
-            {
-                if(getNumberOfTilesInAllSets(sequences) >= number_of_tiles_in_set)
-                    return sequences;
-                else 
-                    return null;
-            }
+            // we have to sort the hand_tiles
+            hand_tiles = hand_tiles.OrderBy(card => card.getNumber()).ToList();
 
-            for (int i=0; i<sequences.Count(); i++)
+            for(int hand_tile_index=0; hand_tile_index < hand_tiles.Count(); hand_tile_index++)
             {
-                if (hand_tiles[indexOfHandTile] != null)
+                for (int i = 0; i < sequences.Count(); i++)
                 {
-                    List<Tile> tempSequenceAddRight = sequences[i].Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
-                    tempSequenceAddRight.Add(hand_tiles[indexOfHandTile]);
-                    if (GameTable.isLegalMeld(tempSequenceAddRight) == true)
+                    if (hand_tiles[hand_tile_index] != null)
                     {
-                        sequences[i] = tempSequenceAddRight;
-                        hand_tiles[indexOfHandTile] = null;
+                        List<Tile> tempSequenceAddRight = sequences[i].Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
+                        tempSequenceAddRight.Add(hand_tiles[hand_tile_index]);
+                        if (GameTable.isLegalMeld(tempSequenceAddRight) == true)
+                        {
+                            sequences[i] = tempSequenceAddRight;
+                            hand_tiles[hand_tile_index] = null;
+                        }
                     }
-                }
-                if (hand_tiles[indexOfHandTile] != null)
-                {
-                    List<Tile> tempSequenceAddLeft = sequences[i].Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
-                    tempSequenceAddLeft.Insert(0, hand_tiles[indexOfHandTile]);
-                    if (GameTable.isLegalMeld(tempSequenceAddLeft) == true)
+                    if (hand_tiles[hand_tile_index] != null)
                     {
-                        sequences[i] = tempSequenceAddLeft;
-                        hand_tiles[indexOfHandTile] = null;
+                        List<Tile> tempSequenceAddLeft = sequences[i].Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
+                        tempSequenceAddLeft.Insert(0, hand_tiles[hand_tile_index]);
+                        if (GameTable.isLegalMeld(tempSequenceAddLeft) == true)
+                        {
+                            sequences[i] = tempSequenceAddLeft;
+                            hand_tiles[hand_tile_index] = null;
+                        }
                     }
                 }
             }
-            return extendSets(indexOfHandTile + 1, sequences, number_of_tiles_in_set, hand_tiles);
         }
 
         public static bool canBeLegal(List<Tile> set)
@@ -313,7 +297,7 @@ namespace rummikubGame
             return GameTable.isLegalMeld(set);
         }
 
-        public List<List<Tile>> meldsSets(List<Tile> tiles, List<List<Tile>> sets, int meldStart, int maxSets)
+        public List<List<Tile>> meldsSets(List<Tile> tiles, ref List<List<Tile>> sets, int meldStart, int maxSets)
         {
             List<Tile> currSet = sets[sets.Count() - 1];
             if (GameTable.isLegalMeld(currSet))
@@ -321,7 +305,7 @@ namespace rummikubGame
                 if (sets.Count() >= maxSets)
                     return sets;
                 sets.Add(new List<Tile>());
-                List<List<Tile>> result = meldsSets(tiles, sets, meldStart + 1, maxSets);
+                List<List<Tile>> result = meldsSets(tiles, ref sets, meldStart + 1, maxSets);
                 if (result == null)
                 {
                     sets.RemoveAt(sets.Count() - 1);
@@ -341,7 +325,7 @@ namespace rummikubGame
                     {
                         tiles[i] = null;
                         currSet.Add(t);
-                        List<List<Tile>> result = meldsSets(tiles, sets, meldStart, maxSets);
+                        List<List<Tile>> result = meldsSets(tiles, ref sets, meldStart, maxSets);
                         if (result == null)
                         {
                             currSet.RemoveAt(currSet.Count() - 1);
