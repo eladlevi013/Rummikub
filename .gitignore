@@ -1,7 +1,5 @@
-rummikubGame/bin/*/
 *.rummikubGame/obj/
 *.user
 *.suo
 _ReSharper.*
 *.sln.cache
-.vs/
