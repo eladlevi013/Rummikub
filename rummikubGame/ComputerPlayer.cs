@@ -39,6 +39,7 @@ namespace rummikubGame
             for (int i = GameTable.MAX_POSSIBLE_SEQUENCES_NUMBER; i >= 1 && !best_sets_number_found; i--)
             {
                 result = meldsSets(board.starting_tiles, ref legalSets, 0, i);
+                // result = meldsSetsBetter(board.starting_tiles);
                 if (result == null)
                 {
                     legalSets = new List<List<Tile>>();
@@ -106,6 +107,7 @@ namespace rummikubGame
                 for (int j = GameTable.RUMMIKUB_TILES_IN_GAME; j >= 1 && !best_sets_number_found; j--)
                 {
                     result = meldsSets(starting_tiles_copy,  ref legalSets, 0, j);
+                    // result = meldsSetsBetter(board.starting_tiles);
                     if (result == null)
                     {
                         legalSets = new List<List<Tile>>();
@@ -295,6 +297,60 @@ namespace rummikubGame
                 return false;
             }
             return GameTable.isLegalMeld(set);
+        }
+
+        public List<List<Tile>> meldsSetsBetter(List<Tile> sorted_tiles)
+        {
+            List<Tile> sorted_tiles_no_dup = new List<Tile>(sorted_tiles);
+
+            // classify to 4 different lists(every color in every array)
+            List<Tile>[] tiles_lst_color = new List<Tile>[4];
+            for (int color_index = 0; color_index < 4; color_index++)
+            {
+                tiles_lst_color[color_index] = new List<Tile>();
+                for (int i = 0; i < sorted_tiles_no_dup.Count(); i++)
+                {
+                    if (sorted_tiles_no_dup[i].getColor() == color_index)
+                    {
+                        tiles_lst_color[color_index].Add(sorted_tiles_no_dup[i]);
+                    }
+                }
+            }
+
+            List<List<Tile>> sequences = new List<List<Tile>>();
+            for (int i = 0; i < 4; i++)
+            {
+                bool meld_found = false;
+                do
+                {
+                    meld_found = false;
+                    Dictionary<int, Tile> current_color_lst = new Dictionary<int, Tile>();
+                    for (int k = 0; k < tiles_lst_color[i].Count(); k++) current_color_lst[k] = tiles_lst_color[i][k];
+
+                    // now we'll remove the duplicates
+                    for (int j = 1; j < current_color_lst.Count(); j++)
+                    {
+                        if (current_color_lst[current_color_lst.Keys.ToList()[j]].getColor() == current_color_lst[current_color_lst.Keys.ToList()[j - 1]].getColor() && current_color_lst[current_color_lst.Keys.ToList()[j]].getNumber() == current_color_lst[current_color_lst.Keys.ToList()[j - 1]].getNumber())
+                        {
+                            current_color_lst.Remove(current_color_lst.Keys.ToList()[j]);
+                            j--;
+                        }
+                    }
+
+                    for(int j=0; j< current_color_lst.Keys.Count()-2; j++)
+                    {
+                        if (current_color_lst[current_color_lst.Keys.ToList()[j]].getNumber() + 1 == current_color_lst[current_color_lst.Keys.ToList()[j+1]].getNumber() && current_color_lst[current_color_lst.Keys.ToList()[j+1]].getNumber() + 1 == current_color_lst[current_color_lst.Keys.ToList()[j+2]].getNumber())
+                        {
+                            sequences.Add(new List<Tile>() { current_color_lst[j], current_color_lst[j + 1], current_color_lst[j + 2] });
+                            current_color_lst.Remove(current_color_lst.Keys.ToList()[j]); current_color_lst.Remove(current_color_lst.Keys.ToList()[j]); current_color_lst.Remove(current_color_lst.Keys.ToList()[j]);
+                            tiles_lst_color[i].RemoveAt(j); tiles_lst_color[i].RemoveAt(j); tiles_lst_color[i].RemoveAt(j);
+                            meld_found = true;
+                        }
+                    }
+                }
+                while (meld_found);
+            }
+            return sequences;
         }
 
         public List<List<Tile>> meldsSets(List<Tile> tiles, ref List<List<Tile>> sets, int meldStart, int maxSets)
