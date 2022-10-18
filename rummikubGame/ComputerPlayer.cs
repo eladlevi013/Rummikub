@@ -130,6 +130,7 @@ namespace rummikubGame
                 }
                 */
 
+                starting_tiles_copy = starting_tiles_copy.OrderBy(card => card.getNumber()).ToList();
                 List<List<Tile>> result = meldsSetsBetter(starting_tiles_copy, ref board.hand);
                 temp_hand = new List<Tile>(board.hand);
 
