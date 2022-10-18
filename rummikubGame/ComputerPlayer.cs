@@ -32,33 +32,6 @@ namespace rummikubGame
             board.starting_tiles = board.starting_tiles.OrderBy(card => card.getNumber()).ToList();
 
             List<List<Tile>> result = meldsSetsBetter(board.starting_tiles, ref board.hand);
-
-            /*
-            bool best_sets_number_found = false;
-            // result will be melds of 3 tiles
-            List<List<Tile>> legalSets = new List<List<Tile>>(); legalSets.Add(new List<Tile>()); // meldSets parameter
-            for (int i = GameTable.MAX_POSSIBLE_SEQUENCES_NUMBER; i >= 1 && !best_sets_number_found; i--)
-            {
-                result = meldsSets(board.starting_tiles, ref legalSets, 0, i);
-                // result = meldsSetsBetter(board.starting_tiles);
-                if (result == null)
-                {
-                    legalSets = new List<List<Tile>>();
-                    legalSets.Add(new List<Tile>());
-                }
-                else
-                {
-                    best_sets_number_found = true;
-                }
-            }
-
-            // sets the hand(cards that are not in any sequence)
-            for (int i = 0; i < board.starting_tiles.Count(); i++)
-            {
-                if (board.starting_tiles[i] != null)
-                    board.hand.Add(board.starting_tiles[i]);
-            }
-            */
 ;
             // extendedSets function is being called(makes sequences bigger from hand tiles)
             if (result != null)
@@ -71,6 +44,7 @@ namespace rummikubGame
         public bool better_sequences_after_taking_new_tile(Tile new_tile)
         {
             List<Tile> starting_tiles_if_not_better = board.hand;
+
             bool replced_card_better_result = false;
             List<Tile> optimal_solution_hand = board.hand;
             List<List<Tile>> optimal_solution_sequences = board.sequences;
@@ -102,33 +76,6 @@ namespace rummikubGame
 
                 // replacing starting tile at index i, in order to see if its getting better result
                 starting_tiles_copy[i] = new_tile;
-
-                /*
-                // Similar proccess as firstArrange
-                List<List<Tile>> legalSets = new List<List<Tile>>(); legalSets.Add(new List<Tile>());
-                bool best_sets_number_found = false;
-                for (int j = GameTable.RUMMIKUB_TILES_IN_GAME; j >= 1 && !best_sets_number_found; j--)
-                {
-                    result = meldsSets(starting_tiles_copy,  ref legalSets, 0, j);
-                    // result = meldsSetsBetter(board.starting_tiles);
-                    if (result == null)
-                    {
-                        legalSets = new List<List<Tile>>();
-                        legalSets.Add(new List<Tile>());
-                    }
-                    else
-                    {
-                        best_sets_number_found = true;
-                    }
-                }
-
-                // add to hand
-                for (int j = 0; j < starting_tiles_copy.Count(); j++)
-                {
-                    if (starting_tiles_copy[j] != null)
-                        temp_hand.Add(starting_tiles_copy[j]);
-                }
-                */
 
                 starting_tiles_copy = starting_tiles_copy.OrderBy(card => card.getNumber()).ToList();
                 List<List<Tile>> result = meldsSetsBetter(starting_tiles_copy, ref board.hand);
@@ -182,11 +129,7 @@ namespace rummikubGame
                     return;
 
                 // better option with tile from pool
-                if (better_sequences_after_taking_new_tile(tile) == true)
-                {
-                    board.GenerateComputerThrownTile(GameTable.dropped_tiles_stack.Pop());
-                }
-                else
+                if (better_sequences_after_taking_new_tile(tile) == false)
                 {
                     // if tile from pool didnt gave us better result drop random tile from hand
                     Random rnd_hand_index = new Random();
@@ -226,21 +169,6 @@ namespace rummikubGame
                 GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
                 GameTable.game_over = true;
             }
-        }
-
-        public List<List<Tile>> CloneSets(List<List<Tile>> sets)
-        {
-            List<List<Tile>> cloned_sets = new List<List<Tile>>();
-            for(int i=0; i<sets.Count(); i++)
-            {
-                List<Tile> set = new List<Tile>();
-                cloned_sets.Add(set);
-                for(int j=0; j < sets[i].Count(); j++)
-                {
-                    cloned_sets[i].Add(sets[i][j]);
-                }
-            }
-            return cloned_sets;
         }
 
         public int getNumberOfTilesInAllSets(List<List<Tile>> sequences)

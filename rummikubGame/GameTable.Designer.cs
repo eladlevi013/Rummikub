@@ -50,9 +50,10 @@
             this.board_panel.AllowDrop = true;
             this.board_panel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("board_panel.BackgroundImage")));
             this.board_panel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.board_panel.Location = new System.Drawing.Point(12, 354);
+            this.board_panel.Location = new System.Drawing.Point(16, 436);
+            this.board_panel.Margin = new System.Windows.Forms.Padding(4);
             this.board_panel.Name = "board_panel";
-            this.board_panel.Size = new System.Drawing.Size(951, 303);
+            this.board_panel.Size = new System.Drawing.Size(1268, 373);
             this.board_panel.TabIndex = 2;
             // 
             // dropped_tiles_btn
@@ -60,9 +61,10 @@
             this.dropped_tiles_btn.BackColor = System.Drawing.Color.Wheat;
             this.dropped_tiles_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dropped_tiles_btn.BackgroundImage")));
             this.dropped_tiles_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.dropped_tiles_btn.Location = new System.Drawing.Point(669, 126);
+            this.dropped_tiles_btn.Location = new System.Drawing.Point(892, 155);
+            this.dropped_tiles_btn.Margin = new System.Windows.Forms.Padding(4);
             this.dropped_tiles_btn.Name = "dropped_tiles_btn";
-            this.dropped_tiles_btn.Size = new System.Drawing.Size(98, 135);
+            this.dropped_tiles_btn.Size = new System.Drawing.Size(131, 166);
             this.dropped_tiles_btn.TabIndex = 3;
             this.dropped_tiles_btn.UseVisualStyleBackColor = false;
             // 
@@ -71,9 +73,10 @@
             this.pool_btn.BackColor = System.Drawing.Color.Wheat;
             this.pool_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pool_btn.BackgroundImage")));
             this.pool_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pool_btn.Location = new System.Drawing.Point(819, 126);
+            this.pool_btn.Location = new System.Drawing.Point(1092, 155);
+            this.pool_btn.Margin = new System.Windows.Forms.Padding(4);
             this.pool_btn.Name = "pool_btn";
-            this.pool_btn.Size = new System.Drawing.Size(102, 135);
+            this.pool_btn.Size = new System.Drawing.Size(136, 166);
             this.pool_btn.TabIndex = 4;
             this.pool_btn.UseVisualStyleBackColor = false;
             this.pool_btn.Click += new System.EventHandler(this.pool_btn_Click);
@@ -82,9 +85,10 @@
             // 
             this.current_pool_size_lbl.AutoSize = true;
             this.current_pool_size_lbl.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.current_pool_size_lbl.Location = new System.Drawing.Point(835, 268);
+            this.current_pool_size_lbl.Location = new System.Drawing.Point(1113, 330);
+            this.current_pool_size_lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.current_pool_size_lbl.Name = "current_pool_size_lbl";
-            this.current_pool_size_lbl.Size = new System.Drawing.Size(67, 13);
+            this.current_pool_size_lbl.Size = new System.Drawing.Size(83, 16);
             this.current_pool_size_lbl.TabIndex = 5;
             this.current_pool_size_lbl.Text = "x tiles in pool";
             // 
@@ -92,9 +96,10 @@
             // 
             this.sort_value_btn.BackColor = System.Drawing.Color.Sienna;
             this.sort_value_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("sort_value_btn.BackgroundImage")));
-            this.sort_value_btn.Location = new System.Drawing.Point(333, 655);
+            this.sort_value_btn.Location = new System.Drawing.Point(444, 806);
+            this.sort_value_btn.Margin = new System.Windows.Forms.Padding(4);
             this.sort_value_btn.Name = "sort_value_btn";
-            this.sort_value_btn.Size = new System.Drawing.Size(147, 29);
+            this.sort_value_btn.Size = new System.Drawing.Size(196, 36);
             this.sort_value_btn.TabIndex = 8;
             this.sort_value_btn.Text = "Sort By Value";
             this.sort_value_btn.UseVisualStyleBackColor = false;
@@ -104,9 +109,10 @@
             // 
             this.sort_color_btn.BackColor = System.Drawing.Color.Sienna;
             this.sort_color_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("sort_color_btn.BackgroundImage")));
-            this.sort_color_btn.Location = new System.Drawing.Point(499, 655);
+            this.sort_color_btn.Location = new System.Drawing.Point(665, 806);
+            this.sort_color_btn.Margin = new System.Windows.Forms.Padding(4);
             this.sort_color_btn.Name = "sort_color_btn";
-            this.sort_color_btn.Size = new System.Drawing.Size(147, 29);
+            this.sort_color_btn.Size = new System.Drawing.Size(196, 36);
             this.sort_color_btn.TabIndex = 9;
             this.sort_color_btn.Text = "Sort By Color";
             this.sort_color_btn.UseVisualStyleBackColor = false;
@@ -117,9 +123,10 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.label1.Location = new System.Drawing.Point(16, 114);
+            this.label1.Location = new System.Drawing.Point(21, 140);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(112, 24);
+            this.label1.Size = new System.Drawing.Size(141, 29);
             this.label1.TabIndex = 10;
             this.label1.Text = "Sequences:";
             // 
@@ -128,9 +135,10 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.label2.Location = new System.Drawing.Point(16, 23);
+            this.label2.Location = new System.Drawing.Point(21, 28);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(61, 24);
+            this.label2.Size = new System.Drawing.Size(76, 29);
             this.label2.TabIndex = 11;
             this.label2.Text = "Hand:";
             // 
@@ -141,9 +149,11 @@
             this.computerTiles_groupbox.Controls.Add(this.label2);
             this.computerTiles_groupbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.computerTiles_groupbox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.computerTiles_groupbox.Location = new System.Drawing.Point(30, 24);
+            this.computerTiles_groupbox.Location = new System.Drawing.Point(40, 30);
+            this.computerTiles_groupbox.Margin = new System.Windows.Forms.Padding(4);
             this.computerTiles_groupbox.Name = "computerTiles_groupbox";
-            this.computerTiles_groupbox.Size = new System.Drawing.Size(589, 304);
+            this.computerTiles_groupbox.Padding = new System.Windows.Forms.Padding(4);
+            this.computerTiles_groupbox.Size = new System.Drawing.Size(785, 374);
             this.computerTiles_groupbox.TabIndex = 12;
             this.computerTiles_groupbox.TabStop = false;
             // 
@@ -152,9 +162,10 @@
             this.show_computer_tiles_checkbox.AutoSize = true;
             this.show_computer_tiles_checkbox.Checked = true;
             this.show_computer_tiles_checkbox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.show_computer_tiles_checkbox.Location = new System.Drawing.Point(30, 336);
+            this.show_computer_tiles_checkbox.Location = new System.Drawing.Point(40, 414);
+            this.show_computer_tiles_checkbox.Margin = new System.Windows.Forms.Padding(4);
             this.show_computer_tiles_checkbox.Name = "show_computer_tiles_checkbox";
-            this.show_computer_tiles_checkbox.Size = new System.Drawing.Size(126, 17);
+            this.show_computer_tiles_checkbox.Size = new System.Drawing.Size(156, 20);
             this.show_computer_tiles_checkbox.TabIndex = 12;
             this.show_computer_tiles_checkbox.Text = "Show Computer Tiles";
             this.show_computer_tiles_checkbox.UseVisualStyleBackColor = true;
@@ -164,9 +175,10 @@
             // 
             this.game_indicator_lbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.game_indicator_lbl.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.game_indicator_lbl.Location = new System.Drawing.Point(625, 47);
+            this.game_indicator_lbl.Location = new System.Drawing.Point(833, 58);
+            this.game_indicator_lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.game_indicator_lbl.Name = "game_indicator_lbl";
-            this.game_indicator_lbl.Size = new System.Drawing.Size(341, 61);
+            this.game_indicator_lbl.Size = new System.Drawing.Size(455, 75);
             this.game_indicator_lbl.TabIndex = 13;
             this.game_indicator_lbl.Text = "Game Indicator";
             this.game_indicator_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -174,10 +186,10 @@
             // 
             // GameTable
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.RoyalBlue;
-            this.ClientSize = new System.Drawing.Size(978, 695);
+            this.ClientSize = new System.Drawing.Size(1304, 859);
             this.Controls.Add(this.game_indicator_lbl);
             this.Controls.Add(this.show_computer_tiles_checkbox);
             this.Controls.Add(this.sort_value_btn);
@@ -187,8 +199,10 @@
             this.Controls.Add(this.dropped_tiles_btn);
             this.Controls.Add(this.board_panel);
             this.Controls.Add(this.computerTiles_groupbox);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MaximizeBox = false;
             this.Name = "GameTable";
             this.Text = "Rummikub";
             this.Load += new System.EventHandler(this.Form1_Load);

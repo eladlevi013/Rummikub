@@ -10,14 +10,14 @@ namespace rummikubGame
 {
     public class Pool
     {
+        // consts
+        const int NUMBER_OF_TIMES = 2;
+        const int COLORS_COUNT = 4;
+        const int N = 13; // numbers range
+
         private Queue<Tile> tilesQueue;
         public Pool()
         {
-            // consts
-            const int NUMBER_OF_TIMES = 2;
-            const int COLORS_COUNT = 4;
-            const int N = 13; // numbers range
-
             // the creation of the pool
             List<Tile> tiles_list = new List<Tile>();
             for (int times = 0; times < NUMBER_OF_TIMES; times++)
@@ -51,6 +51,7 @@ namespace rummikubGame
 
         public Tile getTile()
         {
+            // if tilesQueue is done check winner and return null
             if (tilesQueue.Count() == 0)
             {   
                 // tilesQueue is empty -> tiles are over -> game over -> decide who is the winner(fewer files in hand)
