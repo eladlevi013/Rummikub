@@ -225,10 +225,13 @@ namespace rummikubGame
                         TileButtons[(int)current_card.Tag].setSlotLocation(updated_TileButton_location);
                 }
             }
-            if (checkWinner() == true)
+            if (checkWinner() == true && GameTable.game_over == false)
             {
                 MessageBox.Show("You Won!");
                 GameTable.global_game_indicator_lbl.Text = "Game Over - You Won";
+                GameTable.game_over = true;
+                GameTable.human_player.board.disableHumanBoard();
+                GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
             }
         }
 

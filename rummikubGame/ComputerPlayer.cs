@@ -161,7 +161,7 @@ namespace rummikubGame
                 GameTable.computer_player.board.generateBoard();
 
             // if the game is over, and the computer won
-            if (board.checkWinner() == true)
+            if (board.checkWinner() == true && GameTable.game_over == false)
             {
                 MessageBox.Show("Computer Won!");
                 GameTable.global_game_indicator_lbl.Text = "Game Over - Computer Won";
