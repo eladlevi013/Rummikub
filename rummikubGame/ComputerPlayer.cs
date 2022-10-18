@@ -189,6 +189,11 @@ namespace rummikubGame
         public void extendSets(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
         {
             // we have to sort the hand_tiles
+            /* here's why:
+                   hand: 5,4
+                   seq: {{1,2,3}}
+               if we wont sort the output will be 1,2,3,4 instead of 1,2,3,4,5
+             */
             hand_tiles = hand_tiles.OrderBy(card => card.getNumber()).ToList();
 
             for(int hand_tile_index=0; hand_tile_index < hand_tiles.Count(); hand_tile_index++)
@@ -217,23 +222,6 @@ namespace rummikubGame
                     }
                 }
             }
-        }
-
-        public static bool canBeLegal(List<Tile> set)
-        {
-            if (set.Count() < 2)
-                return true;
-            if (set.Count() == 2)
-            {
-                Tile t1 = set[0];
-                Tile t2 = set[1];
-                if (t1.getNumber() + 1 == t2.getNumber() && t1.getColor() == t2.getColor())
-                    return true;
-                if (t1.getNumber() == t2.getNumber() && t1.getColor() != t2.getColor())
-                    return true;
-                return false;
-            }
-            return GameTable.isLegalMeld(set);
         }
 
         public List<List<Tile>> meldsSetsBetter(List<Tile> sorted_tiles, ref List<Tile> hand)
@@ -375,6 +363,23 @@ namespace rummikubGame
                 }
             }
             return null;
+        }
+
+        public static bool canBeLegal(List<Tile> set)
+        {
+            if (set.Count() < 2)
+                return true;
+            if (set.Count() == 2)
+            {
+                Tile t1 = set[0];
+                Tile t2 = set[1];
+                if (t1.getNumber() + 1 == t2.getNumber() && t1.getColor() == t2.getColor())
+                    return true;
+                if (t1.getNumber() == t2.getNumber() && t1.getColor() != t2.getColor())
+                    return true;
+                return false;
+            }
+            return GameTable.isLegalMeld(set);
         }
         */
     }
