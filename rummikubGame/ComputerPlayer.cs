@@ -31,9 +31,10 @@ namespace rummikubGame
             // sorting the tiles in order to get 1,2,3 
             board.starting_tiles = board.starting_tiles.OrderBy(card => card.getNumber()).ToList();
 
-            bool best_sets_number_found = false; 
-            List<List<Tile>> result = null;
+            List<List<Tile>> result = meldsSetsBetter(board.starting_tiles, ref board.hand);
 
+            /*
+            bool best_sets_number_found = false;
             // result will be melds of 3 tiles
             List<List<Tile>> legalSets = new List<List<Tile>>(); legalSets.Add(new List<Tile>()); // meldSets parameter
             for (int i = GameTable.MAX_POSSIBLE_SEQUENCES_NUMBER; i >= 1 && !best_sets_number_found; i--)
@@ -57,6 +58,7 @@ namespace rummikubGame
                 if (board.starting_tiles[i] != null)
                     board.hand.Add(board.starting_tiles[i]);
             }
+            */
 ;
             // extendedSets function is being called(makes sequences bigger from hand tiles)
             if (result != null)
@@ -68,6 +70,7 @@ namespace rummikubGame
 
         public bool better_sequences_after_taking_new_tile(Tile new_tile)
         {
+            List<Tile> starting_tiles_if_not_better = board.hand;
             bool replced_card_better_result = false;
             List<Tile> optimal_solution_hand = board.hand;
             List<List<Tile>> optimal_solution_sequences = board.sequences;
@@ -100,10 +103,10 @@ namespace rummikubGame
                 // replacing starting tile at index i, in order to see if its getting better result
                 starting_tiles_copy[i] = new_tile;
 
+                /*
                 // Similar proccess as firstArrange
                 List<List<Tile>> legalSets = new List<List<Tile>>(); legalSets.Add(new List<Tile>());
                 bool best_sets_number_found = false;
-                List<List<Tile>> result = null;
                 for (int j = GameTable.RUMMIKUB_TILES_IN_GAME; j >= 1 && !best_sets_number_found; j--)
                 {
                     result = meldsSets(starting_tiles_copy,  ref legalSets, 0, j);
@@ -125,7 +128,11 @@ namespace rummikubGame
                     if (starting_tiles_copy[j] != null)
                         temp_hand.Add(starting_tiles_copy[j]);
                 }
-;
+                */
+
+                List<List<Tile>> result = meldsSetsBetter(starting_tiles_copy, ref board.hand);
+                temp_hand = new List<Tile>(board.hand);
+
                 // makes sure to pick the best extended sequences
                 if (result != null)
                 {
@@ -160,13 +167,14 @@ namespace rummikubGame
                 board.GenerateComputerThrownTile(dropped_tile);
                 return true;
             }
+            board.hand = starting_tiles_if_not_better;
             return false;
         }
 
         public void play(Tile to_be_replaced)
         {
             // didnt find better arrangement
-            if(!better_sequences_after_taking_new_tile(to_be_replaced))
+            if(to_be_replaced != null && !better_sequences_after_taking_new_tile(to_be_replaced))
             {
                 Tile tile = GameTable.pool.getTile();
                 if (tile == null) // pool is empty
@@ -299,9 +307,10 @@ namespace rummikubGame
             return GameTable.isLegalMeld(set);
         }
 
-        public List<List<Tile>> meldsSetsBetter(List<Tile> sorted_tiles)
+        public List<List<Tile>> meldsSetsBetter(List<Tile> sorted_tiles, ref List<Tile> hand)
         {
             List<Tile> sorted_tiles_no_dup = new List<Tile>(sorted_tiles);
+            bool meld_found = false;
 
             // classify to 4 different lists(every color in every array)
             List<Tile>[] tiles_lst_color = new List<Tile>[4];
@@ -320,7 +329,6 @@ namespace rummikubGame
             List<List<Tile>> sequences = new List<List<Tile>>();
             for (int i = 0; i < 4; i++)
             {
-                bool meld_found = false;
                 do
                 {
                     meld_found = false;
@@ -341,7 +349,7 @@ namespace rummikubGame
                     {
                         if (current_color_lst[current_color_lst.Keys.ToList()[j]].getNumber() + 1 == current_color_lst[current_color_lst.Keys.ToList()[j+1]].getNumber() && current_color_lst[current_color_lst.Keys.ToList()[j+1]].getNumber() + 1 == current_color_lst[current_color_lst.Keys.ToList()[j+2]].getNumber())
                         {
-                            sequences.Add(new List<Tile>() { current_color_lst[j], current_color_lst[j + 1], current_color_lst[j + 2] });
+                            sequences.Add(new List<Tile>() { current_color_lst[current_color_lst.Keys.ToList()[j]], current_color_lst[current_color_lst.Keys.ToList()[j+1]], current_color_lst[current_color_lst.Keys.ToList()[j+2]] });
                             current_color_lst.Remove(current_color_lst.Keys.ToList()[j]); current_color_lst.Remove(current_color_lst.Keys.ToList()[j]); current_color_lst.Remove(current_color_lst.Keys.ToList()[j]);
                             tiles_lst_color[i].RemoveAt(j); tiles_lst_color[i].RemoveAt(j); tiles_lst_color[i].RemoveAt(j);
                             meld_found = true;
@@ -350,9 +358,53 @@ namespace rummikubGame
                 }
                 while (meld_found);
             }
+
+            // making the groups
+            List<Tile> remaning_tiles = new List<Tile>();
+            remaning_tiles.AddRange(tiles_lst_color[0]); remaning_tiles.AddRange(tiles_lst_color[1]); remaning_tiles.AddRange(tiles_lst_color[2]); remaning_tiles.AddRange(tiles_lst_color[3]);
+            remaning_tiles = remaning_tiles.OrderBy(card => card.getNumber()).ToList();
+
+            do
+            {
+                meld_found = false;
+                Dictionary<int, Tile> remaning_tiles_dict = new Dictionary<int, Tile>();
+                for (int i = 0; i < remaning_tiles.Count(); i++) remaning_tiles_dict[i] = remaning_tiles[i];
+
+                // now we'll remove the duplicates
+                for (int j = 1; j < remaning_tiles_dict.Count(); j++)
+                {
+                    if (remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]].getColor() == remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j - 1]].getColor() && remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]].getNumber() == remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j - 1]].getNumber())
+                    {
+                        remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j]);
+                        j--;
+                    }
+                }
+
+                for (int j = 0; j < remaning_tiles_dict.Keys.Count() - 2; j++)
+                {
+                    if (remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]].getNumber() == remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 1]].getNumber() &&
+                        remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j+1]].getNumber() == remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 2]].getNumber() &&
+                        remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]].getNumber() == remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 2]].getNumber() &&
+                        remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]].getColor() != remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 1]].getColor() &&
+                        remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 1]].getColor() != remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 2]].getColor() &&
+                        remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]].getColor() != remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 2]].getColor())
+                    {
+                        sequences.Add(new List<Tile>() { remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]], remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j+1]], remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j+2]] });
+                        remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j]); remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j]); remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j]);
+                        remaning_tiles.RemoveAt(j); remaning_tiles.RemoveAt(j); remaning_tiles.RemoveAt(j);
+                        meld_found = true;
+                    }
+                }
+            }
+            while (meld_found);
+
+            // updating global hand
+            hand = remaning_tiles;
+
             return sequences;
         }
 
+        /*
         public List<List<Tile>> meldsSets(List<Tile> tiles, ref List<List<Tile>> sets, int meldStart, int maxSets)
         {
             List<Tile> currSet = sets[sets.Count() - 1];
@@ -395,5 +447,6 @@ namespace rummikubGame
             }
             return null;
         }
+        */
     }
 }
