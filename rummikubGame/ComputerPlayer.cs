@@ -50,7 +50,7 @@ namespace rummikubGame
             List<List<Tile>> result = new List<List<Tile>>();
             List<List<Tile>> sequences = new List<List<Tile>>();
             meldsSetsBetter(tiles_lst_color, sequences, ref result, ref board.hand);
-;
+
             // extendedSets function is being called(makes sequences bigger from hand tiles)
             if (result != null)
             {
@@ -202,7 +202,9 @@ namespace rummikubGame
                 MessageBox.Show("Computer Won!");
                 GameTable.global_game_indicator_lbl.Text = "Game Over - Computer Won";
                 GameTable.human_player.board.disableHumanBoard();
-                GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
+
+                if(GameTable.dropped_tiles_stack.Count > 0)
+                    GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
                 GameTable.game_over = true;
             }
         }
@@ -310,7 +312,10 @@ namespace rummikubGame
 
                         color_sorted_hand[i] = new List<Tile>(curr_hand_color_clone.Values.ToList());
                         meldsSetsBetter(color_sorted_hand, temp_sequences, ref best_sequences, ref best_hand);
+
+                        // fix what we ruined
                         color_sorted_hand[i] = temp_curr_hand_color_clone.Values.ToList();
+                        curr_hand_color_clone = new Dictionary<int, Tile>(curr_hand_color_no_duplicates);
                     }
                 }
             }

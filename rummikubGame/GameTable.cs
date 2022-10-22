@@ -109,6 +109,18 @@ namespace rummikubGame
             {
                 game_indicator_lbl.Text = "Your turn";
             }
+
+            // if the game is over, and the computer won
+            if (computer_player.board.checkWinner() == true && GameTable.game_over == false)
+            {
+                MessageBox.Show("Computer Won!");
+                GameTable.global_game_indicator_lbl.Text = "Game Over - Computer Won";
+                GameTable.human_player.board.disableHumanBoard();
+
+                if (GameTable.dropped_tiles_stack.Count > 0)
+                    GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
+                GameTable.game_over = true;
+            }
         }
 
         public static bool checkWinner(List<List<Tile>> melds) 
