@@ -374,5 +374,166 @@ namespace rummikubGame
             }
             return;
         }
+
+        /*
+        public List<List<Tile>> meldsSetsBetter(List<Tile> sorted_tiles, ref List<Tile> hand)
+        {
+            List<Tile> sorted_tiles_no_dup = new List<Tile>(sorted_tiles);
+            bool meld_found = false;
+
+            // classify to 4 different lists(every color in every array)
+            List<Tile>[] tiles_lst_color = new List<Tile>[4];
+            for (int color_index = 0; color_index < 4; color_index++)
+            {
+                tiles_lst_color[color_index] = new List<Tile>();
+                for (int i = 0; i < sorted_tiles_no_dup.Count(); i++)
+                {
+                    if (sorted_tiles_no_dup[i].getColor() == color_index)
+                    {
+                        tiles_lst_color[color_index].Add(sorted_tiles_no_dup[i]);
+                    }
+                }
+            }
+
+            List<List<Tile>> sequences = new List<List<Tile>>();
+            for (int i = 0; i < 4; i++)
+            {
+                do
+                {
+                    meld_found = false;
+                    Dictionary<int, Tile> current_color_lst = new Dictionary<int, Tile>();
+                    for (int k = 0; k < tiles_lst_color[i].Count(); k++) current_color_lst[k] = tiles_lst_color[i][k];
+
+                    // now we'll remove the duplicates
+                    for (int j = 1; j < current_color_lst.Count(); j++)
+                    {
+                        if (current_color_lst[current_color_lst.Keys.ToList()[j]].getColor() == current_color_lst[current_color_lst.Keys.ToList()[j - 1]].getColor() && current_color_lst[current_color_lst.Keys.ToList()[j]].getNumber() == current_color_lst[current_color_lst.Keys.ToList()[j - 1]].getNumber())
+                        {
+                            current_color_lst.Remove(current_color_lst.Keys.ToList()[j]);
+                            j--;
+                        }
+                    }
+
+                    for(int j=0; j< current_color_lst.Keys.Count()-2; j++)
+                    {
+                        if (current_color_lst[current_color_lst.Keys.ToList()[j]].getNumber() + 1 == current_color_lst[current_color_lst.Keys.ToList()[j+1]].getNumber() && current_color_lst[current_color_lst.Keys.ToList()[j+1]].getNumber() + 1 == current_color_lst[current_color_lst.Keys.ToList()[j+2]].getNumber())
+                        {
+                            sequences.Add(new List<Tile>() { current_color_lst[current_color_lst.Keys.ToList()[j]], current_color_lst[current_color_lst.Keys.ToList()[j+1]], current_color_lst[current_color_lst.Keys.ToList()[j+2]] });
+                            current_color_lst.Remove(current_color_lst.Keys.ToList()[j]); current_color_lst.Remove(current_color_lst.Keys.ToList()[j]); current_color_lst.Remove(current_color_lst.Keys.ToList()[j]);
+                            tiles_lst_color[i].RemoveAt(j); tiles_lst_color[i].RemoveAt(j); tiles_lst_color[i].RemoveAt(j);
+                            meld_found = true;
+                        }
+                    }
+                }
+                while (meld_found);
+            }
+
+            // making the groups
+            List<Tile> remaning_tiles = new List<Tile>();
+            remaning_tiles.AddRange(tiles_lst_color[0]); remaning_tiles.AddRange(tiles_lst_color[1]); remaning_tiles.AddRange(tiles_lst_color[2]); remaning_tiles.AddRange(tiles_lst_color[3]);
+            remaning_tiles = remaning_tiles.OrderBy(card => card.getNumber()).ToList();
+
+            do
+            {
+                meld_found = false;
+                Dictionary<int, Tile> remaning_tiles_dict = new Dictionary<int, Tile>();
+                for (int i = 0; i < remaning_tiles.Count(); i++) remaning_tiles_dict[i] = remaning_tiles[i];
+
+                // now we'll remove the duplicates
+                for (int j = 1; j < remaning_tiles_dict.Count(); j++)
+                {
+                    if (remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]].getColor() == remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j - 1]].getColor() && remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]].getNumber() == remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j - 1]].getNumber())
+                    {
+                        remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j]);
+                        j--;
+                    }
+                }
+
+                for (int j = 0; j < remaning_tiles_dict.Keys.Count() - 2; j++)
+                {
+                    if (remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]].getNumber() == remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 1]].getNumber() &&
+                        remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j+1]].getNumber() == remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 2]].getNumber() &&
+                        remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]].getNumber() == remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 2]].getNumber() &&
+                        remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]].getColor() != remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 1]].getColor() &&
+                        remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 1]].getColor() != remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 2]].getColor() &&
+                        remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]].getColor() != remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j + 2]].getColor())
+                    {
+                        sequences.Add(new List<Tile>() { remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j]], remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j+1]], remaning_tiles_dict[remaning_tiles_dict.Keys.ToList()[j+2]] });
+                        remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j]); remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j]); remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j]);
+                        remaning_tiles.RemoveAt(j); remaning_tiles.RemoveAt(j); remaning_tiles.RemoveAt(j);
+                        meld_found = true;
+                    }
+                }
+            }
+            while (meld_found);
+
+            // updating global hand
+            hand = remaning_tiles;
+
+            return sequences;
+        }
+        */
+
+        /*
+        public List<List<Tile>> meldsSets(List<Tile> tiles, ref List<List<Tile>> sets, int meldStart, int maxSets)
+        {
+            List<Tile> currSet = sets[sets.Count() - 1];
+            if (GameTable.isLegalMeld(currSet))
+            {
+                if (sets.Count() >= maxSets)
+                    return sets;
+                sets.Add(new List<Tile>());
+                List<List<Tile>> result = meldsSets(tiles, ref sets, meldStart + 1, maxSets);
+                if (result == null)
+                {
+                    sets.RemoveAt(sets.Count() - 1);
+                }
+                else
+                {
+                    return result;
+                }
+            }
+            if (canBeLegal(currSet))
+            {
+                for (int i = 0; i < tiles.Count(); i++)
+                {
+                    Tile t = tiles[i];
+                    // && !t.isJoker()
+                    if (t != null)
+                    {
+                        tiles[i] = null;
+                        currSet.Add(t);
+                        List<List<Tile>> result = meldsSets(tiles, ref sets, meldStart, maxSets);
+                        if (result == null)
+                        {
+                            currSet.RemoveAt(currSet.Count() - 1);
+                            tiles[i] = t;
+                            meldStart++;
+                        }
+                        else
+                            return result;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static bool canBeLegal(List<Tile> set)
+        {
+            if (set.Count() < 2)
+                return true;
+            if (set.Count() == 2)
+            {
+                Tile t1 = set[0];
+                Tile t2 = set[1];
+                if (t1.getNumber() + 1 == t2.getNumber() && t1.getColor() == t2.getColor())
+                    return true;
+                if (t1.getNumber() == t2.getNumber() && t1.getColor() != t2.getColor())
+                    return true;
+                return false;
+            }
+            return GameTable.isLegalMeld(set);
+        }
+        */
     }
 }
