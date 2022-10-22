@@ -12,7 +12,6 @@ namespace rummikubGame
     public class ComputerBoard : Board
     {
         // variables of the board
-        public List<Tile> starting_tiles;
         public List<Tile> hand;
         public List<List<Tile>> sequences;
         private List<Button> drawn_computer_cards;
@@ -39,12 +38,11 @@ namespace rummikubGame
         public ComputerBoard()
         {
             drawn_computer_cards = new List<Button>();
-            starting_tiles = new List<Tile>();
             hand = new List<Tile>();
 
             // fills the tiles list
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
-                starting_tiles.Add(GameTable.pool.getTile());
+                hand.Add(GameTable.pool.getTile());
         }
 
         public void generateBoard()
