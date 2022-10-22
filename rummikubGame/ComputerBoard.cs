@@ -40,8 +40,55 @@ namespace rummikubGame
             drawn_computer_cards = new List<Button>();
             hand = new List<Tile>();
 
+            hand.Add(new Tile(3, 3));
+            hand.Add(new Tile(3, 4));
+            hand.Add(new Tile(3, 5));
+            hand.Add(new Tile(3, 6));
+
+            hand.Add(new Tile(2, 3));
+            hand.Add(new Tile(2, 4));
+            hand.Add(new Tile(2, 5));
+
+            hand.Add(new Tile(0, 3));
+            hand.Add(new Tile(0, 4));
+            hand.Add(new Tile(0, 5));
+
+            hand.Add(new Tile(1, 9));
+            hand.Add(new Tile(1, 10));
+            hand.Add(new Tile(1, 11));
+            hand.Add(new Tile(1, 12)); 
+
+            /*
+            hand.Add(new Tile(3, 4));
+            hand.Add(new Tile(3, 5));
+            hand.Add(new Tile(3, 6));
+            hand.Add(new Tile(3, 7));
+            hand.Add(new Tile(2, 4));
+            hand.Add(new Tile(0, 4));
+            */
+
+            // double group
+            /*
+            hand.Add(new Tile(0, 13));
+            hand.Add(new Tile(2, 13));
+            hand.Add(new Tile(3, 13));
+            hand.Add(new Tile(0, 13));
+            hand.Add(new Tile(2, 13));
+            hand.Add(new Tile(3, 13));
+            */
+
+            // double run
+            /*
+            hand.Add(new Tile(3, 4));
+            hand.Add(new Tile(3, 5));
+            hand.Add(new Tile(3, 6));
+            hand.Add(new Tile(3, 4));
+            hand.Add(new Tile(3, 5));
+            hand.Add(new Tile(3, 6));
+            */
+
             // fills the tiles list
-            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
+            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME-14; i++)
                 hand.Add(GameTable.pool.getTile());
         }
 

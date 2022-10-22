@@ -353,7 +353,7 @@ namespace rummikubGame
                     temp_sequences.Add(new List<Tile>() { remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]], remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]], remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]] });
 
                     Dictionary<int, Tile> temp_remaning_tiles_dict = new Dictionary<int, Tile>(remaning_tiles_dict);
-                    temp_remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j+1]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j+2]);
+                    temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j+1]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j+2]);
 
                     // classify to 4 different lists(every color in every array)
                     List<Tile> sorted_tiles_no_dup = new List<Tile>(temp_remaning_tiles_dict.Values.ToList());
