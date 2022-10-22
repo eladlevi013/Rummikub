@@ -40,24 +40,8 @@ namespace rummikubGame
             drawn_computer_cards = new List<Button>();
             hand = new List<Tile>();
 
-            hand.Add(new Tile(3, 1));
-            hand.Add(new Tile(0, 2));
-            hand.Add(new Tile(3, 3));
-            hand.Add(new Tile(1, 5));
-            hand.Add(new Tile(2, 6));
-            hand.Add(new Tile(1, 9));
-            hand.Add(new Tile(3, 9));
-            hand.Add(new Tile(0, 11));
-            hand.Add(new Tile(0, 11));
-            hand.Add(new Tile(1, 11));
-
-            hand.Add(new Tile(3, 9));
-            hand.Add(new Tile(3, 10));
-            hand.Add(new Tile(3, 11));
-            hand.Add(new Tile(3, 12));
-
             // fills the tiles list
-            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME-14; i++)
+            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
                 hand.Add(GameTable.pool.getTile());
         }
 
