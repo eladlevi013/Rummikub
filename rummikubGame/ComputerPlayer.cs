@@ -29,9 +29,27 @@ namespace rummikubGame
         public void firstArrange()
         {
             // sorting the tiles in order to get 1,2,3 
-            board.starting_tiles = board.starting_tiles.OrderBy(card => card.getNumber()).ToList();
+            board.hand = board.hand.OrderBy(card => card.getNumber()).ToList();
 
-            List<List<Tile>> result = meldsSetsBetter(board.starting_tiles, ref board.hand);
+            List<Tile> sorted_tiles_no_dup = new List<Tile>(board.hand);
+
+            // classify to 4 different lists(every color in every array)
+            List<Tile>[] tiles_lst_color = new List<Tile>[4];
+            for (int color_index = 0; color_index < 4; color_index++)
+            {
+                tiles_lst_color[color_index] = new List<Tile>();
+                for (int i = 0; i < sorted_tiles_no_dup.Count(); i++)
+                {
+                    if (sorted_tiles_no_dup[i].getColor() == color_index)
+                    {
+                        tiles_lst_color[color_index].Add(sorted_tiles_no_dup[i]);
+                    }
+                }
+            }
+
+            List<List<Tile>> result = new List<List<Tile>>();
+            List<List<Tile>> sequences = new List<List<Tile>>();
+            meldsSetsBetter(tiles_lst_color, sequences, ref result, ref board.hand);
 ;
             // extendedSets function is being called(makes sequences bigger from hand tiles)
             if (result != null)
@@ -48,45 +66,71 @@ namespace rummikubGame
             bool replced_card_better_result = false;
             List<Tile> optimal_solution_hand = board.hand;
             List<List<Tile>> optimal_solution_sequences = board.sequences;
-            List<Tile> starting_tiles = new List<Tile>();
             Tile optimal_dropped_tile = null;
-
-            // starting_tiles will be a list of all of the tiles
-            for (int j = 0; j < board.hand.Count(); j++)
-            { 
-                // adds the hand cards to the temp_tiles list
-                if (board.hand[j] != null)
-                    starting_tiles.Add(board.hand[j]);
-            }
-            if (board.sequences != null)
-            { // adds the tiles in sets to the temp_tiles list
-                for (int j = 0; j < board.sequences.Count(); j++)
-                    for (int k = 0; k < board.sequences[j].Count(); k++)
-                        starting_tiles.Add(board.sequences[j][k]);
-            }
 
             // replacing every tile in starting_tiles with the given paramter in order to get better result
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
             {
                 // we want copy of starting tiles because result function makes some tiles null and we would not like it to be affect the next iteration
-                List<Tile> starting_tiles_copy = starting_tiles.Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
+                List<Tile> starting_tiles_copy = new List<Tile>();
+
+                // starting_tiles will be a list of all of the tiles
+                for (int j = 0; j < board.hand.Count(); j++)
+                {
+                    // adds the hand cards to the temp_tiles list
+                    if (board.hand[j] != null)
+                        starting_tiles_copy.Add(board.hand[j]);
+                }
+                if (board.sequences != null)
+                { // adds the tiles in sets to the temp_tiles list
+                    for (int j = 0; j < board.sequences.Count(); j++)
+                        for (int k = 0; k < board.sequences[j].Count(); k++)
+                            starting_tiles_copy.Add(board.sequences[j][k]);
+                }
+                starting_tiles_copy = starting_tiles_copy.Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
+
                 List<List<Tile>> temp_extendedSets = new List<List<Tile>>();
                 List<Tile> temp_hand = new List<Tile>();
                 Tile dropped_tile = starting_tiles_copy[i];
 
                 // replacing starting tile at index i, in order to see if its getting better result
-                starting_tiles_copy[i] = new_tile;
-
                 starting_tiles_copy = starting_tiles_copy.OrderBy(card => card.getNumber()).ToList();
-                List<List<Tile>> result = meldsSetsBetter(starting_tiles_copy, ref board.hand);
+                starting_tiles_copy[i] = new_tile;
                 temp_hand = new List<Tile>(board.hand);
 
-                // makes sure to pick the best extended sequences
+                List<Tile> sorted_tiles_no_dup = new List<Tile>(starting_tiles_copy);
+                // classify to 4 different lists(every color in every array)
+                List<Tile>[] tiles_lst_color = new List<Tile>[4];
+                for (int color_index = 0; color_index < 4; color_index++)
+                {
+                    tiles_lst_color[color_index] = new List<Tile>();
+                    for (int k = 0; k < sorted_tiles_no_dup.Count(); k++)
+                    {
+                        if (sorted_tiles_no_dup[k].getColor() == color_index)
+                        {
+                            tiles_lst_color[color_index].Add(sorted_tiles_no_dup[k]);
+                        }
+                    }
+                }
+
+                List<List<Tile>> result = new List<List<Tile>>();
+                List<List<Tile>> sequences = new List<List<Tile>>();
+                meldsSetsBetter(tiles_lst_color, sequences, ref result, ref temp_hand);
+
+                // extendedSets function is being called(makes sequences bigger from hand tiles)
                 if (result != null)
                 {
                     extendSets(ref result, ref temp_hand);
                     temp_extendedSets = result;
                 }
+
+                //List<List<Tile>> result = meldsSetsBetter(starting_tiles_copy, ref board.hand);
+                //// makes sure to pick the best extended sequences
+                //if (result != null)
+                //{
+                //    extendSets(ref result, ref temp_hand);
+                //    temp_extendedSets = result;
+                //}
 
                 // check if the current situation is better than the optimal
                 if (getNumberOfTilesInAllSets(optimal_solution_sequences) < getNumberOfTilesInAllSets(temp_extendedSets))
@@ -188,12 +232,15 @@ namespace rummikubGame
          */
         public void extendSets(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
         {
+
             // we have to sort the hand_tiles
             /* here's why:
                    hand: 5,4
                    seq: {{1,2,3}}
                if we wont sort the output will be 1,2,3,4 instead of 1,2,3,4,5
              */
+
+            /*
             hand_tiles = hand_tiles.OrderBy(card => card.getNumber()).ToList();
 
             for(int hand_tile_index=0; hand_tile_index < hand_tiles.Count(); hand_tile_index++)
@@ -222,8 +269,106 @@ namespace rummikubGame
                     }
                 }
             }
+            */
         }
 
+        public void meldsSetsBetter(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
+        {
+            // if current sequences is better, we would like to replace the global sequences and hand vars
+            if (sequences.Count() > best_sequences.Count())
+            {
+                best_sequences = sequences;
+                List<Tile> temp_hand = new List<Tile>();
+                temp_hand.AddRange(color_sorted_hand[0]); temp_hand.AddRange(color_sorted_hand[1]); temp_hand.AddRange(color_sorted_hand[2]); temp_hand.AddRange(color_sorted_hand[3]);
+                temp_hand = temp_hand.OrderBy(card => card.getNumber()).ToList();
+                best_hand = temp_hand;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                Dictionary<int, Tile> curr_hand_color_no_duplicates = new Dictionary<int, Tile>();
+                for (int k = 0; k < color_sorted_hand[i].Count(); k++) curr_hand_color_no_duplicates[k] = color_sorted_hand[i][k];
+
+                // thats the dictionary we we'll use later to recover
+                Dictionary<int, Tile> curr_hand_color_clone = new Dictionary<int, Tile>(curr_hand_color_no_duplicates);
+
+                // now we'll remove the duplicates
+                for (int j = 1; j < curr_hand_color_no_duplicates.Count(); j++)
+                {
+                    if (curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].getColor() == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j - 1]].getColor() && curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].getNumber() == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j - 1]].getNumber())
+                    {
+                        curr_hand_color_no_duplicates.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]);
+                        j--;
+                    }
+                }
+
+                for (int j = 0; j < curr_hand_color_no_duplicates.Keys.Count() - 2; j++)
+                {
+                    if (curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].getNumber() + 1 == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]].getNumber() && curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]].getNumber() + 1 == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 2]].getNumber())
+                    {
+                        // add to seq
+                        List<List<Tile>> temp_sequences = new List<List<Tile>>(sequences);
+                        temp_sequences.Add(new List<Tile>() { curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]], curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]], curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 2]] });
+
+                        Dictionary<int, Tile> temp_curr_hand_color_clone = new Dictionary<int, Tile>(curr_hand_color_clone);
+                        curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]); curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j+1]); curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j+2]);
+
+                        color_sorted_hand[i] = new List<Tile>(curr_hand_color_clone.Values.ToList());
+                        meldsSetsBetter(color_sorted_hand, temp_sequences, ref best_sequences, ref best_hand);
+                        color_sorted_hand[i] = temp_curr_hand_color_clone.Values.ToList();
+                    }
+                }
+            }
+
+            // adding all the remaning tiles to a one sorted long list
+            List<Tile> remaning_tiles = new List<Tile>();
+            remaning_tiles.AddRange(color_sorted_hand[0]); remaning_tiles.AddRange(color_sorted_hand[1]); remaning_tiles.AddRange(color_sorted_hand[2]); remaning_tiles.AddRange(color_sorted_hand[3]);
+            remaning_tiles = remaning_tiles.OrderBy(card => card.getNumber()).ToList();
+
+            Dictionary<int, Tile> remaning_tiles_dict_no_dup = new Dictionary<int, Tile>();
+            for (int i = 0; i < remaning_tiles.Count(); i++) remaning_tiles_dict_no_dup[i] = remaning_tiles[i];
+
+            Dictionary<int, Tile> remaning_tiles_dict = new Dictionary<int, Tile>(remaning_tiles_dict_no_dup);
+
+            // now we'll remove the duplicates
+            for (int j = 1; j < remaning_tiles_dict_no_dup.Count(); j++)
+            {
+                if (remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]].getColor() == remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j - 1]].getColor() && remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]].getNumber() == remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j - 1]].getNumber())
+                {
+                    remaning_tiles_dict_no_dup.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j]);
+                    j--;
+                }
+            }
+
+            for (int j = 0; j < remaning_tiles_dict_no_dup.Keys.Count() - 2; j++)
+            {
+                if (remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]].getNumber() == remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]].getNumber() &&
+                    remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]].getNumber() == remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]].getNumber() &&
+                    remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]].getNumber() == remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]].getNumber() &&
+                    remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]].getColor() != remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]].getColor() &&
+                    remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]].getColor() != remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]].getColor() &&
+                    remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]].getColor() != remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]].getColor())
+                {
+                    List<List<Tile>> temp_sequences = new List<List<Tile>>(sequences);
+                    temp_sequences.Add(new List<Tile>() { remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]], remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]], remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]] });
+
+                    Dictionary<int, Tile> temp_remaning_tiles_dict = new Dictionary<int, Tile>(remaning_tiles_dict);
+                    temp_remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j+1]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict.Keys.ToList()[j+2]);
+
+                    // classify to 4 different lists(every color in every array)
+                    List<Tile> sorted_tiles_no_dup = new List<Tile>(temp_remaning_tiles_dict.Values.ToList());
+                    List<Tile>[] tiles_lst_color = new List<Tile>[4];
+                    for (int color_index = 0; color_index < 4; color_index++) { tiles_lst_color[color_index] = new List<Tile>(); }
+                    for (int i = 0; i < sorted_tiles_no_dup.Count(); i++)
+                        tiles_lst_color[sorted_tiles_no_dup[i].getColor()].Add(sorted_tiles_no_dup[i]);
+
+                    meldsSetsBetter(tiles_lst_color, temp_sequences, ref best_sequences, ref best_hand);
+                }
+            }
+            return;
+        }
+
+        /*
         public List<List<Tile>> meldsSetsBetter(List<Tile> sorted_tiles, ref List<Tile> hand)
         {
             List<Tile> sorted_tiles_no_dup = new List<Tile>(sorted_tiles);
@@ -320,6 +465,7 @@ namespace rummikubGame
 
             return sequences;
         }
+        */
 
         /*
         public List<List<Tile>> meldsSets(List<Tile> tiles, ref List<List<Tile>> sets, int meldStart, int maxSets)
