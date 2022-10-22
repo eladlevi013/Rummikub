@@ -239,8 +239,15 @@ namespace rummikubGame
                    seq: {{1,2,3}}
                if we wont sort the output will be 1,2,3,4 instead of 1,2,3,4,5
              */
-
-            /*
+            List<Tile> hand_no_null = new List<Tile>();
+            for(int i=0; i<hand_tiles.Count(); i++)
+            {
+                if (hand_tiles[i] != null)
+                {
+                    hand_no_null.Add(hand_tiles[i]);
+                }
+            }
+            hand_tiles = hand_no_null;
             hand_tiles = hand_tiles.OrderBy(card => card.getNumber()).ToList();
 
             for(int hand_tile_index=0; hand_tile_index < hand_tiles.Count(); hand_tile_index++)
@@ -269,7 +276,6 @@ namespace rummikubGame
                     }
                 }
             }
-            */
         }
 
         public void meldsSetsBetter(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
