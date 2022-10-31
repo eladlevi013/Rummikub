@@ -88,6 +88,24 @@ namespace rummikubGame
             hand.Add(new Tile(3, 5));
             hand.Add(new Tile(3, 6));
             */
+            
+            /*
+            hand.Add(new Tile(1, 1));
+            hand.Add(new Tile(1, 2));
+            hand.Add(new Tile(1, 3));
+            hand.Add(new Tile(1, 4));
+            hand.Add(new Tile(1, 5));
+            hand.Add(new Tile(1, 6));
+            hand.Add(new Tile(0, 6));
+            hand.Add(new Tile(2, 6));
+            hand.Add(new Tile(1, 8));
+            hand.Add(new Tile(1, 9));
+            hand.Add(new Tile(1, 10));
+            hand.Add(new Tile(1, 11));
+            hand.Add(new Tile(3, 11));
+            hand.Add(new Tile(0, 11));
+            */
+
 
             // fills the tiles list
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)

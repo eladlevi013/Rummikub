@@ -49,12 +49,12 @@ namespace rummikubGame
 
             List<List<Tile>> result = new List<List<Tile>>();
             List<List<Tile>> sequences = new List<List<Tile>>();
-            meldsSetsBetter(tiles_lst_color, sequences, ref result, ref board.hand);
+            meldsSets(tiles_lst_color, sequences, ref result, ref board.hand);
 
             // extendedSets function is being called(makes sequences bigger from hand tiles)
             if (result != null)
             {
-                extendSets(ref result, ref board.hand);
+                extendedSets(ref result, ref board.hand, result, board.hand);
                 board.sequences = result;
             }
         }
@@ -115,12 +115,12 @@ namespace rummikubGame
 
                 List<List<Tile>> result = new List<List<Tile>>();
                 List<List<Tile>> sequences = new List<List<Tile>>();
-                meldsSetsBetter(tiles_lst_color, sequences, ref result, ref temp_hand);
+                meldsSets(tiles_lst_color, sequences, ref result, ref temp_hand);
 
                 // extendedSets function is being called(makes sequences bigger from hand tiles)
                 if (result != null)
                 {
-                    extendSets(ref result, ref temp_hand);
+                    extendedSets(ref result, ref temp_hand, result, temp_hand);
                     temp_extendedSets = result;
                 }
 
@@ -222,7 +222,7 @@ namespace rummikubGame
 
         /* Create a set class, which contains the data of what type the set is (Group, Run)
          for group we dont need to check the two of the ways to arrange */
-        public void extendSets(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
+        public void extendSetsOld(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
         {
 
             /*  we have to sort the hand_tiles
@@ -269,7 +269,56 @@ namespace rummikubGame
             }
         }
 
-        public void meldsSetsBetter(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
+        public void extendedSets(ref List<List<Tile>> sequences, ref List<Tile> hand, List<List<Tile>> min_seq, List<Tile> min_hand)
+        {
+            // we have a better hand case
+            if(hand.Count() < min_hand.Count())
+            {
+                min_hand = hand;
+                min_seq = sequences;
+            }
+
+            List<Tile> hand_no_null = new List<Tile>();
+            for (int i = 0; i < hand.Count(); i++)
+            {
+                if (hand[i] != null)
+                {
+                    hand_no_null.Add(hand[i]);
+                }
+            }
+            hand = hand_no_null;
+            hand = hand.OrderBy(card => card.getNumber()).ToList();
+
+            for (int seqIndex = 0; seqIndex < sequences.Count(); seqIndex++)
+            {
+                for(int handIndex = 0; handIndex < hand.Count(); handIndex++)
+                {
+                    if (hand[handIndex] != null)
+                    {
+                        List<Tile> tempSequenceAddRight = sequences[seqIndex].Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
+                        tempSequenceAddRight.Add(hand[handIndex]);
+                        if (GameTable.isLegalMeld(tempSequenceAddRight) == true)
+                        {
+                            sequences[seqIndex] = tempSequenceAddRight;
+                            hand[handIndex] = null;
+                        }
+                    }
+                    if (hand[handIndex] != null)
+                    {
+                        List<Tile> tempSequenceAddLeft = sequences[seqIndex].Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
+                        tempSequenceAddLeft.Insert(0, hand[handIndex]);
+                        if (GameTable.isLegalMeld(tempSequenceAddLeft) == true)
+                        {
+                            sequences[seqIndex] = tempSequenceAddLeft;
+                            hand[handIndex] = null;
+                        }
+                    }
+                }
+            }
+            return;
+        }
+
+        public void meldsSets(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
         {
             // if current sequences is better, we would like to replace the global sequences and hand vars
             if (sequences.Count() > best_sequences.Count())
@@ -311,7 +360,7 @@ namespace rummikubGame
                         curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]); curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j+1]); curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j+2]);
 
                         color_sorted_hand[i] = new List<Tile>(curr_hand_color_clone.Values.ToList());
-                        meldsSetsBetter(color_sorted_hand, temp_sequences, ref best_sequences, ref best_hand);
+                        meldsSets(color_sorted_hand, temp_sequences, ref best_sequences, ref best_hand);
 
                         // fix what we ruined
                         color_sorted_hand[i] = temp_curr_hand_color_clone.Values.ToList();
@@ -362,7 +411,7 @@ namespace rummikubGame
                     for (int i = 0; i < sorted_tiles_no_dup.Count(); i++)
                         tiles_lst_color[sorted_tiles_no_dup[i].getColor()].Add(sorted_tiles_no_dup[i]);
 
-                    meldsSetsBetter(tiles_lst_color, temp_sequences, ref best_sequences, ref best_hand);
+                    meldsSets(tiles_lst_color, temp_sequences, ref best_sequences, ref best_hand);
                 }
             }
             return;
