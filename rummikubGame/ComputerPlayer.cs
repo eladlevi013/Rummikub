@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,7 +55,7 @@ namespace rummikubGame
             // extendedSets function is being called(makes sequences bigger from hand tiles)
             if (result != null)
             {
-                extendedSets(ref result, ref board.hand, result, board.hand);
+                // extendSets(ref result, ref board.hand);
                 board.sequences = result;
             }
         }
@@ -120,7 +121,7 @@ namespace rummikubGame
                 // extendedSets function is being called(makes sequences bigger from hand tiles)
                 if (result != null)
                 {
-                    extendedSets(ref result, ref temp_hand, result, temp_hand);
+                    // extendSets(ref result, ref temp_hand);
                     temp_extendedSets = result;
                 }
 
@@ -222,7 +223,7 @@ namespace rummikubGame
 
         /* Create a set class, which contains the data of what type the set is (Group, Run)
          for group we dont need to check the two of the ways to arrange */
-        public void extendSetsOld(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
+        public void extendSets(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
         {
 
             /*  we have to sort the hand_tiles
@@ -267,67 +268,51 @@ namespace rummikubGame
                     }
                 }
             }
-        }
 
-        public void extendedSets(ref List<List<Tile>> sequences, ref List<Tile> hand, List<List<Tile>> min_seq, List<Tile> min_hand)
-        {
-            // we have a better hand case
-            if(hand.Count() < min_hand.Count())
+            // removes the null's from hand
+            List<Tile> hand_no_nul = new List<Tile>();
+            for(int i=0; i<hand_tiles.Count(); i++)
             {
-                min_hand = hand;
-                min_seq = sequences;
+                if(hand_tiles[i] != null)
+                    hand_no_nul.Add(hand_tiles[i]);
             }
-
-            List<Tile> hand_no_null = new List<Tile>();
-            for (int i = 0; i < hand.Count(); i++)
-            {
-                if (hand[i] != null)
-                {
-                    hand_no_null.Add(hand[i]);
-                }
-            }
-            hand = hand_no_null;
-            hand = hand.OrderBy(card => card.getNumber()).ToList();
-
-            for (int seqIndex = 0; seqIndex < sequences.Count(); seqIndex++)
-            {
-                for(int handIndex = 0; handIndex < hand.Count(); handIndex++)
-                {
-                    if (hand[handIndex] != null)
-                    {
-                        List<Tile> tempSequenceAddRight = sequences[seqIndex].Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
-                        tempSequenceAddRight.Add(hand[handIndex]);
-                        if (GameTable.isLegalMeld(tempSequenceAddRight) == true)
-                        {
-                            sequences[seqIndex] = tempSequenceAddRight;
-                            hand[handIndex] = null;
-                        }
-                    }
-                    if (hand[handIndex] != null)
-                    {
-                        List<Tile> tempSequenceAddLeft = sequences[seqIndex].Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
-                        tempSequenceAddLeft.Insert(0, hand[handIndex]);
-                        if (GameTable.isLegalMeld(tempSequenceAddLeft) == true)
-                        {
-                            sequences[seqIndex] = tempSequenceAddLeft;
-                            hand[handIndex] = null;
-                        }
-                    }
-                }
-            }
-            return;
+            hand_tiles = hand_no_nul;
         }
 
         public void meldsSets(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
         {
-            // if current sequences is better, we would like to replace the global sequences and hand vars
-            if (sequences.Count() > best_sequences.Count())
+            List<Tile> hand_temp = new List<Tile>();
+            hand_temp.AddRange(color_sorted_hand[0]); hand_temp.AddRange(color_sorted_hand[1]); hand_temp.AddRange(color_sorted_hand[2]); hand_temp.AddRange(color_sorted_hand[3]);
+            hand_temp = hand_temp.OrderBy(card => card.getNumber()).ToList();
+
+            List<List<Tile>> sequences_temp = new List<List<Tile>>();
+            for (int i = 0; i < sequences.Count; i++)
             {
-                best_sequences = sequences;
+                sequences_temp.Add(new List<Tile>(sequences[i]));
+            }
+
+            extendSets(ref sequences_temp, ref hand_temp);
+            extendSets(ref best_sequences, ref best_hand);
+
+            // if current sequences is better, we would like to replace the global sequences and hand vars
+            if (hand_temp.Count() < best_hand.Count())
+            {
+                best_sequences = sequences_temp;
                 List<Tile> temp_hand = new List<Tile>();
                 temp_hand.AddRange(color_sorted_hand[0]); temp_hand.AddRange(color_sorted_hand[1]); temp_hand.AddRange(color_sorted_hand[2]); temp_hand.AddRange(color_sorted_hand[3]);
                 temp_hand = temp_hand.OrderBy(card => card.getNumber()).ToList();
-                best_hand = temp_hand;
+                best_hand = hand_temp;
+            }
+            else if(hand_temp.Count() == best_hand.Count())
+            {
+                if(sequences.Count() > best_sequences.Count())
+                {
+                    best_sequences = sequences;
+                    List<Tile> temp_hand = new List<Tile>();
+                    temp_hand.AddRange(color_sorted_hand[0]); temp_hand.AddRange(color_sorted_hand[1]); temp_hand.AddRange(color_sorted_hand[2]); temp_hand.AddRange(color_sorted_hand[3]);
+                    temp_hand = temp_hand.OrderBy(card => card.getNumber()).ToList();
+                    best_hand = temp_hand;
+                }
             }
 
             for (int i = 0; i < 4; i++)

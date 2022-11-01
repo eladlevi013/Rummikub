@@ -88,8 +88,7 @@ namespace rummikubGame
             hand.Add(new Tile(3, 5));
             hand.Add(new Tile(3, 6));
             */
-            
-            /*
+
             hand.Add(new Tile(1, 1));
             hand.Add(new Tile(1, 2));
             hand.Add(new Tile(1, 3));
@@ -104,11 +103,10 @@ namespace rummikubGame
             hand.Add(new Tile(1, 11));
             hand.Add(new Tile(3, 11));
             hand.Add(new Tile(0, 11));
-            */
 
 
             // fills the tiles list
-            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
+            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME-14; i++)
                 hand.Add(GameTable.pool.getTile());
         }
 
@@ -143,7 +141,7 @@ namespace rummikubGame
                     }
                     if (i == 2)
                     {   // if there are alot of sequences continue drawing in another area
-                        starting_x_computer_tiles = 250;
+                        starting_x_computer_tiles = 300;
                         starting_y_computer_tiles = 120;
                     }
                     else
