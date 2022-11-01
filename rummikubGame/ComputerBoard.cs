@@ -88,6 +88,10 @@ namespace rummikubGame
             hand.Add(new Tile(3, 5));
             hand.Add(new Tile(3, 6));
             */
+<<<<<<< HEAD
+=======
+
+>>>>>>> 28b9bf539b4132e60d9cda0610b14af339291e1e
             /*
             hand.Add(new Tile(1, 1));
             hand.Add(new Tile(1, 2));
@@ -104,6 +108,42 @@ namespace rummikubGame
             hand.Add(new Tile(3, 11));
             hand.Add(new Tile(0, 11));
             */
+<<<<<<< HEAD
+=======
+
+            /*
+            hand.Add(new Tile(1, 4));
+            hand.Add(new Tile(1, 5));
+            hand.Add(new Tile(1, 6));
+            hand.Add(new Tile(1, 7));
+            hand.Add(new Tile(1, 8));
+            hand.Add(new Tile(1, 9));
+            hand.Add(new Tile(1, 10));
+            hand.Add(new Tile(2, 1));
+            hand.Add(new Tile(2, 2));
+            hand.Add(new Tile(2, 3));
+            hand.Add(new Tile(3, 8));
+            hand.Add(new Tile(0, 10));
+            hand.Add(new Tile(3, 12));
+            hand.Add(new Tile(2, 12));
+            */
+
+            hand.Add(new Tile(1, 1));
+            hand.Add(new Tile(1, 1));
+            hand.Add(new Tile(1, 1));
+            hand.Add(new Tile(1, 1));
+            hand.Add(new Tile(1, 1));
+            hand.Add(new Tile(1, 1));
+            hand.Add(new Tile(1, 1));
+            hand.Add(new Tile(1, 1));
+            hand.Add(new Tile(1, 1));
+
+            hand.Add(new Tile(0, 6));
+            hand.Add(new Tile(1, 6));
+            hand.Add(new Tile(2, 6));
+            hand.Add(new Tile(3, 6));
+            hand.Add(new Tile(1, 8));
+>>>>>>> 28b9bf539b4132e60d9cda0610b14af339291e1e
 
             // fills the tiles list
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
