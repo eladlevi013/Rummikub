@@ -94,9 +94,14 @@ namespace rummikubGame
                 List<Tile> temp_hand = new List<Tile>();
                 Tile dropped_tile = starting_tiles_copy[i];
 
+                starting_tiles_copy[i] = new_tile;
+
                 // replacing starting tile at index i, in order to see if its getting better result
                 starting_tiles_copy = starting_tiles_copy.OrderBy(card => card.getNumber()).ToList();
-                starting_tiles_copy[i] = new_tile;
+
+                // sorting the tiles in order to get 1,2,3 
+                board.hand = board.hand.OrderBy(card => card.getNumber()).ToList();
+
                 temp_hand = new List<Tile>(board.hand);
 
                 List<Tile> sorted_tiles_no_dup = new List<Tile>(starting_tiles_copy);
@@ -231,6 +236,7 @@ namespace rummikubGame
                     hand: 5,4
                     seq: {{1,2,3}}
                if we wont sort the output will be 1,2,3,4 instead of 1,2,3,4,5 */
+
             List<Tile> hand_no_null = new List<Tile>();
             for(int i=0; i<hand_tiles.Count(); i++)
             {
