@@ -348,14 +348,14 @@ namespace rummikubGame
                         temp_sequences.Add(new List<Tile>() { curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]], curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]], curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 2]] });
 
                         Dictionary<int, Tile> temp_curr_hand_color_clone = new Dictionary<int, Tile>(curr_hand_color_clone);
-                        curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]); curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j+1]); curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j+2]);
+                        temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]); temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j+1]); temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j+2]);
 
-                        color_sorted_hand[i] = new List<Tile>(curr_hand_color_clone.Values.ToList());
+                        color_sorted_hand[i] = new List<Tile>(temp_curr_hand_color_clone.Values.ToList());
                         meldsSets(color_sorted_hand, temp_sequences, ref best_sequences, ref best_hand);
 
                         // fix what we ruined
                         color_sorted_hand[i] = temp_curr_hand_color_clone.Values.ToList();
-                        curr_hand_color_clone = new Dictionary<int, Tile>(curr_hand_color_no_duplicates);
+                        curr_hand_color_clone = new Dictionary<int, Tile>(curr_hand_color_clone);
                     }
                 }
             }
