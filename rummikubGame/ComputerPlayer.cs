@@ -94,6 +94,10 @@ namespace rummikubGame
                 List<Tile> temp_hand = new List<Tile>();
                 Tile dropped_tile = starting_tiles_copy[i];
 
+                starting_tiles_copy = starting_tiles_copy.OrderBy(card=>card.getNumber()).ToList();
+
+                board.hand = board.hand.OrderBy(card=>card.getNumber()).ToList();
+
                 starting_tiles_copy[i] = new_tile;
 
                 // replacing starting tile at index i, in order to see if its getting better result
