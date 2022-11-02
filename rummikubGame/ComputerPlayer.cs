@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace rummikubGame
@@ -19,48 +14,20 @@ namespace rummikubGame
             // it takes care of the graphical representation of the tiles of the computer
             board = new ComputerBoard();
 
-            // arrange given tiles in optimal way
-            firstArrange();
+            // arrange given tiles in optimal way for the first time
+            board.sequences = meldsSets(ref board.hand);
 
             // draw the tiles on the screen
             if (GameTable.global_view_computer_tiles_groupbox.Checked == true)
                 board.generateBoard();
         }
 
-        public void firstArrange()
-        {
-            // sorting the tiles in order to get 1,2,3 
-            board.hand = board.hand.OrderBy(card => card.getNumber()).ToList();
-
-            List<Tile> sorted_tiles_no_dup = new List<Tile>(board.hand);
-
-            // classify to 4 different lists(every color in every array)
-            List<Tile>[] tiles_lst_color = new List<Tile>[4];
-            for (int color_index = 0; color_index < 4; color_index++)
-            {
-                tiles_lst_color[color_index] = new List<Tile>();
-                for (int i = 0; i < sorted_tiles_no_dup.Count(); i++)
-                {
-                    if (sorted_tiles_no_dup[i].getColor() == color_index)
-                    {
-                        tiles_lst_color[color_index].Add(sorted_tiles_no_dup[i]);
-                    }
-                }
-            }
-
-            List<List<Tile>> result = new List<List<Tile>>();
-            List<List<Tile>> sequences = new List<List<Tile>>();
-            meldsSets(tiles_lst_color, sequences, ref result, ref board.hand);
-
-            // extendedSets function is being called(makes sequences bigger from hand tiles)
-            if (result != null)
-            {
-                // extendSets(ref result, ref board.hand);
-                board.sequences = result;
-            }
-        }
-
-        public bool better_sequences_after_taking_new_tile(Tile new_tile)
+        /// <summary>
+        /// Tries to replace the given tlie with every hand tile, and order to get the tile that fitted the most
+        /// in that proccess we also know what tile we would like to drop to the stack.
+        /// </summary>
+        /// <param name="new_tile">the tile that we are replacing with, every hand tile</param>
+        public bool OptimalTileToReplaceExists(Tile new_tile)
         {
             List<Tile> starting_tiles_if_not_better = board.hand;
 
@@ -168,14 +135,14 @@ namespace rummikubGame
         public void play(Tile to_be_replaced)
         {
             // didnt find better arrangement
-            if(to_be_replaced != null && !better_sequences_after_taking_new_tile(to_be_replaced))
+            if(to_be_replaced != null && !OptimalTileToReplaceExists(to_be_replaced))
             {
                 Tile tile = GameTable.pool.getTile();
                 if (tile == null) // pool is empty
                     return;
 
                 // better option with tile from pool
-                if (better_sequences_after_taking_new_tile(tile) == false)
+                if (!OptimalTileToReplaceExists(tile))
                 {
                     // if tile from pool didnt gave us better result drop random tile from hand
                     Random rnd_hand_index = new Random();
@@ -289,6 +256,42 @@ namespace rummikubGame
             hand_tiles = hand_no_nul;
         }
 
+        public List<List<Tile>> meldsSets(ref List<Tile> hand_tiles)
+        {
+            // sorting the tiles in order to get 1,2,3 
+            hand_tiles = hand_tiles.OrderBy(card => card.getNumber()).ToList();
+
+            List<Tile> sorted_tiles_no_dup = new List<Tile>(hand_tiles);
+
+            // classify to 4 different lists(every color in every array)
+            List<Tile>[] tiles_lst_color = new List<Tile>[4];
+            for (int color_index = 0; color_index < 4; color_index++)
+            {
+                tiles_lst_color[color_index] = new List<Tile>();
+                for (int i = 0; i < sorted_tiles_no_dup.Count(); i++)
+                {
+                    if (sorted_tiles_no_dup[i].getColor() == color_index)
+                    {
+                        tiles_lst_color[color_index].Add(sorted_tiles_no_dup[i]);
+                    }
+                }
+            }
+
+            List<List<Tile>> result = new List<List<Tile>>();
+            List<List<Tile>> sequences = new List<List<Tile>>();
+            meldsSets(tiles_lst_color, sequences, ref result, ref hand_tiles);
+            return result;
+        }
+
+        // ---------------------------------------------------------
+        /// <summary>
+        /// finds the optimal way arranging the given tiles
+        /// </summary>
+        /// <param name="color_sorted_hand"></param>
+        /// <param name="sequences"></param>
+        /// <param name="best_sequences"></param>
+        /// <param name="best_hand"></param>
+        // ---------------------------------------------------------
         public void meldsSets(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
         {
             List<Tile> hand_temp = new List<Tile>();
