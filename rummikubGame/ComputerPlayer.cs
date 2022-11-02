@@ -19,7 +19,7 @@ namespace rummikubGame
             board.sequences = meldsSets(ref board.hand);
 
             // draw the tiles on the screen
-            if (GameTable.global_view_computer_tiles_groupbox.Checked == true)
+            if (GameTable.global_view_computer_tiles_groupbox.Checked)
                 board.generateBoard();
         }
 
@@ -32,8 +32,6 @@ namespace rummikubGame
         // ---------------------------------------------------------
         public bool OptimalTileToReplaceExists(Tile new_tile)
         {
-            List<Tile> starting_tiles_if_not_better = board.hand;
-
             bool replaced_card_gives_better_result = false;
             List<Tile> optimal_solution_hand = board.hand;
             List<List<Tile>> optimal_solution_sequences = board.sequences;
@@ -42,46 +40,45 @@ namespace rummikubGame
             // replacing every tile in starting_tiles with the given paramter in order to get better result
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
             {
-                // we want copy of starting tiles because result function makes some tiles null and we would not like it to be affect the next iteration
-                List<Tile> starting_tiles_copy = new List<Tile>();
+                List<Tile> starting_tiles = new List<Tile>();
 
                 // starting_tiles will be a list of all of the tiles
                 for (int j = 0; j < board.hand.Count(); j++)
                 {
                     // adds the hand cards to the temp_tiles list
                     if (board.hand[j] != null)
-                        starting_tiles_copy.Add(board.hand[j]);
+                        starting_tiles.Add(board.hand[j]);
                 }
                 if (board.sequences != null)
                 { // adds the tiles in sets to the temp_tiles list
                     for (int j = 0; j < board.sequences.Count(); j++)
                         for (int k = 0; k < board.sequences[j].Count(); k++)
-                            starting_tiles_copy.Add(board.sequences[j][k]);
+                            starting_tiles.Add(board.sequences[j][k]);
                 }
-                starting_tiles_copy = starting_tiles_copy.Select(item => item.Clone(item.getColor(), item.getNumber())).ToList();
 
+                // variables that changes every iteration
                 List<List<Tile>> temp_extendedSets = new List<List<Tile>>();
                 List<Tile> temp_hand = new List<Tile>();
-                Tile dropped_tile = starting_tiles_copy[i];
+                Tile curr_dropped_tile = starting_tiles[i];
 
-                starting_tiles_copy[i] = new_tile;
-                temp_extendedSets = meldsSets(ref starting_tiles_copy);
-                temp_hand = starting_tiles_copy;
+                starting_tiles[i] = new_tile;
+                temp_extendedSets = meldsSets(ref starting_tiles);
+                temp_hand = starting_tiles;
 
-                // check if the current situation is better than the optimal
+                // check current situation is better than the optimal
                 if (getNumberOfTilesInAllSets(optimal_solution_sequences) < getNumberOfTilesInAllSets(temp_extendedSets))
                 {
                     optimal_solution_sequences = temp_extendedSets;
                     optimal_solution_hand = temp_hand;
                     replaced_card_gives_better_result = true;
-                    optimal_dropped_tile = dropped_tile;
+                    optimal_dropped_tile = curr_dropped_tile;
                 }
             }
 
             // better option than starting point
             if (replaced_card_gives_better_result)
             {
-                // update global board variables
+                // updates global board variables
                 board.sequences = optimal_solution_sequences;
                 board.hand = optimal_solution_hand;
 
@@ -89,25 +86,25 @@ namespace rummikubGame
                 if(GameTable.dropped_tiles_stack.Count() > 0)
                     GameTable.global_gametable_context.Controls.Remove(GameTable.dropped_tiles_stack.Peek().getTileButton());
 
+                // generate computer thrown tile in Stack
                 int[] tile_in_dropped_tiles_location = { GameTable.DROPPED_TILE_LOCATION, GameTable.DROPPED_TILE_LOCATION };
                 TileButton dropped_tile = new TileButton(optimal_dropped_tile.getColor(), optimal_dropped_tile.getNumber(), tile_in_dropped_tiles_location);
                 board.GenerateComputerThrownTile(dropped_tile);
-                return true;
+                return (true);
             }
-            board.hand = starting_tiles_if_not_better;
-            return false;
+            return (false);
         }
 
         // ---------------------------------------------------------
         /// being called every time computer have to play, it checks if tile that I dropped helps the computer
-        /// in order to get better sequence.
+        /// in order to get better sequences.
         /// if didnt option found take a tile from stack, and check again.
         /// </summary>
-        ///<param name="to_be_replaced"></param>
+        /// <param name="to_be_replaced"></param>
         // ---------------------------------------------------------
         public void play(Tile to_be_replaced)
         {
-            // didnt find better arrangement
+            // better arrangement was not found
             if(to_be_replaced != null && !OptimalTileToReplaceExists(to_be_replaced))
             {
                 Tile tile = GameTable.pool.getTile();
@@ -122,6 +119,7 @@ namespace rummikubGame
                     bool hand_null = true;
                     Tile random_tile_to_drop = null;
                     int random_tile_to_drop_index = 0;
+
                     while (hand_null)
                     {
                         random_tile_to_drop_index = rnd_hand_index.Next(board.hand.Count());
@@ -131,6 +129,7 @@ namespace rummikubGame
                             hand_null = false;
                         }
                     }
+
                     board.hand.RemoveAt(random_tile_to_drop_index);
                     board.hand.Add(tile);
                     board.GenerateComputerThrownTile(random_tile_to_drop);
@@ -323,7 +322,8 @@ namespace rummikubGame
                 // now we'll remove the duplicates
                 for (int j = 1; j < curr_hand_color_no_duplicates.Count(); j++)
                 {
-                    if (curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].getColor() == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j - 1]].getColor() && curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].getNumber() == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j - 1]].getNumber())
+                    if (curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].getColor() == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j - 1]].getColor() && 
+                        curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].getNumber() == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j - 1]].getNumber())
                     {
                         curr_hand_color_no_duplicates.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]);
                         j--;
@@ -332,7 +332,8 @@ namespace rummikubGame
 
                 for (int j = 0; j < curr_hand_color_no_duplicates.Keys.Count() - 2; j++)
                 {
-                    if (curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].getNumber() + 1 == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]].getNumber() && curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]].getNumber() + 1 == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 2]].getNumber())
+                    if (curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].getNumber() + 1 == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]].getNumber() &&
+                        curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]].getNumber() + 1 == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 2]].getNumber())
                     {
                         // add to seq
                         List<List<Tile>> temp_sequences = new List<List<Tile>>(sequences);
@@ -364,7 +365,8 @@ namespace rummikubGame
             // now we'll remove the duplicates
             for (int j = 1; j < remaning_tiles_dict_no_dup.Count(); j++)
             {
-                if (remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]].getColor() == remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j - 1]].getColor() && remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]].getNumber() == remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j - 1]].getNumber())
+                if (remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]].getColor() == remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j - 1]].getColor() &&
+                    remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]].getNumber() == remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j - 1]].getNumber())
                 {
                     remaning_tiles_dict_no_dup.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j]);
                     j--;
