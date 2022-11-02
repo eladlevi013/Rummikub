@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -11,7 +12,7 @@ namespace rummikubGame
 
         public ComputerPlayer()
         {
-            // it takes care of the graphical representation of the tiles of the computer
+            // Takes care of the graphical representation of the tiles of the computer
             board = new ComputerBoard();
 
             // arrange given tiles in optimal way for the first time
@@ -22,11 +23,13 @@ namespace rummikubGame
                 board.generateBoard();
         }
 
+        // ---------------------------------------------------------
         /// <summary>
         /// Tries to replace the given tlie with every hand tile, and order to get the tile that fitted the most
         /// in that proccess we also know what tile we would like to drop to the stack.
         /// </summary>
         /// <param name="new_tile">the tile that we are replacing with, every hand tile</param>
+        // ---------------------------------------------------------
         public bool OptimalTileToReplaceExists(Tile new_tile)
         {
             List<Tile> starting_tiles_if_not_better = board.hand;
@@ -69,10 +72,6 @@ namespace rummikubGame
 
                 // replacing starting tile at index i, in order to see if its getting better result
                 starting_tiles_copy = starting_tiles_copy.OrderBy(card => card.getNumber()).ToList();
-
-                // sorting the tiles in order to get 1,2,3 
-                board.hand = board.hand.OrderBy(card => card.getNumber()).ToList();
-
                 temp_hand = new List<Tile>(board.hand);
 
                 List<Tile> sorted_tiles_no_dup = new List<Tile>(starting_tiles_copy);
@@ -132,6 +131,13 @@ namespace rummikubGame
             return false;
         }
 
+        // ---------------------------------------------------------
+        /// being called every time computer have to play, it checks if tile that I dropped helps the computer
+        /// in order to get better sequence.
+        /// if didnt option found take a tile from stack, and check again.
+        /// </summary>
+        ///<param name="to_be_replaced"></param>
+        // ---------------------------------------------------------
         public void play(Tile to_be_replaced)
         {
             // didnt find better arrangement
@@ -197,11 +203,16 @@ namespace rummikubGame
             return sum;
         }
 
-        /* Create a set class, which contains the data of what type the set is (Group, Run)
-         for group we dont need to check the two of the ways to arrange */
+        // ---------------------------------------------------------
+        /// <summary>
+        /// Create a set class, which contains the data of what type the set is (Group, Run)
+        /// for group we dont need to check the two of the ways to arrange
+        /// </summary>
+        /// <param name="sequences">Current sequences we need to extend</param>
+        /// <param name="hand_tiles">Remained tiles that we can extend the sequences with</param>
+        // ---------------------------------------------------------
         public void extendSets(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
         {
-
             /*  we have to sort the hand_tiles
                 here's why:
                     hand: 5,4
@@ -256,11 +267,17 @@ namespace rummikubGame
             hand_tiles = hand_no_nul;
         }
 
+        // ---------------------------------------------------------
+        /// <summary>
+        /// Overloaded function to meldSets, takes care of the things we need to do before calling
+        /// the meldsSets function(like splitting the hand into 4 lists by color).
+        /// </summary>
+        /// <param name="hand_tiles">Passing the tiles that we need to build sequences from</param>
+        // ---------------------------------------------------------
         public List<List<Tile>> meldsSets(ref List<Tile> hand_tiles)
         {
-            // sorting the tiles in order to get 1,2,3 
+            // sorting the hand tiles
             hand_tiles = hand_tiles.OrderBy(card => card.getNumber()).ToList();
-
             List<Tile> sorted_tiles_no_dup = new List<Tile>(hand_tiles);
 
             // classify to 4 different lists(every color in every array)
