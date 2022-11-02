@@ -25,7 +25,7 @@ namespace rummikubGame
 
         // ---------------------------------------------------------
         /// <summary>
-        /// Tries to replace the given tlie with every hand tile, and order to get the tile that fitted the most
+        /// Tries to replace the given tlie with every hand tile, in order to get the tile that fitted the most.
         /// in that proccess we also know what tile we would like to drop to the stack.
         /// </summary>
         /// <param name="new_tile">the tile that we are replacing with, every hand tile</param>
@@ -34,7 +34,7 @@ namespace rummikubGame
         {
             List<Tile> starting_tiles_if_not_better = board.hand;
 
-            bool replced_card_better_result = false;
+            bool replaced_card_gives_better_result = false;
             List<Tile> optimal_solution_hand = board.hand;
             List<List<Tile>> optimal_solution_sequences = board.sequences;
             Tile optimal_dropped_tile = null;
@@ -64,61 +64,28 @@ namespace rummikubGame
                 List<Tile> temp_hand = new List<Tile>();
                 Tile dropped_tile = starting_tiles_copy[i];
 
-                starting_tiles_copy = starting_tiles_copy.OrderBy(card=>card.getNumber()).ToList();
-
-                board.hand = board.hand.OrderBy(card=>card.getNumber()).ToList();
-
                 starting_tiles_copy[i] = new_tile;
-
-                // replacing starting tile at index i, in order to see if its getting better result
-                starting_tiles_copy = starting_tiles_copy.OrderBy(card => card.getNumber()).ToList();
-                temp_hand = new List<Tile>(board.hand);
-
-                List<Tile> sorted_tiles_no_dup = new List<Tile>(starting_tiles_copy);
-                // classify to 4 different lists(every color in every array)
-                List<Tile>[] tiles_lst_color = new List<Tile>[4];
-                for (int color_index = 0; color_index < 4; color_index++)
-                {
-                    tiles_lst_color[color_index] = new List<Tile>();
-                    for (int k = 0; k < sorted_tiles_no_dup.Count(); k++)
-                    {
-                        if (sorted_tiles_no_dup[k].getColor() == color_index)
-                        {
-                            tiles_lst_color[color_index].Add(sorted_tiles_no_dup[k]);
-                        }
-                    }
-                }
-
-                List<List<Tile>> result = new List<List<Tile>>();
-                List<List<Tile>> sequences = new List<List<Tile>>();
-                meldsSets(tiles_lst_color, sequences, ref result, ref temp_hand);
-
-                // extendedSets function is being called(makes sequences bigger from hand tiles)
-                if (result != null)
-                {
-                    // extendSets(ref result, ref temp_hand);
-                    temp_extendedSets = result;
-                }
+                temp_extendedSets = meldsSets(ref starting_tiles_copy);
+                temp_hand = starting_tiles_copy;
 
                 // check if the current situation is better than the optimal
                 if (getNumberOfTilesInAllSets(optimal_solution_sequences) < getNumberOfTilesInAllSets(temp_extendedSets))
                 {
                     optimal_solution_sequences = temp_extendedSets;
                     optimal_solution_hand = temp_hand;
-                    replced_card_better_result = true;
+                    replaced_card_gives_better_result = true;
                     optimal_dropped_tile = dropped_tile;
                 }
             }
 
-            /* if we found a better option than the starting point:
-                 * 1. replace the global sequences,hand parameters
-                 * 2. delete last tile from stack, draw dropped_card on stack
-                 * 3. return true */
-            if (replced_card_better_result == true)
+            // better option than starting point
+            if (replaced_card_gives_better_result)
             {
+                // update global board variables
                 board.sequences = optimal_solution_sequences;
                 board.hand = optimal_solution_hand;
 
+                // take the last thrown tile from the dropped tiles stack(graphically)
                 if(GameTable.dropped_tiles_stack.Count() > 0)
                     GameTable.global_gametable_context.Controls.Remove(GameTable.dropped_tiles_stack.Peek().getTileButton());
 
@@ -274,11 +241,11 @@ namespace rummikubGame
         /// </summary>
         /// <param name="hand_tiles">Passing the tiles that we need to build sequences from</param>
         // ---------------------------------------------------------
-        public List<List<Tile>> meldsSets(ref List<Tile> hand_tiles)
+        public List<List<Tile>> meldsSets(ref List<Tile> starting_tiles)
         {
             // sorting the hand tiles
-            hand_tiles = hand_tiles.OrderBy(card => card.getNumber()).ToList();
-            List<Tile> sorted_tiles_no_dup = new List<Tile>(hand_tiles);
+            starting_tiles = starting_tiles.OrderBy(card => card.getNumber()).ToList();
+            List<Tile> sorted_tiles_no_dup = new List<Tile>(starting_tiles);
 
             // classify to 4 different lists(every color in every array)
             List<Tile>[] tiles_lst_color = new List<Tile>[4];
@@ -296,7 +263,7 @@ namespace rummikubGame
 
             List<List<Tile>> result = new List<List<Tile>>();
             List<List<Tile>> sequences = new List<List<Tile>>();
-            meldsSets(tiles_lst_color, sequences, ref result, ref hand_tiles);
+            meldsSets(tiles_lst_color, sequences, ref result, ref starting_tiles);
             return result;
         }
 
