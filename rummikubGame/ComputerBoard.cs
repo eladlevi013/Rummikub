@@ -7,6 +7,16 @@ namespace rummikubGame
 {
     public class ComputerBoard : Board
     {
+        // consts
+        const int STARTING_HAND_X_LOCATION_COMPUTER_TILES = 50;
+        const int STARTING_HAND_Y_LOCATION_COMPUTER_TILES = 80;
+        const int STARTING_SEQUENCES_X_LOCATION_COMPUTER_TILES = 50;
+        const int STARTING_SEQUENCES_Y_LOCATION_COMPUTER_TILES = 170;
+        const int SECOND_SEQUENCES_X_LOCATION_COMPUTER_TILES = 300;
+        const int SECOND_SEQUENCES_Y_LOCATION_COMPUTER_TILES = 170;
+        const int X_SPACE_BETWEEN_COMPUTER_TILES = 40;
+        const int Y_SPACE_BETWEEN_SEQUENCES = 50;
+
         // variables of the board
         public List<Tile> hand;
         public List<List<Tile>> sequences;
@@ -21,7 +31,7 @@ namespace rummikubGame
         {
             // first we'll find the number of tiles in hand
             int hand_counter = 0;
-            for(int hand_index =0; hand_index < hand.Count(); hand_index++)
+            for(int hand_index = 0; hand_index < hand.Count(); hand_index++)
             {
                 if (hand[hand_index] != null)
                     hand_counter += 1;
@@ -37,55 +47,64 @@ namespace rummikubGame
             hand = new List<Tile>();
 
             // fills the tiles list
-            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME ; i++)
+            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
                 hand.Add(GameTable.pool.getTile());
         }
 
         public void generateBoard()
         {   // draws the tiles of the computer
-            int starting_x_computer_tiles = 50;
-            int starting_y_computer_tiles = 80;
+            int curr_x_location_drawing_point = STARTING_HAND_X_LOCATION_COMPUTER_TILES;
+            int curr_y_location_drawing_point = STARTING_HAND_Y_LOCATION_COMPUTER_TILES;
 
             // draws the hand tiles
             for (int i = 0; i < hand.Count(); i++)
             {
-                Point tile_location = new Point(starting_x_computer_tiles, starting_y_computer_tiles);
+                Point tile_location = new Point(curr_x_location_drawing_point, curr_y_location_drawing_point);
                 if (hand[i] != null)
                 {
                     drawSingleComputerCard(hand[i], tile_location);
-                    starting_x_computer_tiles += 40;
+                    curr_x_location_drawing_point += X_SPACE_BETWEEN_COMPUTER_TILES;
                 }
             }
 
             // draws the sequences tiles
-            starting_x_computer_tiles = 50;
-            starting_y_computer_tiles = 170;
+            curr_x_location_drawing_point = STARTING_SEQUENCES_X_LOCATION_COMPUTER_TILES;
+            curr_y_location_drawing_point = STARTING_SEQUENCES_Y_LOCATION_COMPUTER_TILES;
             if (sequences != null)
             {
                 for (int i = 0; i < sequences.Count(); i++)
                 {
                     for (int j = 0; j < sequences[i].Count(); j++)
                     {
-                        Point tile_location = new Point(starting_x_computer_tiles, starting_y_computer_tiles);
+                        Point tile_location = new Point(curr_x_location_drawing_point, curr_y_location_drawing_point);
                         drawSingleComputerCard(sequences[i][j], tile_location);
-                        starting_x_computer_tiles += 40;
+                        curr_x_location_drawing_point += X_SPACE_BETWEEN_COMPUTER_TILES;
                     }
-                    if (i == 2)
-                    {   // if there are alot of sequences continue drawing in another area
-                        starting_x_computer_tiles = 300;
-                        starting_y_computer_tiles = 120;
+                    if (i >= 2)
+                    {
+                        if(i == 2)
+                        {
+                            // if there are alot of sequences continue drawing in another area
+                            curr_x_location_drawing_point = SECOND_SEQUENCES_X_LOCATION_COMPUTER_TILES;
+                            curr_y_location_drawing_point = SECOND_SEQUENCES_Y_LOCATION_COMPUTER_TILES - Y_SPACE_BETWEEN_SEQUENCES;
+                        }
+                        else
+                        {
+                            curr_x_location_drawing_point = SECOND_SEQUENCES_X_LOCATION_COMPUTER_TILES;
+                        }
                     }
                     else
                     {   // in any other situation start at the next line
-                        starting_x_computer_tiles = 50;
+                        curr_x_location_drawing_point = STARTING_HAND_X_LOCATION_COMPUTER_TILES;
                     }
-                    starting_y_computer_tiles += 50;
+                    curr_y_location_drawing_point += Y_SPACE_BETWEEN_SEQUENCES;
                 }
             }
         }
 
         public void drawSingleComputerCard(Tile tile, Point point)
-        {   // draws the given tile at the given location
+        {
+            // draws the given tile at the given location
             Button tileButton = new Button();
             tileButton.Size = new Size(35, 40);
             tileButton.BackgroundImage = Image.FromFile("Tile.png");
@@ -106,7 +125,8 @@ namespace rummikubGame
         }
 
         public void deleteCardsVisibility()
-        {   // deletes the visibility of the computer tiles
+        {   
+            // deletes the visibility of the computer tiles
             for (int i = 0; (drawn_computer_cards.Count != 0) && i < drawn_computer_cards.Count(); i++)
                 GameTable.global_gametable_context.Controls.Remove(drawn_computer_cards[i]);
         }
