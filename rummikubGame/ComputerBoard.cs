@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -29,14 +30,7 @@ namespace rummikubGame
 
         public bool checkWinner()
         {
-            // first we'll find the number of tiles in hand
-            int hand_counter = 0;
-            for(int hand_index = 0; hand_index < hand.Count(); hand_index++)
-            {
-                if (hand[hand_index] != null)
-                    hand_counter += 1;
-            }
-            if (hand_counter == 0)
+            if (hand.Count() == 0)
                 return true;
             return false;
         }
