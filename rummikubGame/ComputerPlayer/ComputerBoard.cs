@@ -54,11 +54,8 @@ namespace rummikubGame
             for (int i = 0; i < hand.Count(); i++)
             {
                 Point tile_location = new Point(curr_x_location_drawing_point, curr_y_location_drawing_point);
-                if (hand[i] != null)
-                {
-                    drawSingleComputerCard(hand[i], tile_location);
-                    curr_x_location_drawing_point += X_SPACE_BETWEEN_COMPUTER_TILES;
-                }
+                drawSingleComputerCard(hand[i], tile_location);
+                curr_x_location_drawing_point += X_SPACE_BETWEEN_COMPUTER_TILES;
             }
 
             // draws the sequences tiles

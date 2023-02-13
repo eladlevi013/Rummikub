@@ -49,23 +49,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Board.cs" />
-    <Compile Include="ComputerBoard.cs" />
-    <Compile Include="PlayerBoard.cs" />
-    <Compile Include="ComputerPlayer.cs" />
-    <Compile Include="HumanPlayer.cs" />
-    <Compile Include="Pool.cs" />
-    <Compile Include="Tile.cs" />
-    <Compile Include="Slot.cs" />
+    <Compile Include="Models\Board.cs" />
+    <Compile Include="ComputerPlayer\ComputerBoard.cs" />
+    <Compile Include="HumanPlayer\PlayerBoard.cs" />
+    <Compile Include="ComputerPlayer\ComputerPlayer.cs" />
+    <Compile Include="HumanPlayer\HumanPlayer.cs" />
+    <Compile Include="Models\Pool.cs" />
+    <Compile Include="Models\Tile.cs" />
+    <Compile Include="Models\Slot.cs" />
     <Compile Include="GameTable.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GameTable.Designer.cs">
       <DependentUpon>GameTable.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="Other\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TileButton.cs" />
+    <Compile Include="Models\TileButton.cs" />
     <EmbeddedResource Include="GameTable.resx">
       <DependentUpon>GameTable.cs</DependentUpon>
     </EmbeddedResource>
@@ -78,7 +78,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="packages.config" />
+    <None Include="Other\packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -90,7 +90,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="Other\App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
