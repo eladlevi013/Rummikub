@@ -1,4 +1,5 @@
-﻿using System;
+﻿using rummikubGame.Models;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace rummikubGame
         public List<Tile> hand;
         public List<List<Tile>> sequences;
         private List<Button> drawn_computer_cards;
+        public List<PartialSet> partial_sets;
 
         public int getHandTilesNumber()
         {
@@ -37,6 +39,7 @@ namespace rummikubGame
 
         public ComputerBoard()
         {
+            partial_sets = new List<PartialSet>();
             drawn_computer_cards = new List<Button>();
             hand = new List<Tile>();
 
@@ -89,6 +92,25 @@ namespace rummikubGame
                         curr_x_location_drawing_point = STARTING_HAND_X_LOCATION_COMPUTER_TILES;
                     }
                     curr_y_location_drawing_point += Y_SPACE_BETWEEN_SEQUENCES;
+                }
+            }
+
+            // draw the partial sets
+            curr_x_location_drawing_point = STARTING_HAND_X_LOCATION_COMPUTER_TILES + 400;
+            curr_y_location_drawing_point = STARTING_HAND_Y_LOCATION_COMPUTER_TILES;
+            if (partial_sets != null)
+            {
+                for (int i = 0; i < partial_sets.Count(); i++)
+                {
+                    Point tile_location1 = new Point(curr_x_location_drawing_point, curr_y_location_drawing_point);
+                    drawSingleComputerCard(partial_sets[i].Tile1, tile_location1);
+                    curr_x_location_drawing_point += X_SPACE_BETWEEN_COMPUTER_TILES;
+
+                    Point tile_location2 = new Point(curr_x_location_drawing_point, curr_y_location_drawing_point);
+                    drawSingleComputerCard(partial_sets[i].Tile2, tile_location2);
+
+                    curr_y_location_drawing_point += Y_SPACE_BETWEEN_SEQUENCES;
+                    curr_x_location_drawing_point = STARTING_HAND_X_LOCATION_COMPUTER_TILES + 400;
                 }
             }
         }

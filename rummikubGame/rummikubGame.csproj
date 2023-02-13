@@ -54,6 +54,7 @@
     <Compile Include="HumanPlayer\PlayerBoard.cs" />
     <Compile Include="ComputerPlayer\ComputerPlayer.cs" />
     <Compile Include="HumanPlayer\HumanPlayer.cs" />
+    <Compile Include="Models\PartialSet.cs" />
     <Compile Include="Models\Pool.cs" />
     <Compile Include="Models\Tile.cs" />
     <Compile Include="Models\Slot.cs" />
