@@ -175,26 +175,26 @@ namespace rummikubGame
                 if (tile == null) // pool is empty
                     return;
 
-                // if partial set found from dropped tile stack
-                if (board.hand.Count() > 1)
+                // better option with tile from pool
+                if (!OptimalTileToReplaceExists(tile))
                 {
-                    board.hand.Add(tile);
-                    createPartialSets();
-
-                    if (board.hand.Count() > 0)
+                    // if partial set found from dropped tile stack
+                    if (board.hand.Count() > 1)
                     {
-                        Random rnd = new Random();
-                        int random_tile_to_drop_index = rnd.Next(board.hand.Count());
-                        Tile random_tile_to_drop = board.hand[random_tile_to_drop_index];
-                        board.hand.Remove(random_tile_to_drop);
-                        board.GenerateComputerThrownTile(random_tile_to_drop);
+                        board.hand.Add(tile);
+                        createPartialSets();
+
+                        if (board.hand.Count() > 0)
+                        {
+                            Random rnd = new Random();
+                            int random_tile_to_drop_index = rnd.Next(board.hand.Count());
+                            Tile random_tile_to_drop = board.hand[random_tile_to_drop_index];
+                            board.hand.Remove(random_tile_to_drop);
+                            board.GenerateComputerThrownTile(random_tile_to_drop);
+                        }
+                        // hand cannot be 0. if it is, it means that the tile we dropped is not part of a set
                     }
-                    // hand cannot be 0. if it is, it means that the tile we dropped is not part of a set
-                }
-                else
-                {
-                    // better option with tile from pool
-                    if (!OptimalTileToReplaceExists(tile))
+                    else
                     {
                         // if all tiles in partial sets
                         if (board.hand.Count() == 0 && board.partial_sets.Count() > 0)
