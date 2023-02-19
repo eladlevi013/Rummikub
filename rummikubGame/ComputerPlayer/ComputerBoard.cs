@@ -32,7 +32,7 @@ namespace rummikubGame
 
         public bool checkWinner()
         {
-            if (hand.Count() == 0)
+            if (hand.Count() + partial_sets.Count()*2 == 0)
                 return true;
             return false;
         }
@@ -46,6 +46,29 @@ namespace rummikubGame
             // fills the tiles list
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
                 hand.Add(GameTable.pool.getTile());
+
+            /*
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+            */
         }
 
         public void generateBoard()
@@ -104,6 +127,7 @@ namespace rummikubGame
                 {
                     Point tile_location1 = new Point(curr_x_location_drawing_point, curr_y_location_drawing_point);
                     drawSingleComputerCard(partial_sets[i].Tile1, tile_location1);
+
                     curr_x_location_drawing_point += X_SPACE_BETWEEN_COMPUTER_TILES;
 
                     Point tile_location2 = new Point(curr_x_location_drawing_point, curr_y_location_drawing_point);
@@ -111,6 +135,12 @@ namespace rummikubGame
 
                     curr_y_location_drawing_point += Y_SPACE_BETWEEN_SEQUENCES;
                     curr_x_location_drawing_point = STARTING_HAND_X_LOCATION_COMPUTER_TILES + 400;
+
+                    if(i == 3)
+                    {
+                        curr_x_location_drawing_point = STARTING_HAND_X_LOCATION_COMPUTER_TILES + 495;
+                        curr_y_location_drawing_point = STARTING_HAND_Y_LOCATION_COMPUTER_TILES;
+                    }
                 }
             }
         }
@@ -122,7 +152,6 @@ namespace rummikubGame
             tileButton.Size = new Size(35, 40);
             tileButton.BackgroundImage = Image.FromFile("Tile.png");
             tileButton.BackgroundImageLayout = ImageLayout.Stretch;
-            tileButton.Draggable(true); // usage of the extension
             tileButton.FlatStyle = FlatStyle.Flat;
             tileButton.FlatAppearance.BorderSize = 0;
             tileButton.Text = tile.getNumber().ToString();

@@ -20,10 +20,60 @@ namespace rummikubGame
             // arrange given tiles in optimal way for the first time
             board.sequences = meldsSets(ref board.hand);
 
+            // create partial sets from the given hand
+            createPartialSets();
+
             // draw the tiles on the screen
             if (GameTable.global_view_computer_tiles_groupbox.Checked)
                 board.generateBoard();
         }
+
+        // ---------------------------------------------------------
+        /// <summary>
+        /// creates partial sets from the given hand
+        /// </summary>
+        /// <param></param>
+        // ---------------------------------------------------------
+        public void createPartialSets()
+        {
+            // list indexes of the parital_sets tiles
+            List<int> indexes = new List<int>();
+
+            // create Partial sets
+            for (int i = 0; i < board.hand.Count(); i++)
+            {
+                for (int j = 0; j < board.hand.Count(); j++)
+                {
+                    Tile tile1 = board.hand[i];
+                    Tile tile2 = board.hand[j];
+                    if (i != j && (tile1.getNumber() == tile2.getNumber() && tile1.getColor() != tile2.getColor()) ||
+                    ((Math.Abs(tile1.getNumber() - tile2.getNumber()) == 2 || Math.Abs(tile1.getNumber() - tile2.getNumber()) == 1)
+                    && tile1.getColor() == tile2.getColor()))
+                    {
+                        if (!indexes.Contains(i) && !indexes.Contains(j))
+                        {
+                            board.partial_sets.Add(new PartialSet(tile1, tile2));
+                            indexes.Add(i);
+                            indexes.Add(j);
+                        }
+                    }
+                }
+            }
+
+            // duplicating the board.hand
+            List<Tile> temp_hand = new List<Tile>();
+            for (int i = 0; i < board.hand.Count(); i++)
+            {
+                temp_hand.Add(board.hand[i]);
+            }
+
+            // remove the tiles that are in partial sets
+            for (int i = 0; i < indexes.Count(); i++)
+            {
+                board.hand.Remove(temp_hand[indexes[i]]);
+            }
+        }
+
 
         // ---------------------------------------------------------
         /// <summary>
@@ -61,14 +111,8 @@ namespace rummikubGame
                 {
                     for (int j = 0; j < board.partial_sets.Count(); j++)
                     {
-                        Tile tile1 = board.partial_sets[j].Tile1;
-                        Tile tile2 = board.partial_sets[j].Tile2;
-
-                        starting_tiles.Remove(tile1);
-                        starting_tiles.Remove(tile2);
-                        starting_tiles.Add((Tile)tile1);
-                        starting_tiles.Add((Tile)tile2);
-
+                        starting_tiles.Add((Tile)board.partial_sets[j].Tile1);
+                        starting_tiles.Add((Tile)board.partial_sets[j].Tile2);
                     }
                 }
 
@@ -97,6 +141,10 @@ namespace rummikubGame
                 // updates global board variables
                 board.sequences = optimal_solution_sequences;
                 board.hand = optimal_solution_hand;
+                board.partial_sets = new List<PartialSet>();
+
+                // create partial sets from the given hand
+                createPartialSets();
 
                 // take the last thrown tile from the dropped tiles stack(graphically)
                 if (GameTable.dropped_tiles_stack.Count() > 0)
@@ -127,28 +175,74 @@ namespace rummikubGame
                 if (tile == null) // pool is empty
                     return;
 
-                // better option with tile from pool
-                if (!OptimalTileToReplaceExists(tile))
+                // if partial set found from dropped tile stack
+                if (board.hand.Count() > 1)
                 {
-                    // if tile from pool didnt gave us better result drop random tile from hand
-                    Random rnd_hand_index = new Random();
-                    bool hand_null = true;
-                    Tile random_tile_to_drop = null;
-                    int random_tile_to_drop_index = 0;
+                    board.hand.Add(tile);
+                    createPartialSets();
 
-                    while (hand_null)
+                    if (board.hand.Count() > 0)
                     {
-                        random_tile_to_drop_index = rnd_hand_index.Next(board.hand.Count());
-                        random_tile_to_drop = board.hand[random_tile_to_drop_index];
-                        if (random_tile_to_drop != null)
+                        Random rnd = new Random();
+                        int random_tile_to_drop_index = rnd.Next(board.hand.Count());
+                        Tile random_tile_to_drop = board.hand[random_tile_to_drop_index];
+                        board.hand.Remove(random_tile_to_drop);
+                        board.GenerateComputerThrownTile(random_tile_to_drop);
+                    }
+                    // hand cannot be 0. if it is, it means that the tile we dropped is not part of a set
+                }
+                else
+                {
+                    // better option with tile from pool
+                    if (!OptimalTileToReplaceExists(tile))
+                    {
+                        // if all tiles in partial sets
+                        if (board.hand.Count() == 0 && board.partial_sets.Count() > 0)
                         {
-                            hand_null = false;
+                            // if tile from pool didnt gave us better result drop random tile from partial sets
+                            Random rnd_partial_sets_index = new Random();
+                            bool partial_sets_null = true;
+                            Tile random_tile_to_drop = null;
+                            int random_tile_to_drop_index = 0;
+
+                            while (partial_sets_null)
+                            {
+                                random_tile_to_drop_index = rnd_partial_sets_index.Next(board.partial_sets.Count());
+                                random_tile_to_drop = (Tile)board.partial_sets[random_tile_to_drop_index].Tile1;
+                                if (random_tile_to_drop != null)
+                                {
+                                    partial_sets_null = false;
+                                }
+                            }
+
+                            board.hand.Add(tile);
+                            board.hand.Add(board.partial_sets[random_tile_to_drop_index].Tile2);
+                            board.partial_sets.RemoveAt(random_tile_to_drop_index);
+                            board.GenerateComputerThrownTile(random_tile_to_drop);
+                        }
+                        else
+                        {
+                            // if tile from pool didnt gave us better result drop random tile from hand
+                            Random rnd_hand_index = new Random();
+                            bool hand_null = true;
+                            Tile random_tile_to_drop = null;
+                            int random_tile_to_drop_index = 0;
+
+                            while (hand_null)
+                            {
+                                random_tile_to_drop_index = rnd_hand_index.Next(board.hand.Count());
+                                random_tile_to_drop = board.hand[random_tile_to_drop_index];
+                                if (random_tile_to_drop != null)
+                                {
+                                    hand_null = false;
+                                }
+                            }
+
+                            board.hand.RemoveAt(random_tile_to_drop_index);
+                            board.hand.Add(tile);
+                            board.GenerateComputerThrownTile(random_tile_to_drop);
                         }
                     }
-
-                    board.hand.RemoveAt(random_tile_to_drop_index);
-                    board.hand.Add(tile);
-                    board.GenerateComputerThrownTile(random_tile_to_drop);
                 }
             }
 
@@ -276,11 +370,9 @@ namespace rummikubGame
                 }
             }
 
-            List<PartialSet> partial_sets = new List<PartialSet>();
             List<List<Tile>> result = new List<List<Tile>>();
             List<List<Tile>> sequences = new List<List<Tile>>();
-            meldsSets(tiles_lst_color, sequences, ref result, ref starting_tiles, ref partial_sets);
-            board.partial_sets= partial_sets;
+            meldsSets(tiles_lst_color, sequences, ref result, ref starting_tiles);
             return result;
         }
 
@@ -293,18 +385,10 @@ namespace rummikubGame
         /// <param name="best_sequences"></param>
         /// <param name="best_hand"></param>
         // ---------------------------------------------------------
-        public void meldsSets(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand, ref List<PartialSet> best_partial_sets)
+        public void meldsSets(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
         {
             List<Tile> hand_temp = new List<Tile>();
             hand_temp.AddRange(color_sorted_hand[0]); hand_temp.AddRange(color_sorted_hand[1]); hand_temp.AddRange(color_sorted_hand[2]); hand_temp.AddRange(color_sorted_hand[3]);
-
-            // adding partial set
-            for (int i = 0; i < best_partial_sets.Count(); i++)
-            {
-                hand_temp.Add(best_partial_sets[i].Tile1);
-                hand_temp.Add(best_partial_sets[i].Tile2);
-            }
-
             hand_temp = hand_temp.OrderBy(card => card.getNumber()).ToList();
 
             List<List<Tile>> sequences_temp = new List<List<Tile>>();
@@ -317,32 +401,23 @@ namespace rummikubGame
             extendSets(ref best_sequences, ref best_hand);
 
             // if current sequences is better, we would like to replace the global sequences and hand vars
-            if (hand_temp.Count() < best_hand.Count() || (hand_temp.Count() == best_hand.Count() && sequences.Count() > best_sequences.Count()))
+            if (hand_temp.Count() < best_hand.Count())
             {
                 best_sequences = sequences_temp;
                 List<Tile> temp_hand = new List<Tile>();
                 temp_hand.AddRange(color_sorted_hand[0]); temp_hand.AddRange(color_sorted_hand[1]); temp_hand.AddRange(color_sorted_hand[2]); temp_hand.AddRange(color_sorted_hand[3]);
                 temp_hand = temp_hand.OrderBy(card => card.getNumber()).ToList();
                 best_hand = hand_temp;
-                best_partial_sets = new List<PartialSet>();
-
-                // create Partial sets
-                for (int i = 0; i < best_hand.Count(); i++)
+            }
+            else if (hand_temp.Count() == best_hand.Count())
+            {
+                if (sequences.Count() > best_sequences.Count())
                 {
-                    for (int j = 0; j < best_hand.Count(); j++)
-                    {
-                        Tile tile1 = best_hand[i];
-                        Tile tile2 = best_hand[j];
-
-                        if (i != j && (tile1.getNumber() == tile2.getNumber() && tile1.getColor() != tile2.getColor()) ||
-                        ((Math.Abs(tile1.getNumber() - tile2.getNumber()) == 2 || Math.Abs(tile1.getNumber() - tile2.getNumber()) == 1)
-                        && tile1.getColor() == tile2.getColor()))
-                        {
-                            best_partial_sets.Add(new PartialSet(tile1, tile2));
-                            best_hand.Remove(tile1);
-                            best_hand.Remove(tile2);
-                        }
-                    }
+                    best_sequences = sequences;
+                    List<Tile> temp_hand = new List<Tile>();
+                    temp_hand.AddRange(color_sorted_hand[0]); temp_hand.AddRange(color_sorted_hand[1]); temp_hand.AddRange(color_sorted_hand[2]); temp_hand.AddRange(color_sorted_hand[3]);
+                    temp_hand = temp_hand.OrderBy(card => card.getNumber()).ToList();
+                    best_hand = temp_hand;
                 }
             }
 
@@ -357,7 +432,7 @@ namespace rummikubGame
                 // now we'll remove the duplicates
                 for (int j = 1; j < curr_hand_color_no_duplicates.Count(); j++)
                 {
-                    if (curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].getColor() == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j - 1]].getColor() && 
+                    if (curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].getColor() == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j - 1]].getColor() &&
                         curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].getNumber() == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j - 1]].getNumber())
                     {
                         curr_hand_color_no_duplicates.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]);
@@ -375,10 +450,10 @@ namespace rummikubGame
                         temp_sequences.Add(new List<Tile>() { curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]], curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]], curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 2]] });
 
                         Dictionary<int, Tile> temp_curr_hand_color_clone = new Dictionary<int, Tile>(curr_hand_color_clone);
-                        temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]); temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j+1]); temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j+2]);
+                        temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]); temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j + 1]); temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j + 2]);
 
                         color_sorted_hand[i] = new List<Tile>(temp_curr_hand_color_clone.Values.ToList());
-                        meldsSets(color_sorted_hand, temp_sequences, ref best_sequences, ref best_hand, ref best_partial_sets);
+                        meldsSets(color_sorted_hand, temp_sequences, ref best_sequences, ref best_hand);
 
                         // fix what we ruined
                         color_sorted_hand[i] = temp_curr_hand_color_clone.Values.ToList();
@@ -421,7 +496,7 @@ namespace rummikubGame
                     temp_sequences.Add(new List<Tile>() { remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]], remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]], remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]] });
 
                     Dictionary<int, Tile> temp_remaning_tiles_dict = new Dictionary<int, Tile>(remaning_tiles_dict);
-                    temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j+1]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j+2]);
+                    temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]);
 
                     // classify to 4 different lists(every color in every array)
                     List<Tile> sorted_tiles_no_dup = new List<Tile>(temp_remaning_tiles_dict.Values.ToList());
@@ -430,10 +505,9 @@ namespace rummikubGame
                     for (int i = 0; i < sorted_tiles_no_dup.Count(); i++)
                         tiles_lst_color[sorted_tiles_no_dup[i].getColor()].Add(sorted_tiles_no_dup[i]);
 
-                    meldsSets(tiles_lst_color, temp_sequences, ref best_sequences, ref best_hand, ref best_partial_sets);
+                    meldsSets(tiles_lst_color, temp_sequences, ref best_sequences, ref best_hand);
                 }
             }
-
             return;
         }
     }

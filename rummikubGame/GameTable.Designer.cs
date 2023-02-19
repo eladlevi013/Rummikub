@@ -42,6 +42,7 @@
             this.computerTiles_groupbox = new System.Windows.Forms.GroupBox();
             this.show_computer_tiles_checkbox = new System.Windows.Forms.CheckBox();
             this.game_indicator_lbl = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.computerTiles_groupbox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,7 +61,7 @@
             this.dropped_tiles_btn.BackColor = System.Drawing.Color.Wheat;
             this.dropped_tiles_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dropped_tiles_btn.BackgroundImage")));
             this.dropped_tiles_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.dropped_tiles_btn.Location = new System.Drawing.Point(669, 126);
+            this.dropped_tiles_btn.Location = new System.Drawing.Point(683, 126);
             this.dropped_tiles_btn.Name = "dropped_tiles_btn";
             this.dropped_tiles_btn.Size = new System.Drawing.Size(98, 135);
             this.dropped_tiles_btn.TabIndex = 3;
@@ -71,7 +72,7 @@
             this.pool_btn.BackColor = System.Drawing.Color.Wheat;
             this.pool_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pool_btn.BackgroundImage")));
             this.pool_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pool_btn.Location = new System.Drawing.Point(819, 126);
+            this.pool_btn.Location = new System.Drawing.Point(833, 126);
             this.pool_btn.Name = "pool_btn";
             this.pool_btn.Size = new System.Drawing.Size(102, 135);
             this.pool_btn.TabIndex = 4;
@@ -82,7 +83,7 @@
             // 
             this.current_pool_size_lbl.AutoSize = true;
             this.current_pool_size_lbl.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.current_pool_size_lbl.Location = new System.Drawing.Point(835, 268);
+            this.current_pool_size_lbl.Location = new System.Drawing.Point(849, 268);
             this.current_pool_size_lbl.Name = "current_pool_size_lbl";
             this.current_pool_size_lbl.Size = new System.Drawing.Size(67, 13);
             this.current_pool_size_lbl.TabIndex = 5;
@@ -137,13 +138,14 @@
             // computerTiles_groupbox
             // 
             this.computerTiles_groupbox.BackColor = System.Drawing.Color.RoyalBlue;
+            this.computerTiles_groupbox.Controls.Add(this.label3);
             this.computerTiles_groupbox.Controls.Add(this.label1);
             this.computerTiles_groupbox.Controls.Add(this.label2);
             this.computerTiles_groupbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.computerTiles_groupbox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.computerTiles_groupbox.Location = new System.Drawing.Point(30, 24);
             this.computerTiles_groupbox.Name = "computerTiles_groupbox";
-            this.computerTiles_groupbox.Size = new System.Drawing.Size(589, 304);
+            this.computerTiles_groupbox.Size = new System.Drawing.Size(610, 304);
             this.computerTiles_groupbox.TabIndex = 12;
             this.computerTiles_groupbox.TabStop = false;
             // 
@@ -164,13 +166,25 @@
             // 
             this.game_indicator_lbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.game_indicator_lbl.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.game_indicator_lbl.Location = new System.Drawing.Point(625, 47);
+            this.game_indicator_lbl.Location = new System.Drawing.Point(646, 47);
             this.game_indicator_lbl.Name = "game_indicator_lbl";
-            this.game_indicator_lbl.Size = new System.Drawing.Size(341, 61);
+            this.game_indicator_lbl.Size = new System.Drawing.Size(320, 61);
             this.game_indicator_lbl.TabIndex = 13;
             this.game_indicator_lbl.Text = "Game Indicator";
             this.game_indicator_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.game_indicator_lbl.UseMnemonic = false;
+            this.game_indicator_lbl.Click += new System.EventHandler(this.game_indicator_lbl_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.label3.Location = new System.Drawing.Point(414, 23);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(107, 24);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Partial-Sets:";
             // 
             // GameTable
             // 
@@ -214,6 +228,7 @@
         private System.Windows.Forms.GroupBox computerTiles_groupbox;
         private System.Windows.Forms.CheckBox show_computer_tiles_checkbox;
         private System.Windows.Forms.Label game_indicator_lbl;
+        private System.Windows.Forms.Label label3;
     }
 }
 

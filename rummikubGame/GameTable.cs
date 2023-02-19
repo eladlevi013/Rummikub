@@ -22,6 +22,10 @@ namespace rummikubGame
         public const int RUMMIKUB_TILES_IN_GAME = 14;
         public const int MAX_POSSIBLE_SEQUENCES_NUMBER = 4;
         public const int DROPPED_TILE_LOCATION = -1;
+        public const int BLUE_COLOR = 0;
+        public const int BLACK_COLOR = 1;
+        public const int YELLOW_COLOR = 2;
+        public const int RED_COLOR = 3;
 
         // graphical consts
         public const int HUMAN_PLAYER_BOARD_HEIGHT = 2;
@@ -215,6 +219,11 @@ namespace rummikubGame
                 computerTiles_groupbox.Visible = true;
                 computer_player.board.generateBoard();
             }
+        }
+
+        private void game_indicator_lbl_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
