@@ -13,7 +13,7 @@ namespace rummikubGame
     {
         // consts
         const int STARTING_X_LOCATION = 70;
-        const int STARTING_Y_LOCATION = 395;
+        const int STARTING_Y_LOCATION = 410;
         const int X_SPACE_BETWEEN_TileButtons = 85;
         const int Y_SPACE_BETWEEN_TileButtons = 115;
         const int DROPPED_CARD_LOCATION = -1; // when the card is no longer in board
@@ -341,7 +341,7 @@ namespace rummikubGame
             {
                 GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
                 GameTable.dropped_tiles_stack.Peek().getTileButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
-                GameTable.dropped_tiles_stack.Pop().getTileButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown); ;
+                GameTable.dropped_tiles_stack.Peek().getTileButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown); ;
             }
         }
 
@@ -378,6 +378,14 @@ namespace rummikubGame
                 int[] start_location = { i / 10, i % 10 };
                 GenerateNewTileToSlotLocation(start_location);
                 TileButton_slot[i / 10, i % 10].changeState(Slot.ALLOCATED);
+            }
+        }
+
+        public void clearBoard()
+        {
+            for (int i = 0; i < TileButtons.Values.ToList().Count(); i++)
+            {
+                GameTable.global_gametable_context.Controls.Remove(TileButtons.Values.ToList()[i].getTileButton());
             }
         }
     }

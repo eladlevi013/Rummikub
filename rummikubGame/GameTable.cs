@@ -62,6 +62,31 @@ namespace rummikubGame
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
         }
 
+        public void startGameObjectCreation()
+        {
+            // create objects
+            dropped_tiles_stack = new Stack<TileButton>(); // empty dropped tiles
+            pool = new Pool(); // generate rummikub tiles
+            human_player = new HumanPlayer("Player Default Name");
+            computer_player = new ComputerPlayer();
+        }
+
+        public void startGameSetTurn()
+        {
+            // Sets the starting player and start the game
+            Random rnd = new Random();
+            current_turn = rnd.Next(0, 2);
+            if (current_turn == COMPUTER_PLAYER_TURN)
+            {
+                game_indicator_lbl.Text = "Computer's turn";
+                computer_player.play(null);
+            }
+            else
+            {
+                game_indicator_lbl.Text = "Your turn";
+            }
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             // update global variables
@@ -71,11 +96,7 @@ namespace rummikubGame
             global_dropped_tiles_btn = dropped_tiles_btn; // updates the dropped_tiles variable, so it'll be accessed outside that class
             global_game_indicator_lbl = game_indicator_lbl;
 
-            // create objects
-            dropped_tiles_stack = new Stack<TileButton>(); // empty dropped tiles
-            pool = new Pool(); // generate rummikub tiles
-            human_player = new HumanPlayer("Player Default Name"); 
-            computer_player = new ComputerPlayer();
+            startGameObjectCreation();
 
             // change the style of the drop_TileButtons_location
             global_dropped_tiles_btn.FlatStyle = FlatStyle.Flat;
@@ -101,18 +122,7 @@ namespace rummikubGame
             // this will send back the panel(the board)
             board_panel.SendToBack();
 
-            // Sets the starting player and start the game
-            Random rnd = new Random();
-            current_turn = rnd.Next(0, 2);
-            if (current_turn == COMPUTER_PLAYER_TURN)
-            {
-                game_indicator_lbl.Text = "Computer's turn";
-                computer_player.play(null);
-            }
-            else
-            {
-                game_indicator_lbl.Text = "Your turn";
-            }
+            startGameSetTurn();
 
             // if the game is over, and the computer won
             if (computer_player.board.checkWinner() == true && GameTable.game_over == false)
@@ -212,7 +222,7 @@ namespace rummikubGame
             if (show_computer_tiles_checkbox.Checked == false)
             {
                 computerTiles_groupbox.Visible = false;
-                computer_player.board.deleteCardsVisibility();
+                computer_player.board.clearBoard();
             }
             else
             {
@@ -221,8 +231,27 @@ namespace rummikubGame
             }
         }
 
-        private void game_indicator_lbl_Click(object sender, EventArgs e)
+        private void resetToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
+            // Clearning the boards
+            human_player.board.clearBoard();
+            computer_player.board.clearBoard();
+
+            // Clearing dropped tiles
+            while(GameTable.dropped_tiles_stack.Count > 0)
+            {
+                GameTable.global_gametable_context.Controls.Remove(GameTable.dropped_tiles_stack.Peek().getTileButton());
+                GameTable.dropped_tiles_stack.Pop();
+            }
+
+            // Sets more vars
+            GameTable.game_over = false;
+            GameTable.global_dropped_tiles_btn.Enabled = true;
+
+            // Sets the game to start
+            startGameObjectCreation();
+            startGameSetTurn();
 
         }
     }

@@ -11,9 +11,9 @@ namespace rummikubGame
     {
         // consts
         const int STARTING_HAND_X_LOCATION_COMPUTER_TILES = 50;
-        const int STARTING_HAND_Y_LOCATION_COMPUTER_TILES = 80;
+        const int STARTING_HAND_Y_LOCATION_COMPUTER_TILES = 95;
         const int STARTING_SEQUENCES_X_LOCATION_COMPUTER_TILES = 50;
-        const int STARTING_SEQUENCES_Y_LOCATION_COMPUTER_TILES = 170;
+        const int STARTING_SEQUENCES_Y_LOCATION_COMPUTER_TILES = 185;
         const int SECOND_SEQUENCES_X_LOCATION_COMPUTER_TILES = 300;
         const int SECOND_SEQUENCES_Y_LOCATION_COMPUTER_TILES = 170;
         const int X_SPACE_BETWEEN_COMPUTER_TILES = 40;
@@ -48,25 +48,23 @@ namespace rummikubGame
                 hand.Add(GameTable.pool.getTile());
 
             /*
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 3));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 4));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 5));
 
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 3));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 4));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 5));
 
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 3));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 4));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 5));
 
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+            hand.Add(new Tile(GameTable.RED_COLOR, 3));
+            hand.Add(new Tile(GameTable.RED_COLOR, 4));
+            hand.Add(new Tile(GameTable.RED_COLOR, 5));
+            hand.Add(new Tile(GameTable.RED_COLOR, 6));
 
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
-
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
-
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
             hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
             */
         }
@@ -154,6 +152,7 @@ namespace rummikubGame
             tileButton.BackgroundImageLayout = ImageLayout.Stretch;
             tileButton.FlatStyle = FlatStyle.Flat;
             tileButton.FlatAppearance.BorderSize = 0;
+            // tileButton.Draggable(true);
             tileButton.Text = tile.getNumber().ToString();
             tileButton.Location = point;
             if (tile.getColor() == 0) tileButton.ForeColor = (Color.Blue);
@@ -166,7 +165,7 @@ namespace rummikubGame
             tileButton.BringToFront();
         }
 
-        public void deleteCardsVisibility()
+        public void clearBoard()
         {   
             // deletes the visibility of the computer tiles
             for (int i = 0; (drawn_computer_cards.Count != 0) && i < drawn_computer_cards.Count(); i++)

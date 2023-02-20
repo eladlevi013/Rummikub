@@ -250,7 +250,7 @@ namespace rummikubGame
             GameTable.current_turn = GameTable.HUMAN_PLAYER_TURN;
             GameTable.global_game_indicator_lbl.Text = GameTable.TAKE_TILE_FROM_POOL_STACK_MSG;
             PlayerBoard.tookCard = false;
-            GameTable.computer_player.board.deleteCardsVisibility();
+            GameTable.computer_player.board.clearBoard();
 
             if (GameTable.global_view_computer_tiles_groupbox.Checked == true)
                 GameTable.computer_player.board.generateBoard();
@@ -262,7 +262,7 @@ namespace rummikubGame
                 GameTable.global_game_indicator_lbl.Text = "Game Over - Computer Won";
                 GameTable.human_player.board.disableHumanBoard();
 
-                if(GameTable.dropped_tiles_stack.Count > 0)
+                if (GameTable.dropped_tiles_stack.Count > 0)
                     GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
                 GameTable.game_over = true;
             }
