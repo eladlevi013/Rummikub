@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace rummikubGame
 {
+    [Serializable]
     public class PlayerBoard : Board
     {
         // consts
@@ -25,7 +24,7 @@ namespace rummikubGame
 
         // board elements
         private Slot[,] TileButton_slot; // 2d-array of the slots of the cards
-        private Dictionary<int, TileButton> TileButtons;
+        public Dictionary<int, TileButton> TileButtons;
 
         public Slot[,] getTileButtonSlot()
         {
@@ -41,6 +40,16 @@ namespace rummikubGame
         {
             generateBoard();
             GameTable.dropped_tiles_stack = new Stack<TileButton>();
+        }
+
+        public void DisableLastDroppedTile()
+        {
+            if (GameTable.dropped_tiles_stack.Count > 0)
+            {
+                GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
+                GameTable.dropped_tiles_stack.Peek().getTileButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
+                GameTable.dropped_tiles_stack.Peek().getTileButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown); ;
+            }
         }
 
         public void GenerateNewTileByClickingPool(int[] slot_location)
@@ -70,10 +79,10 @@ namespace rummikubGame
             TileButtons[TAG_NUMBER] = (new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), slot_location));
             TileButtons[TAG_NUMBER].getTileButton().Location = TileButton_slot[slot_location[0], slot_location[1]].getSlotButton().Location;
             TileButton_slot[TileButtons[TAG_NUMBER].getSlotLocation()[0], TileButtons[TAG_NUMBER].getSlotLocation()[1]].changeState(true);
-            TileDesigner(TileButtons[TAG_NUMBER], current_tile_from_pool);
+            TileDesigner(TileButtons[TAG_NUMBER], current_tile_from_pool, true);
         }
 
-        public void TileDesigner(TileButton tile, Tile tile_info)
+        public void TileDesigner(TileButton tile, Tile tile_info, bool tag_update)
         {   // creates graphical tile(location should be set outside the function)
             tile.getTileButton().Size = new Size(75, 100);
             tile.getTileButton().BackgroundImage = Image.FromFile("Tile.png");
@@ -91,13 +100,16 @@ namespace rummikubGame
             tile.getTileButton().MouseDown += new MouseEventHandler(this.TileButton_MouseDown);
             tile.getTileButton().MouseEnter += TileButton_MouseEnter;
             tile.getTileButton().MouseLeave += TileButton_MouseLeave;
-            tile.getTileButton().Tag = TAG_NUMBER;
+            if(tag_update)
+                tile.getTileButton().Tag = TAG_NUMBER++;
+            else 
+                tile.getTileButton().Tag = tile.tag;
+            tile.tag = (int)tile.getTileButton().Tag;
             GameTable.global_gametable_context.Controls.Add(tile.getTileButton());
             tile.getTileButton().BringToFront();
-            TAG_NUMBER++;
         }
 
-        private void TileButton_MouseDown(object sender, MouseEventArgs e)
+        public void TileButton_MouseDown(object sender, MouseEventArgs e)
         {
             Button current_card = (Button)sender;
             current_card.BringToFront();
@@ -112,12 +124,12 @@ namespace rummikubGame
             }
         }
 
-        private void TileButton_MouseEnter(object sender, EventArgs e)
+        public void TileButton_MouseEnter(object sender, EventArgs e)
         { 
             ((Button)sender).BackgroundImage = Image.FromFile("bright_tile.png"); // bright effect when the mouse hovers over the tile
         }
 
-        private void TileButton_MouseLeave(object sender, EventArgs e)
+        public void TileButton_MouseLeave(object sender, EventArgs e)
         {
             ((Button)sender).BackgroundImage = Image.FromFile("tile.png"); // in order to make the tile normal after hovering over the card
         }
@@ -128,7 +140,7 @@ namespace rummikubGame
             return (float)Math.Sqrt(Math.Pow(moving_card.Location.X - empty_slot.Location.X, 2) + Math.Pow(moving_card.Location.Y - empty_slot.Location.Y, 2));
         }
 
-        private void TileButton_MouseUp(object sender, MouseEventArgs e)
+        public void TileButton_MouseUp(object sender, MouseEventArgs e)
         {
             Button current_card = (Button)sender; // the card that we dragged with the mouse
             if (TileButtons.ContainsKey((int)current_card.Tag) || (GameTable.dropped_tiles_stack.Count > 0 && (int)GameTable.dropped_tiles_stack.Peek().getTileButton().Tag == (int)current_card.Tag)) // if the card is in our board
@@ -281,7 +293,7 @@ namespace rummikubGame
             return GameTable.RUMMIKUB_TILES_IN_GAME - tiles_in_sets;
         }
 
-        private static List<Tile> convertTilesButtonListToComputerFormat(List<TileButton> tiles)
+        public static List<Tile> convertTilesButtonListToComputerFormat(List<TileButton> tiles)
         {
             List<Tile> new_tiles_format = new List<Tile>();
             for(int i=0; i<tiles.Count(); i++)
@@ -378,6 +390,50 @@ namespace rummikubGame
                 int[] start_location = { i / 10, i % 10 };
                 GenerateNewTileToSlotLocation(start_location);
                 TileButton_slot[i / 10, i % 10].changeState(Slot.ALLOCATED);
+            }
+        }
+
+        public void generateTiles()
+        {
+            // slots from loading.
+            Slot[,] loaded_slots = TileButton_slot;
+
+            int x_location = STARTING_X_LOCATION;
+            int y_location = STARTING_Y_LOCATION;
+            TileButton_slot = new Slot[GameTable.HUMAN_PLAYER_BOARD_HEIGHT, GameTable.HUMAN_PLAYER_BOARD_WIDTH];
+
+            // Generating the slots
+            for (int i = 0; i < GameTable.HUMAN_PLAYER_BOARD_HEIGHT; i++)
+            {
+                for (int j = 0; j < GameTable.HUMAN_PLAYER_BOARD_WIDTH; j++)
+                {   // Generate a single slotButton
+                    TileButton_slot[i, j] = new Slot();
+                    TileButton_slot[i, j].getSlotButton().BackgroundImage = Image.FromFile("slot.png");
+                    TileButton_slot[i, j].getSlotButton().BackgroundImageLayout = ImageLayout.Stretch;
+                    TileButton_slot[i, j].getSlotButton().FlatStyle = FlatStyle.Flat;
+                    TileButton_slot[i, j].getSlotButton().FlatAppearance.BorderSize = 0;
+                    TileButton_slot[i, j].getSlotButton().Size = new Size(GameTable.TILE_WIDTH, GameTable.TILE_HEIGHT);
+                    TileButton_slot[i, j].getSlotButton().Location = new Point(x_location, y_location);
+                    TileButton_slot[i, j].changeState(loaded_slots[i, j].getState());
+                    GameTable.global_gametable_context.Controls.Add(TileButton_slot[i, j].getSlotButton());
+                    x_location += X_SPACE_BETWEEN_TileButtons;
+                }
+                y_location += Y_SPACE_BETWEEN_TileButtons;
+                x_location = STARTING_X_LOCATION;
+            }
+
+            // loaded tileButtons dictionary
+            Dictionary<int, TileButton> loaded_tile_buttons = TileButtons;
+
+            TileButtons = new Dictionary<int, TileButton>();
+
+            // generating tiles from dictionary
+            for(int i = 0; i < loaded_tile_buttons.Keys.ToList().Count(); i++)
+            {
+                TileButton tile = loaded_tile_buttons[loaded_tile_buttons.Keys.ToList()[i]];
+                TileButtons[loaded_tile_buttons.Keys.ToList()[i]] = new TileButton(tile.getColor(), tile.getNumber(), tile.getSlotLocation(), tile.tag);
+                TileButtons[TileButtons.Keys.ToList()[i]].getTileButton().Location = TileButton_slot[tile.getSlotLocation()[0], tile.getSlotLocation()[1]].getSlotButton().Location;
+                TileDesigner(TileButtons[TileButtons.Keys.ToList()[i]], tile, false);
             }
         }
 

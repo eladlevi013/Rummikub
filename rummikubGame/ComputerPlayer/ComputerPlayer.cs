@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace rummikubGame
 {
+    [Serializable]
     public class ComputerPlayer
     {
         public ComputerBoard board;

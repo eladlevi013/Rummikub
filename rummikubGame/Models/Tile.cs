@@ -8,6 +8,7 @@ using System.Collections;
 
 namespace rummikubGame
 {
+    [Serializable]
     public class Tile
     {
         protected int color;

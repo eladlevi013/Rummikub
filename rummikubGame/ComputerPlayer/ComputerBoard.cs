@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 namespace rummikubGame
 {
+    [Serializable]
     public class ComputerBoard : Board
     {
         // consts
@@ -22,7 +23,8 @@ namespace rummikubGame
         // variables of the board
         public List<Tile> hand;
         public List<List<Tile>> sequences;
-        private List<Button> drawn_computer_cards;
+        [NonSerialized]
+        public List<Button> drawn_computer_cards;
         public List<PartialSet> partial_sets;
 
         public int getHandTilesNumber()
@@ -182,7 +184,7 @@ namespace rummikubGame
 
             TileButton computers_thrown_tile = new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), slot_location);
             computers_thrown_tile.getTileButton().Location = new Point(GameTable.global_dropped_tiles_btn.Location.X + 10, GameTable.global_dropped_tiles_btn.Location.Y + 18);
-            GameTable.human_player.board.TileDesigner(computers_thrown_tile, current_tile_from_pool);
+            GameTable.human_player.board.TileDesigner(computers_thrown_tile, current_tile_from_pool, true);
             GameTable.dropped_tiles_stack.Push(computers_thrown_tile);
         }
     }

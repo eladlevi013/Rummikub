@@ -8,6 +8,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace rummikubGame
 {
+    [Serializable]
     public class Pool
     {
         // consts

@@ -7,13 +7,23 @@ using System.Windows.Forms;
 
 namespace rummikubGame
 {
+    [Serializable]
     public class TileButton: Tile
     {
-        private Button tile_button; // button element of the tile
+        public int tag;
+        [NonSerialized]
+        public Button tile_button; // button element of the tile
         private int[] slot_location; // location of the slot of the card
 
-        public TileButton(int color, int number, int[] slot_location): base(color, number)
+        public TileButton(int color, int number, int[] slot_location) : base(color, number)
         {
+            this.slot_location = slot_location;
+            this.tile_button = new Button();
+        }
+
+        public TileButton(int color, int number, int[] slot_location, int tag): base(color, number)
+        {
+            this.tag = tag;
             this.slot_location = slot_location;
             this.tile_button = new Button();
         }

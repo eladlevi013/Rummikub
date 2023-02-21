@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace rummikubGame
 {
+    [Serializable]
     public class HumanPlayer
     {
         public string player_name;

@@ -7,12 +7,14 @@ using System.Windows.Forms;
 
 namespace rummikubGame
 {
+    [Serializable]
     public class Slot
     {
         // consts
         public const bool AVAILABLE = false;
         public const bool ALLOCATED = true;
 
+        [NonSerialized]
         private Button slot_button; // the actual button of the slot
         private bool slot_state; // false-empty, true-not empty
         public Slot()

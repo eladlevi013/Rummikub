@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace rummikubGame.Models
 {
+    [Serializable]
     public class PartialSet
     {
         private Tile tile1 = null;
