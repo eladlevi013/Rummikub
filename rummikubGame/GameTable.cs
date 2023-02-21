@@ -185,7 +185,9 @@ namespace rummikubGame
         public static bool isLegalMeld(List<Tile> meld)
         {
             if (meld.Count < 3)
+            {
                 return false;
+            }
 
             bool isRun = true;
 
@@ -206,8 +208,8 @@ namespace rummikubGame
             for (int i = first_non_joker_index + 1; i < meld.Count; i++)
             {
                 // if meld number is not equal to the value + the index of the tile in the meld its cant be a run
-                if (meld[i].getNumber() != value + i - first_non_joker_index
-                    && meld[i].getColor() != color && !isJoker(meld[i]))
+                if ((meld[i].getNumber() != value + i - first_non_joker_index
+                    || meld[i].getColor() != color) && !isJoker(meld[i]))
                 {
                     isRun = false;
                 }
@@ -220,22 +222,35 @@ namespace rummikubGame
 
             if (isRun)
             {
-                global_game_indicator_lbl.Text = "good run.";
+                // checking the value of the max
+                if (meld[first_non_joker_index].getNumber() + ((meld.Count - 1) - first_non_joker_index) > 13)
+                {
+                    return false;
+                }
+
+                // checking the value of the min
+                if (meld[first_non_joker_index].getNumber() - first_non_joker_index < 1)
+                {
+                    return false;
+                }
+
                 return true; // 2+ run sequence
             }
 
             if (meld.Count > 4)
+            {
                 return false; // group of 4+ cannot exist
-
+            }
             for (int i = 0; i < meld.Count() - 1; i++)
             {
-                if (meld[i + 1].getNumber() != value && !isJoker(meld[i + 1])) 
+                if (meld[i + 1].getNumber() != value && !isJoker(meld[i + 1]))
+                {
                     return false; // its cannot be group
+                }
                 for (int j = i + 1; j < meld.Count(); j++)
                 {
                     if (meld[i].getColor() == meld[j].getColor() && !isJoker(meld[i]) && !isJoker(meld[j]))
                     {
-                        global_game_indicator_lbl.Text = "bad.";
                         return false;
                     }
                 }
@@ -244,9 +259,10 @@ namespace rummikubGame
             // check if there are too many jokers used
             int numJokers = countJokers(meld);
             if (numJokers > 2)
+            {
                 return false; // too many jokers used
+            }
 
-            global_game_indicator_lbl.Text = "good group.";
             return true;
         }
 
