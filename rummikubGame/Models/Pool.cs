@@ -12,7 +12,7 @@ namespace rummikubGame
     public class Pool
     {
         // consts
-        const int NUMBER_OF_TIMES = 2;
+        const int NUMBER_OF_TIMES = 1;
         const int COLORS_COUNT = 4;
         const int N = 13; // numbers range
 
