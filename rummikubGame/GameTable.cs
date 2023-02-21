@@ -250,6 +250,7 @@ namespace rummikubGame
             // Sets more vars
             GameTable.game_over = false;
             GameTable.global_dropped_tiles_btn.Enabled = true;
+            PlayerBoard.tookCard = false;
 
             // Sets the game to start
             startGameObjectCreation();
@@ -258,65 +259,80 @@ namespace rummikubGame
 
         private void saveGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream("save.rummikub", FileMode.Create);
-            formatter.Serialize(stream, human_player);
-            formatter.Serialize(stream, computer_player);
+            try
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                Stream stream = new FileStream("save.rummikub", FileMode.Create);
+                formatter.Serialize(stream, human_player);
+                formatter.Serialize(stream, computer_player);
 
-            // saving game info
-            formatter.Serialize(stream, GameTable.current_turn);
-            formatter.Serialize(stream, GameTable.game_over);
-            formatter.Serialize(stream, GameTable.pool);
-            formatter.Serialize(stream, GameTable.dropped_tiles_stack);
-            formatter.Serialize(stream, PlayerBoard.tookCard);
-            formatter.Serialize(stream, PlayerBoard.TAG_NUMBER);
-            stream.Close();
+                // saving game info
+                formatter.Serialize(stream, GameTable.current_turn);
+                formatter.Serialize(stream, GameTable.game_over);
+                formatter.Serialize(stream, GameTable.pool);
+                formatter.Serialize(stream, GameTable.dropped_tiles_stack);
+                formatter.Serialize(stream, PlayerBoard.tookCard);
+                formatter.Serialize(stream, PlayerBoard.TAG_NUMBER);
+                stream.Close();
+                // MessageBox.Show("Game saved successfully!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
         }
 
         private void loadGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Clearning the boards
-            clearAllTilesFromScreen();
-
-            // loading game info from binary file called save.rummikub
-            BinaryFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream("save.rummikub", FileMode.Open);
-            human_player = (HumanPlayer) formatter.Deserialize(stream);
-            computer_player = (ComputerPlayer) formatter.Deserialize(stream);
-
-            GameTable.current_turn = (int)formatter.Deserialize(stream);
-            GameTable.game_over = (bool)formatter.Deserialize(stream);
-            GameTable.pool = (Pool)formatter.Deserialize(stream);
-            GameTable.dropped_tiles_stack = (Stack<TileButton>)formatter.Deserialize(stream);
-            PlayerBoard.tookCard = (bool)formatter.Deserialize(stream);
-            PlayerBoard.TAG_NUMBER = (int)formatter.Deserialize(stream);
-            stream.Close();
-
-            // fix dropped tiles stack
-            Stack<TileButton> temp_dropped_tiles = dropped_tiles_stack;
-            Stack<TileButton> revered_dropped_tiles = new Stack<TileButton>();
-            while(temp_dropped_tiles.Count > 0)
+            try
             {
-                revered_dropped_tiles.Push(temp_dropped_tiles.Pop());
-            }
+                // Clearning the boards
+                clearAllTilesFromScreen();
 
-            while(revered_dropped_tiles.Count > 1)
-            {
-                computer_player.board.GenerateComputerThrownTile(revered_dropped_tiles.Pop());
-                human_player.board.DisableLastDroppedTile();
-            }
-            if(revered_dropped_tiles.Peek() != null) 
-            {
-                computer_player.board.GenerateComputerThrownTile(revered_dropped_tiles.Pop());
-                if(PlayerBoard.tookCard == true)
+                // loading game info from binary file called save.rummikub
+                BinaryFormatter formatter = new BinaryFormatter();
+                Stream stream = new FileStream("save.rummikub", FileMode.Open);
+                human_player = (HumanPlayer)formatter.Deserialize(stream);
+                computer_player = (ComputerPlayer)formatter.Deserialize(stream);
+
+                GameTable.current_turn = (int)formatter.Deserialize(stream);
+                GameTable.game_over = (bool)formatter.Deserialize(stream);
+                GameTable.pool = (Pool)formatter.Deserialize(stream);
+                GameTable.dropped_tiles_stack = (Stack<TileButton>)formatter.Deserialize(stream);
+                PlayerBoard.tookCard = (bool)formatter.Deserialize(stream);
+                PlayerBoard.TAG_NUMBER = (int)formatter.Deserialize(stream);
+                stream.Close();
+
+                // fix dropped tiles stack
+                Stack<TileButton> temp_dropped_tiles = dropped_tiles_stack;
+                Stack<TileButton> revered_dropped_tiles = new Stack<TileButton>();
+                while (temp_dropped_tiles.Count > 0)
+                {
+                    revered_dropped_tiles.Push(temp_dropped_tiles.Pop());
+                }
+
+                while (revered_dropped_tiles.Count > 1)
+                {
+                    computer_player.board.GenerateComputerThrownTile(revered_dropped_tiles.Pop());
                     human_player.board.DisableLastDroppedTile();
+                }
+                if (revered_dropped_tiles.Count > 0 && revered_dropped_tiles.Peek() != null)
+                {
+                    computer_player.board.GenerateComputerThrownTile(revered_dropped_tiles.Pop());
+                    if (PlayerBoard.tookCard == true)
+                        human_player.board.DisableLastDroppedTile();
+                }
+
+                // fix to the computer player board
+                computer_player.board.drawn_computer_cards = new List<Button>();
+
+                human_player.board.generateTiles();
+                computer_player.board.generateBoard();
             }
-
-            // fix to the computer player board
-            computer_player.board.drawn_computer_cards = new List<Button>();
-
-            human_player.board.generateTiles();
-            computer_player.board.generateBoard();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
         }
     }
 }
