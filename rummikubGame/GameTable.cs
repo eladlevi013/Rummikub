@@ -243,7 +243,7 @@ namespace rummikubGame
             }
         }
 
-        private void resetToolStripMenuItem_Click(object sender, EventArgs e)
+        public void startNewGame()
         {
             clearAllTilesFromScreen();
 
@@ -255,6 +255,11 @@ namespace rummikubGame
             // Sets the game to start
             startGameObjectCreation();
             startGameSetTurn();
+        }
+
+        private void resetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            startNewGame();
         }
 
         private void saveGameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -273,6 +278,7 @@ namespace rummikubGame
                 formatter.Serialize(stream, GameTable.dropped_tiles_stack);
                 formatter.Serialize(stream, PlayerBoard.tookCard);
                 formatter.Serialize(stream, PlayerBoard.TAG_NUMBER);
+                formatter.Serialize(stream, GameTable.global_game_indicator_lbl.Text);
                 stream.Close();
                 // MessageBox.Show("Game saved successfully!");
             }
@@ -301,6 +307,7 @@ namespace rummikubGame
                 GameTable.dropped_tiles_stack = (Stack<TileButton>)formatter.Deserialize(stream);
                 PlayerBoard.tookCard = (bool)formatter.Deserialize(stream);
                 PlayerBoard.TAG_NUMBER = (int)formatter.Deserialize(stream);
+                GameTable.global_game_indicator_lbl.Text = (string)formatter.Deserialize(stream);
                 stream.Close();
 
                 // fix dropped tiles stack
@@ -328,10 +335,18 @@ namespace rummikubGame
 
                 human_player.board.generateTiles();
                 computer_player.board.generateBoard();
+
+                // changing the labels
+                pool.updatePoolSizeLabel();
+
+                // checking if game over
+                if (game_over)
+                    human_player.board.disableHumanBoard();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
+                startNewGame();
             }
         }
     }

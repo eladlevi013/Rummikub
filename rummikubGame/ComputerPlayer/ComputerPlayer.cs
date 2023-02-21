@@ -229,7 +229,7 @@ namespace rummikubGame
                             Tile random_tile_to_drop = null;
                             int random_tile_to_drop_index = 0;
 
-                            while (hand_null)
+                            while (hand_null && board.hand.Count() > 0)
                             {
                                 random_tile_to_drop_index = rnd_hand_index.Next(board.hand.Count());
                                 random_tile_to_drop = board.hand[random_tile_to_drop_index];
@@ -239,7 +239,8 @@ namespace rummikubGame
                                 }
                             }
 
-                            board.hand.RemoveAt(random_tile_to_drop_index);
+                            if(board.hand.Count() > 0)
+                                board.hand.RemoveAt(random_tile_to_drop_index);
                             board.hand.Add(tile);
                             board.GenerateComputerThrownTile(random_tile_to_drop);
                         }

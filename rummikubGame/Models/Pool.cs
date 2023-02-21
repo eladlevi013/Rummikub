@@ -12,9 +12,9 @@ namespace rummikubGame
     public class Pool
     {
         // consts
-        const int NUMBER_OF_TIMES = 2;
+        const int NUMBER_OF_TIMES = 1;
         const int COLORS_COUNT = 4;
-        const int N = 13; // numbers range
+        const int N = 10; // numbers range
 
         private Queue<Tile> tilesQueue;
         public Pool()
@@ -68,6 +68,11 @@ namespace rummikubGame
             }
             GameTable.global_current_pool_size_lbl.Text = getPoolSize() - 1 + " tiles in pool"; // minus 1, because we havent removed any tile yet
             return tilesQueue.Dequeue();
+        }
+
+        public void updatePoolSizeLabel()
+        {
+            GameTable.global_current_pool_size_lbl.Text = getPoolSize() + " tiles in pool";
         }
 
         public int getPoolSize()
