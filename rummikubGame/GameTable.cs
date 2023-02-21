@@ -28,6 +28,9 @@ namespace rummikubGame
         public const int YELLOW_COLOR = 2;
         public const int RED_COLOR = 3;
 
+        // joker consts
+        public const int JOKER_NUMBER = 0;
+
         // graphical consts
         public const int HUMAN_PLAYER_BOARD_HEIGHT = 2;
         public const int HUMAN_PLAYER_BOARD_WIDTH = 10;
@@ -146,14 +149,9 @@ namespace rummikubGame
             return true;
         }
 
+        /*
         public static bool isLegalMeld(List<Tile> meld)
         {
-            /*
-             Legal meld, can be:
-                - group(same number - different colors)
-                - run(same color - different numbers(accending order))
-             */
-
             if (meld.Count() < 3)
                 return false;
 
@@ -181,6 +179,98 @@ namespace rummikubGame
                 }
             }
             return true;
+        }
+        */
+
+        public static bool isLegalMeld(List<Tile> meld)
+        {
+            if (meld.Count < 3)
+                return false;
+
+            bool isRun = true;
+
+            // finds the first non-joker tile and uses it to determine the color and value of the run
+            int first_non_joker_index = 0;
+            for(int i = 0; i < meld.Count; i++)
+            {
+                if (!isJoker(meld[i]))
+                {
+                    first_non_joker_index = i;
+                    break;
+                }
+            }
+
+            int color = meld[first_non_joker_index].getColor();
+            int value = meld[first_non_joker_index].getNumber();
+
+            for (int i = first_non_joker_index + 1; i < meld.Count; i++)
+            {
+                if (meld[i].getNumber() != value + i && !isJoker(meld[i]))
+                {
+                    isRun = false;
+                }
+                if (meld[i].getColor() != color && !isJoker(meld[i]))
+                {
+                    isRun = false;
+                }
+                if (isJoker(meld[i]))
+                {
+                    // Skip over jokers and continue checking the rest of the tiles
+                    continue;
+                }
+            }
+
+            if (isRun)
+                return true; // 2+ run sequence
+
+            if (meld.Count > 4)
+                return false; // group of 4+ cannot exist
+
+            int numJokers = countJokers(meld);
+            if (meld.Count == 4 && numJokers > 0)
+                return false; // group of 4 cannot have jokers
+
+            for (int i = 0; i < meld.Count() - 1; i++)
+            {
+                if (meld[i + 1].getNumber() != value && !isJoker(meld[i + 1])) return false; // its cannot be group
+                for (int j = i + 1; j < meld.Count(); j++)
+                {
+                    if (meld[i].getColor() == meld[j].getColor() && !isJoker(meld[j]))
+                        return false;
+                }
+            }
+
+            if (numJokers > 2)
+                return false; // too many jokers used
+
+            return true;
+        }
+
+        private static int countJokers(List<Tile> meld)
+        {
+            int count = 0;
+            foreach (Tile tile in meld)
+            {
+                if (isJoker(tile))
+                    count++;
+            }
+            return count;
+        }
+
+        private static int countDistinctColors(List<Tile> meld)
+        {
+            HashSet<int> colors = new HashSet<int>();
+            foreach (Tile tile in meld)
+            {
+                if (!isJoker(tile))
+                    colors.Add(tile.getColor());
+            }
+            return colors.Count;
+        }
+
+        private static bool isJoker(Tile tile)
+        {
+            return tile.getNumber() == JOKER_NUMBER;
         }
 
         private void pool_btn_Click(object sender, EventArgs e)

@@ -12,9 +12,9 @@ namespace rummikubGame
     public class Pool
     {
         // consts
-        const int NUMBER_OF_TIMES = 1;
+        const int NUMBER_OF_TIMES = 2;
         const int COLORS_COUNT = 4;
-        const int N = 10; // numbers range
+        const int N = 13; // numbers range
 
         private Queue<Tile> tilesQueue;
         public Pool()
@@ -32,11 +32,9 @@ namespace rummikubGame
                 }
             }
 
-            /*
-            in final project - add jokers
-                tiles_list.Add(new Tile(1, 0)); // black Joker added
-                tiles_list.Add(new Tile(3, 0)); // red Joker added
-            */
+            // add the jokers
+            tiles_list.Add(new Tile(1, 0)); // black Joker added
+            tiles_list.Add(new Tile(3, 0)); // red Joker added
 
             // make the list of tiles randomized
             Random rand = new Random();
