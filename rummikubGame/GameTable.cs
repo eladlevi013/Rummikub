@@ -17,6 +17,12 @@ namespace rummikubGame
 {
     public partial class GameTable : Form
     {
+        // assets path
+        public static String ASSETS_PATH = "assets\\";
+        public static String SLOT_PATH = ASSETS_PATH + "slot.png";
+        public static String TILE_PATH = ASSETS_PATH + "tile.png";
+        public static String BRIGHT_TILE_PATH = ASSETS_PATH + "bright_tile.png";
+
         // consts
         public const int COMPUTER_PLAYER_TURN = 0;
         public const int HUMAN_PLAYER_TURN = 1;
@@ -277,17 +283,6 @@ namespace rummikubGame
             return count;
         }
 
-        private static int countDistinctColors(List<Tile> meld)
-        {
-            HashSet<int> colors = new HashSet<int>();
-            foreach (Tile tile in meld)
-            {
-                if (!isJoker(tile))
-                    colors.Add(tile.getColor());
-            }
-            return colors.Count;
-        }
-
         private static bool isJoker(Tile tile)
         {
             return tile.getNumber() == JOKER_NUMBER;
@@ -458,6 +453,16 @@ namespace rummikubGame
                 MessageBox.Show("Error: " + ex.Message);
                 startNewGame();
             }
+        }
+
+        private void instructionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GameRules gameRules_form = new GameRules();
+            gameRules_form.StartPosition = FormStartPosition.Manual;
+            gameRules_form.Location = this.Location;
+            gameRules_form.Size = this.Size;
+            gameRules_form.Icon = this.Icon;
+            gameRules_form.ShowDialog();
         }
     }
 }

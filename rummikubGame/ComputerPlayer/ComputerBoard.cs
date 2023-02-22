@@ -150,7 +150,7 @@ namespace rummikubGame
             // draws the given tile at the given location
             Button tileButton = new Button();
             tileButton.Size = new Size(35, 40);
-            tileButton.BackgroundImage = Image.FromFile("Tile.png");
+            tileButton.BackgroundImage = Image.FromFile(GameTable.TILE_PATH);
             tileButton.BackgroundImageLayout = ImageLayout.Stretch;
             tileButton.FlatStyle = FlatStyle.Flat;
             tileButton.FlatAppearance.BorderSize = 0;

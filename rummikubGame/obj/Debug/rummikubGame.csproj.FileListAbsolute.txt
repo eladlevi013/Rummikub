@@ -73,3 +73,4 @@ C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.CopyComplete
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.exe
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.pdb
+C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.GameRules.resources

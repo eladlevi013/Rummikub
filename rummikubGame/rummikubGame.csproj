@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameRules.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameRules.Designer.cs">
+      <DependentUpon>GameRules.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Board.cs" />
     <Compile Include="ComputerPlayer\ComputerBoard.cs" />
     <Compile Include="HumanPlayer\PlayerBoard.cs" />
@@ -67,23 +73,27 @@
     <Compile Include="Other\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\TileButton.cs" />
+    <EmbeddedResource Include="GameRules.resx">
+      <DependentUpon>GameRules.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GameTable.resx">
       <DependentUpon>GameTable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <None Include="Other\packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -92,6 +102,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Other\App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\instractions_logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\instructions_img.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

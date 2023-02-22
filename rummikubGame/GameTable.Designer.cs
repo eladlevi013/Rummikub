@@ -51,6 +51,7 @@
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.instructionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.computerTiles_groupbox.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -217,21 +218,22 @@
             // saveGameToolStripMenuItem
             // 
             this.saveGameToolStripMenuItem.Name = "saveGameToolStripMenuItem";
-            this.saveGameToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.saveGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveGameToolStripMenuItem.Text = "Save Game";
             this.saveGameToolStripMenuItem.Click += new System.EventHandler(this.saveGameToolStripMenuItem_Click);
             // 
             // loadGameToolStripMenuItem
             // 
             this.loadGameToolStripMenuItem.Name = "loadGameToolStripMenuItem";
-            this.loadGameToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.loadGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadGameToolStripMenuItem.Text = "Load Game";
             this.loadGameToolStripMenuItem.Click += new System.EventHandler(this.loadGameToolStripMenuItem_Click);
             // 
             // gameToolStripMenuItem1
             // 
             this.gameToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.resetToolStripMenuItem});
+            this.resetToolStripMenuItem,
+            this.instructionsToolStripMenuItem});
             this.gameToolStripMenuItem1.Name = "gameToolStripMenuItem1";
             this.gameToolStripMenuItem1.Size = new System.Drawing.Size(50, 20);
             this.gameToolStripMenuItem1.Text = "Game";
@@ -264,6 +266,13 @@
             this.label5.Size = new System.Drawing.Size(35, 16);
             this.label5.TabIndex = 15;
             this.label5.Text = "Pool";
+            // 
+            // instructionsToolStripMenuItem
+            // 
+            this.instructionsToolStripMenuItem.Name = "instructionsToolStripMenuItem";
+            this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.instructionsToolStripMenuItem.Text = "Instructions";
+            this.instructionsToolStripMenuItem.Click += new System.EventHandler(this.instructionsToolStripMenuItem_Click);
             // 
             // GameTable
             // 
@@ -322,6 +331,7 @@
         private System.Windows.Forms.ToolStripMenuItem loadGameToolStripMenuItem;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ToolStripMenuItem instructionsToolStripMenuItem;
     }
 }
 

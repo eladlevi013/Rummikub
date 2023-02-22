@@ -85,7 +85,7 @@ namespace rummikubGame
         public void TileDesigner(TileButton tile, Tile tile_info, bool tag_update)
         {   // creates graphical tile(location should be set outside the function)
             tile.getTileButton().Size = new Size(75, 100);
-            tile.getTileButton().BackgroundImage = Image.FromFile("Tile.png");
+            tile.getTileButton().BackgroundImage = Image.FromFile(GameTable.TILE_PATH);
             tile.getTileButton().BackgroundImageLayout = ImageLayout.Stretch;
             tile.getTileButton().Draggable(true); // usage of the extension
             tile.getTileButton().FlatStyle = FlatStyle.Flat;
@@ -126,12 +126,12 @@ namespace rummikubGame
 
         public void TileButton_MouseEnter(object sender, EventArgs e)
         { 
-            ((Button)sender).BackgroundImage = Image.FromFile("bright_tile.png"); // bright effect when the mouse hovers over the tile
+            ((Button)sender).BackgroundImage = Image.FromFile(GameTable.BRIGHT_TILE_PATH); // bright effect when the mouse hovers over the tile
         }
 
         public void TileButton_MouseLeave(object sender, EventArgs e)
         {
-            ((Button)sender).BackgroundImage = Image.FromFile("tile.png"); // in order to make the tile normal after hovering over the card
+            ((Button)sender).BackgroundImage = Image.FromFile(GameTable.TILE_PATH); // in order to make the tile normal after hovering over the card
         }
 
         private float getDistance(Button moving_card, Button empty_slot)
@@ -370,7 +370,7 @@ namespace rummikubGame
                 for (int j = 0; j < GameTable.HUMAN_PLAYER_BOARD_WIDTH; j++)
                 {   // Generate a single slotButton
                     TileButton_slot[i, j] = new Slot();
-                    TileButton_slot[i, j].getSlotButton().BackgroundImage = Image.FromFile("slot.png");
+                    TileButton_slot[i, j].getSlotButton().BackgroundImage = Image.FromFile(GameTable.SLOT_PATH);
                     TileButton_slot[i, j].getSlotButton().BackgroundImageLayout = ImageLayout.Stretch;
                     TileButton_slot[i, j].getSlotButton().FlatStyle = FlatStyle.Flat;
                     TileButton_slot[i, j].getSlotButton().FlatAppearance.BorderSize = 0;
@@ -408,7 +408,7 @@ namespace rummikubGame
                 for (int j = 0; j < GameTable.HUMAN_PLAYER_BOARD_WIDTH; j++)
                 {   // Generate a single slotButton
                     TileButton_slot[i, j] = new Slot();
-                    TileButton_slot[i, j].getSlotButton().BackgroundImage = Image.FromFile("slot.png");
+                    TileButton_slot[i, j].getSlotButton().BackgroundImage = Image.FromFile(GameTable.SLOT_PATH);
                     TileButton_slot[i, j].getSlotButton().BackgroundImageLayout = ImageLayout.Stretch;
                     TileButton_slot[i, j].getSlotButton().FlatStyle = FlatStyle.Flat;
                     TileButton_slot[i, j].getSlotButton().FlatAppearance.BorderSize = 0;
