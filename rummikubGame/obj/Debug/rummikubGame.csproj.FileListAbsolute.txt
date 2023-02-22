@@ -63,14 +63,12 @@ C:\Users\user\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\bin\Debug\rummikubGame.exe.config
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\bin\Debug\rummikubGame.exe
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\bin\Debug\rummikubGame.pdb
-C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\bin\Debug\Control.Draggable.dll
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.AssemblyReference.cache
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.SuggestedBindingRedirects.cache
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.GameTable.resources
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.Properties.Resources.resources
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.GenerateResource.cache
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.CoreCompileInputs.cache
-C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.CopyComplete
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.exe
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.pdb
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.GameRules.resources

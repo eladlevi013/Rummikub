@@ -177,7 +177,7 @@ namespace rummikubGame
         public void GenerateComputerThrownTile(Tile thrownTile)
         {
             if (GameTable.dropped_tiles_stack.Count() > 1)
-                GameTable.dropped_tiles_stack.Peek().getTileButton().Draggable(false);
+                GameTable.dropped_tiles_stack.Peek().setDraggable(false);
 
             Tile current_tile_from_pool = thrownTile;
             int[] slot_location = { GameTable.DROPPED_TILE_LOCATION, GameTable.DROPPED_TILE_LOCATION };

@@ -65,7 +65,7 @@ namespace rummikubGame
                 {
                     GameTable.dropped_tiles_stack.Peek().getTileButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
                     GameTable.dropped_tiles_stack.Peek().getTileButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown);
-                    GameTable.dropped_tiles_stack.Peek().getTileButton().Draggable(false);
+                    GameTable.dropped_tiles_stack.Peek().setDraggable(false);
                 }
             }
         }
@@ -87,7 +87,7 @@ namespace rummikubGame
             tile.getTileButton().Size = new Size(75, 100);
             tile.getTileButton().BackgroundImage = Image.FromFile(GameTable.TILE_PATH);
             tile.getTileButton().BackgroundImageLayout = ImageLayout.Stretch;
-            tile.getTileButton().Draggable(true); // usage of the extension
+            tile.setDraggable(true); // usage of the extension
             tile.getTileButton().FlatStyle = FlatStyle.Flat;
             tile.getTileButton().FlatAppearance.BorderSize = 0;
             tile.getTileButton().Text = tile_info.getNumber().ToString();
@@ -149,7 +149,7 @@ namespace rummikubGame
                 if (getDistance(current_card, GameTable.global_dropped_tiles_btn) < 100 && GameTable.current_turn == GameTable.HUMAN_PLAYER_TURN && tookCard == true && TileButtons.ContainsKey((int)current_card.Tag))
                 {
                     current_card.Location = new Point(GameTable.global_dropped_tiles_btn.Location.X + 10, GameTable.global_dropped_tiles_btn.Location.Y + 18);
-                    current_card.Draggable(false);
+                    TileButtons[(int)current_card.Tag].setDraggable(false);
                     int[] current_location = {DROPPED_CARD_LOCATION, DROPPED_CARD_LOCATION};
                     TileButtons[(int)current_card.Tag].setSlotLocation(current_location);
 
