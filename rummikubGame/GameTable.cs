@@ -22,6 +22,8 @@ namespace rummikubGame
         public static String SLOT_PATH = ASSETS_PATH + "slot.png";
         public static String TILE_PATH = ASSETS_PATH + "tile.png";
         public static String BRIGHT_TILE_PATH = ASSETS_PATH + "bright_tile.png";
+        public static String BLACK_JOKER_PATH = ASSETS_PATH + "black_joker.png";
+        public static String RED_JOKER_PATH = ASSETS_PATH + "red_joker.png";
 
         // consts
         public const int COMPUTER_PLAYER_TURN = 0;
@@ -142,6 +144,8 @@ namespace rummikubGame
                     GameTable.dropped_tiles_stack.Peek().getTileButton().Enabled = false;
                 GameTable.game_over = true;
             }
+
+            DoubleBuffered = true;
         }
 
         public static bool checkWinner(List<List<Tile>> melds) 

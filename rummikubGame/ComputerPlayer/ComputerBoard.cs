@@ -22,10 +22,12 @@ namespace rummikubGame
 
         // variables of the board
         public List<Tile> hand;
+        public List<PartialSet> partial_sets;
         public List<List<Tile>> sequences;
+        public List<Tile> jokers;
+
         [NonSerialized]
         public List<Button> drawn_computer_cards;
-        public List<PartialSet> partial_sets;
 
         public int getHandTilesNumber()
         {
@@ -41,33 +43,45 @@ namespace rummikubGame
 
         public ComputerBoard()
         {
+            jokers = new List<Tile>();
             partial_sets = new List<PartialSet>();
             drawn_computer_cards = new List<Button>();
             hand = new List<Tile>();
 
             // fills the tiles list
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
-                hand.Add(GameTable.pool.getTile());
+            {
+                // change this
+                Tile tile = GameTable.pool.getTile();
+                if (tile.getNumber() == 0)
+                {
+                    jokers.Add(tile);
+                }
+                else
+                {
+                    hand.Add(tile);
+                }
+            }
 
             /*
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 3));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 2));
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 4));
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 5));
 
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 3));
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 4));
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 5));
-
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 3));
+            // hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 2));
             hand.Add(new Tile(GameTable.BLUE_COLOR, 4));
             hand.Add(new Tile(GameTable.BLUE_COLOR, 5));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 9));
 
             hand.Add(new Tile(GameTable.RED_COLOR, 3));
             hand.Add(new Tile(GameTable.RED_COLOR, 4));
-            hand.Add(new Tile(GameTable.RED_COLOR, 5));
             hand.Add(new Tile(GameTable.RED_COLOR, 6));
+            hand.Add(new Tile(GameTable.RED_COLOR, 7));
 
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+            hand.Add(new Tile(GameTable.RED_COLOR, 7));
+            jokers.Add(new Tile(GameTable.RED_COLOR, 0));
             */
         }
 
@@ -143,6 +157,18 @@ namespace rummikubGame
                     }
                 }
             }
+
+            curr_x_location_drawing_point = STARTING_HAND_X_LOCATION_COMPUTER_TILES + 495 + 40;
+            curr_y_location_drawing_point = STARTING_HAND_Y_LOCATION_COMPUTER_TILES;
+            if(jokers != null)
+            {
+                for (int i = 0; i < jokers.Count(); i++)
+                {
+                    Point tile_location = new Point(curr_x_location_drawing_point, curr_y_location_drawing_point);
+                    drawSingleComputerCard(jokers[i], tile_location);
+                    curr_x_location_drawing_point += X_SPACE_BETWEEN_COMPUTER_TILES;
+                }
+            }
         }
 
         public void drawSingleComputerCard(Tile tile, Point point)
@@ -150,17 +176,35 @@ namespace rummikubGame
             // draws the given tile at the given location
             Button tileButton = new Button();
             tileButton.Size = new Size(35, 40);
-            tileButton.BackgroundImage = Image.FromFile(GameTable.TILE_PATH);
             tileButton.BackgroundImageLayout = ImageLayout.Stretch;
             tileButton.FlatStyle = FlatStyle.Flat;
             tileButton.FlatAppearance.BorderSize = 0;
             // tileButton.Draggable(true);
-            tileButton.Text = tile.getNumber().ToString();
             tileButton.Location = point;
-            if (tile.getColor() == 0) tileButton.ForeColor = (Color.Blue);
-            else if (tile.getColor() == 1) tileButton.ForeColor = (Color.Black);
-            else if (tile.getColor() == 2) tileButton.ForeColor = (Color.Yellow);
-            else tileButton.ForeColor = (Color.Red);
+
+
+            if(tile.getNumber() == 0)
+            {
+                if(tile.getColor() == GameTable.BLACK_COLOR) 
+                {
+                    tileButton.BackgroundImage = Image.FromFile(GameTable.BLACK_JOKER_PATH);
+                }
+                else
+                {
+                    tileButton.BackgroundImage = Image.FromFile(GameTable.RED_JOKER_PATH);
+                }
+            }
+            else
+            {
+                tileButton.BackgroundImage = Image.FromFile(GameTable.TILE_PATH);
+                tileButton.Text = tile.getNumber().ToString();
+                if (tile.getColor() == 0) tileButton.ForeColor = (Color.Blue);
+                else if (tile.getColor() == 1) tileButton.ForeColor = (Color.Black);
+                else if (tile.getColor() == 2) tileButton.ForeColor = (Color.Yellow);
+                else tileButton.ForeColor = (Color.Red);
+            }
+
+
             tileButton.Font = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
             drawn_computer_cards.Add(tileButton);
             GameTable.global_gametable_context.Controls.Add(drawn_computer_cards[drawn_computer_cards.Count() - 1]);

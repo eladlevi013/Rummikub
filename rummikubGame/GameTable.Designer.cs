@@ -49,9 +49,10 @@
             this.loadGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gameToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.instructionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.instructionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label6 = new System.Windows.Forms.Label();
             this.computerTiles_groupbox.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -71,7 +72,7 @@
             this.dropped_tiles_btn.BackColor = System.Drawing.Color.Wheat;
             this.dropped_tiles_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dropped_tiles_btn.BackgroundImage")));
             this.dropped_tiles_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.dropped_tiles_btn.Location = new System.Drawing.Point(683, 160);
+            this.dropped_tiles_btn.Location = new System.Drawing.Point(700, 160);
             this.dropped_tiles_btn.Name = "dropped_tiles_btn";
             this.dropped_tiles_btn.Size = new System.Drawing.Size(98, 135);
             this.dropped_tiles_btn.TabIndex = 3;
@@ -82,7 +83,7 @@
             this.pool_btn.BackColor = System.Drawing.Color.Wheat;
             this.pool_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pool_btn.BackgroundImage")));
             this.pool_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pool_btn.Location = new System.Drawing.Point(833, 160);
+            this.pool_btn.Location = new System.Drawing.Point(850, 160);
             this.pool_btn.Name = "pool_btn";
             this.pool_btn.Size = new System.Drawing.Size(102, 135);
             this.pool_btn.TabIndex = 4;
@@ -93,7 +94,7 @@
             // 
             this.current_pool_size_lbl.AutoSize = true;
             this.current_pool_size_lbl.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.current_pool_size_lbl.Location = new System.Drawing.Point(849, 302);
+            this.current_pool_size_lbl.Location = new System.Drawing.Point(866, 302);
             this.current_pool_size_lbl.Name = "current_pool_size_lbl";
             this.current_pool_size_lbl.Size = new System.Drawing.Size(67, 13);
             this.current_pool_size_lbl.TabIndex = 5;
@@ -148,6 +149,7 @@
             // computerTiles_groupbox
             // 
             this.computerTiles_groupbox.BackColor = System.Drawing.Color.RoyalBlue;
+            this.computerTiles_groupbox.Controls.Add(this.label6);
             this.computerTiles_groupbox.Controls.Add(this.label3);
             this.computerTiles_groupbox.Controls.Add(this.label1);
             this.computerTiles_groupbox.Controls.Add(this.label2);
@@ -155,7 +157,7 @@
             this.computerTiles_groupbox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.computerTiles_groupbox.Location = new System.Drawing.Point(30, 37);
             this.computerTiles_groupbox.Name = "computerTiles_groupbox";
-            this.computerTiles_groupbox.Size = new System.Drawing.Size(610, 304);
+            this.computerTiles_groupbox.Size = new System.Drawing.Size(648, 304);
             this.computerTiles_groupbox.TabIndex = 12;
             this.computerTiles_groupbox.TabStop = false;
             // 
@@ -187,9 +189,9 @@
             // 
             this.game_indicator_lbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.game_indicator_lbl.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.game_indicator_lbl.Location = new System.Drawing.Point(646, 60);
+            this.game_indicator_lbl.Location = new System.Drawing.Point(684, 60);
             this.game_indicator_lbl.Name = "game_indicator_lbl";
-            this.game_indicator_lbl.Size = new System.Drawing.Size(320, 61);
+            this.game_indicator_lbl.Size = new System.Drawing.Size(282, 61);
             this.game_indicator_lbl.TabIndex = 13;
             this.game_indicator_lbl.Text = "Game Indicator";
             this.game_indicator_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -218,14 +220,14 @@
             // saveGameToolStripMenuItem
             // 
             this.saveGameToolStripMenuItem.Name = "saveGameToolStripMenuItem";
-            this.saveGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveGameToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.saveGameToolStripMenuItem.Text = "Save Game";
             this.saveGameToolStripMenuItem.Click += new System.EventHandler(this.saveGameToolStripMenuItem_Click);
             // 
             // loadGameToolStripMenuItem
             // 
             this.loadGameToolStripMenuItem.Name = "loadGameToolStripMenuItem";
-            this.loadGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadGameToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.loadGameToolStripMenuItem.Text = "Load Game";
             this.loadGameToolStripMenuItem.Click += new System.EventHandler(this.loadGameToolStripMenuItem_Click);
             // 
@@ -241,16 +243,23 @@
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.resetToolStripMenuItem.Text = "Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
+            // 
+            // instructionsToolStripMenuItem
+            // 
+            this.instructionsToolStripMenuItem.Name = "instructionsToolStripMenuItem";
+            this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.instructionsToolStripMenuItem.Text = "Instructions";
+            this.instructionsToolStripMenuItem.Click += new System.EventHandler(this.instructionsToolStripMenuItem_Click);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.label4.Location = new System.Drawing.Point(687, 136);
+            this.label4.Location = new System.Drawing.Point(704, 136);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(94, 16);
             this.label4.TabIndex = 13;
@@ -261,18 +270,22 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.label5.Location = new System.Drawing.Point(867, 136);
+            this.label5.Location = new System.Drawing.Point(884, 136);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(35, 16);
             this.label5.TabIndex = 15;
             this.label5.Text = "Pool";
             // 
-            // instructionsToolStripMenuItem
+            // label6
             // 
-            this.instructionsToolStripMenuItem.Name = "instructionsToolStripMenuItem";
-            this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.instructionsToolStripMenuItem.Text = "Instructions";
-            this.instructionsToolStripMenuItem.Click += new System.EventHandler(this.instructionsToolStripMenuItem_Click);
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.label6.Location = new System.Drawing.Point(551, 25);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(70, 24);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "Jokers:";
             // 
             // GameTable
             // 
@@ -332,6 +345,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ToolStripMenuItem instructionsToolStripMenuItem;
+        private System.Windows.Forms.Label label6;
     }
 }
 

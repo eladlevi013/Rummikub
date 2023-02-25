@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -85,22 +86,39 @@ namespace rummikubGame
         public void TileDesigner(TileButton tile, Tile tile_info, bool tag_update)
         {   // creates graphical tile(location should be set outside the function)
             tile.getTileButton().Size = new Size(75, 100);
-            tile.getTileButton().BackgroundImage = Image.FromFile(GameTable.TILE_PATH);
             tile.getTileButton().BackgroundImageLayout = ImageLayout.Stretch;
             tile.setDraggable(true); // usage of the extension
             tile.getTileButton().FlatStyle = FlatStyle.Flat;
             tile.getTileButton().FlatAppearance.BorderSize = 0;
-            tile.getTileButton().Text = tile_info.getNumber().ToString();
-            if (tile.getColor() == 0) tile.getTileButton().ForeColor = (Color.Blue);
-            else if (tile.getColor() == 1) tile.getTileButton().ForeColor = (Color.Black);
-            else if (tile.getColor() == 2) tile.getTileButton().ForeColor = (Color.Yellow);
-            else tile.getTileButton().ForeColor = (Color.Red);
             tile.getTileButton().Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
             tile.getTileButton().MouseUp += new MouseEventHandler(this.TileButton_MouseUp);
             tile.getTileButton().MouseDown += new MouseEventHandler(this.TileButton_MouseDown);
             tile.getTileButton().MouseEnter += TileButton_MouseEnter;
             tile.getTileButton().MouseLeave += TileButton_MouseLeave;
-            if(tag_update)
+
+            // if joker
+            if (tile.getNumber() == 0)
+            {
+                if (tile.getColor() == GameTable.BLACK_COLOR)
+                {
+                    tile.getTileButton().BackgroundImage = Image.FromFile(GameTable.BLACK_JOKER_PATH);
+                }
+                else
+                {
+                    tile.getTileButton().BackgroundImage = Image.FromFile(GameTable.RED_JOKER_PATH);
+                }
+            }
+            else
+            {
+                tile.getTileButton().BackgroundImage = Image.FromFile(GameTable.TILE_PATH);
+                tile.getTileButton().Text = tile_info.getNumber().ToString();
+                if (tile.getColor() == 0) tile.getTileButton().ForeColor = (Color.Blue);
+                else if (tile.getColor() == 1) tile.getTileButton().ForeColor = (Color.Black);
+                else if (tile.getColor() == 2) tile.getTileButton().ForeColor = (Color.Yellow);
+                else tile.getTileButton().ForeColor = (Color.Red);
+            }
+
+            if (tag_update)
                 tile.getTileButton().Tag = TAG_NUMBER++;
             else 
                 tile.getTileButton().Tag = tile.tag;
@@ -124,14 +142,64 @@ namespace rummikubGame
             }
         }
 
+        private void SetBrighterBackgroundImage(Button tile, float brightness)
+        {
+            // Load the original image
+            /*
+            Image originalImage = Image.FromFile(GameTable.TILE_PATH);
+
+            if (tile != null && TileButtons.Keys.ToList().Contains((int)tile.Tag) && TileButtons[(int)tile.Tag].getNumber() == 0)
+            {
+                if (TileButtons[(int)tile.Tag].getColor() == GameTable.BLACK_COLOR)
+                    originalImage = Image.FromFile(GameTable.BLACK_JOKER_PATH);
+                else
+                    originalImage = Image.FromFile(GameTable.RED_JOKER_PATH);
+            }
+            else if(GameTable.dropped_tiles_stack.Count() > 0 && GameTable.dropped_tiles_stack.Peek().getNumber() == 0)
+            {
+                if (GameTable.dropped_tiles_stack.Peek().getColor() == GameTable.BLACK_COLOR)
+                    originalImage = Image.FromFile(GameTable.BLACK_JOKER_PATH);
+                else
+                    originalImage = Image.FromFile(GameTable.RED_JOKER_PATH);
+            }
+
+            // Create a new bitmap with the same size as the original image
+            Bitmap newBitmap = new Bitmap(originalImage.Width, originalImage.Height);
+
+            // Create a color matrix that increases the brightness by 50%
+            ColorMatrix colorMatrix = new ColorMatrix(new float[][] {
+                new float[] { brightness, 0, 0, 0, 0 },
+                new float[] { 0, brightness, 0, 0, 0 },
+                new float[] { 0, 0, brightness, 0, 0 },
+                new float[] { 0, 0, 0, 1, 0 },
+                new float[] { 0, 0, 0, 0, 1 }
+            });
+
+            // Create an ImageAttributes object and set the color matrix
+            ImageAttributes imageAttributes = new ImageAttributes();
+            imageAttributes.SetColorMatrix(colorMatrix);
+
+            // Draw the original image onto the new bitmap with the color matrix applied
+            using (Graphics graphics = Graphics.FromImage(newBitmap))
+            {
+                graphics.DrawImage(originalImage, new Rectangle(0, 0, originalImage.Width, originalImage.Height),
+                    0, 0, originalImage.Width, originalImage.Height, GraphicsUnit.Pixel, imageAttributes);
+            }
+
+            // Set the new bitmap as the background image of the PictureBox
+            tile.BackgroundImage = newBitmap;
+            */
+        }
+
+
         public void TileButton_MouseEnter(object sender, EventArgs e)
-        { 
-            ((Button)sender).BackgroundImage = Image.FromFile(GameTable.BRIGHT_TILE_PATH); // bright effect when the mouse hovers over the tile
+        {
+            SetBrighterBackgroundImage((Button)sender, 1.1f);
         }
 
         public void TileButton_MouseLeave(object sender, EventArgs e)
         {
-            ((Button)sender).BackgroundImage = Image.FromFile(GameTable.TILE_PATH); // in order to make the tile normal after hovering over the card
+            SetBrighterBackgroundImage((Button)sender, 1f);
         }
 
         private float getDistance(Button moving_card, Button empty_slot)
