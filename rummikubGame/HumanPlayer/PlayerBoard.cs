@@ -142,65 +142,74 @@ namespace rummikubGame
             }
         }
 
-        private void SetBrighterBackgroundImage(Button tile, float brightness)
+
+        private Image originalBackgroundImage = null;
+        private float currentBrightnessLevel = 1.0f;
+
+        public void SetBackgroundImageBrightness(Button button, float brightnessLevel)
         {
-            // Load the original image
-            /*
-            Image originalImage = Image.FromFile(GameTable.TILE_PATH);
-
-            if (tile != null && TileButtons.Keys.ToList().Contains((int)tile.Tag) && TileButtons[(int)tile.Tag].getNumber() == 0)
+            if (button.BackgroundImage == null)
             {
-                if (TileButtons[(int)tile.Tag].getColor() == GameTable.BLACK_COLOR)
-                    originalImage = Image.FromFile(GameTable.BLACK_JOKER_PATH);
-                else
-                    originalImage = Image.FromFile(GameTable.RED_JOKER_PATH);
-            }
-            else if(GameTable.dropped_tiles_stack.Count() > 0 && GameTable.dropped_tiles_stack.Peek().getNumber() == 0)
-            {
-                if (GameTable.dropped_tiles_stack.Peek().getColor() == GameTable.BLACK_COLOR)
-                    originalImage = Image.FromFile(GameTable.BLACK_JOKER_PATH);
-                else
-                    originalImage = Image.FromFile(GameTable.RED_JOKER_PATH);
+                return;
             }
 
-            // Create a new bitmap with the same size as the original image
-            Bitmap newBitmap = new Bitmap(originalImage.Width, originalImage.Height);
+            originalBackgroundImage = button.BackgroundImage;
 
-            // Create a color matrix that increases the brightness by 50%
-            ColorMatrix colorMatrix = new ColorMatrix(new float[][] {
-                new float[] { brightness, 0, 0, 0, 0 },
-                new float[] { 0, brightness, 0, 0, 0 },
-                new float[] { 0, 0, brightness, 0, 0 },
-                new float[] { 0, 0, 0, 1, 0 },
-                new float[] { 0, 0, 0, 0, 1 }
-            });
 
-            // Create an ImageAttributes object and set the color matrix
-            ImageAttributes imageAttributes = new ImageAttributes();
-            imageAttributes.SetColorMatrix(colorMatrix);
-
-            // Draw the original image onto the new bitmap with the color matrix applied
-            using (Graphics graphics = Graphics.FromImage(newBitmap))
+            if (brightnessLevel == currentBrightnessLevel)
             {
-                graphics.DrawImage(originalImage, new Rectangle(0, 0, originalImage.Width, originalImage.Height),
-                    0, 0, originalImage.Width, originalImage.Height, GraphicsUnit.Pixel, imageAttributes);
+                return;
             }
 
-            // Set the new bitmap as the background image of the PictureBox
-            tile.BackgroundImage = newBitmap;
-            */
+            float[][] matrixItems ={
+           new float[] {brightnessLevel, 0, 0, 0, 0},
+           new float[] {0, brightnessLevel, 0, 0, 0},
+           new float[] {0, 0, brightnessLevel, 0, 0},
+           new float[] {0, 0, 0, 1, 0},
+           new float[] {0, 0, 0, 0, 1}};
+
+            ColorMatrix colorMatrix = new ColorMatrix(matrixItems);
+            ImageAttributes attributes = new ImageAttributes();
+            attributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+            Bitmap bmp = new Bitmap(originalBackgroundImage.Width, originalBackgroundImage.Height);
+
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.DrawImage(originalBackgroundImage, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+            }
+
+            button.BackgroundImage = bmp;
+            currentBrightnessLevel = brightnessLevel;
         }
 
+        public void ResetBackgroundImageBrightness(Button button)
+        {
+            if (button.BackgroundImage == null || originalBackgroundImage == null || currentBrightnessLevel == 1.0f)
+            {
+                return;
+            }
+
+            button.BackgroundImage = originalBackgroundImage;
+            currentBrightnessLevel = 1.0f;
+        }
 
         public void TileButton_MouseEnter(object sender, EventArgs e)
         {
-            SetBrighterBackgroundImage((Button)sender, 1.1f);
+            if (sender is Button button)
+            {
+                SetBackgroundImageBrightness(button, 1.2f);
+            }
         }
 
         public void TileButton_MouseLeave(object sender, EventArgs e)
         {
-            SetBrighterBackgroundImage((Button)sender, 1f);
+            if (sender is Button button)
+            {
+                ResetBackgroundImageBrightness(button);
+            }
         }
+
 
         private float getDistance(Button moving_card, Button empty_slot)
         {
