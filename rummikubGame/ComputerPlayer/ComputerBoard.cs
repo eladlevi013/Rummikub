@@ -69,18 +69,37 @@ namespace rummikubGame
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 4));
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 5));
 
-            // hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 2));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 4));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 5));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 9));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
 
-            hand.Add(new Tile(GameTable.RED_COLOR, 3));
-            hand.Add(new Tile(GameTable.RED_COLOR, 4));
-            hand.Add(new Tile(GameTable.RED_COLOR, 6));
-            hand.Add(new Tile(GameTable.RED_COLOR, 7));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
 
-            hand.Add(new Tile(GameTable.RED_COLOR, 7));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
+            jokers.Add(new Tile(GameTable.RED_COLOR, 0));
+            */
+
+            /*
+            hand.Add(new Tile(GameTable.RED_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+            hand.Add(new Tile(GameTable.RED_COLOR, 2));
+
+            hand.Add(new Tile(GameTable.RED_COLOR, 10));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 11));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 12));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 6));
+
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 7));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 6));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 7));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 3));
+
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 4));
             jokers.Add(new Tile(GameTable.RED_COLOR, 0));
             */
         }
