@@ -42,7 +42,7 @@ namespace rummikubGame
         {
             // list indexes of the parital_sets tiles
             List<int> indexes = new List<int>();
-
+            
             // find runs
             for (int i = 0; i < board.hand.Count(); i++)
             {
@@ -96,7 +96,6 @@ namespace rummikubGame
                 board.hand.Remove(temp_hand[indexes[i]]);
             }
         }
-
 
         // ---------------------------------------------------------
         /// <summary>
@@ -415,17 +414,26 @@ namespace rummikubGame
             meldsSets(tiles_lst_color, sequences, temp_jokers, ref result, ref starting_tiles, ref best_jokers);
 
             // for loop over board.jokers
+            // board.jokers - best_jokers
+            List<Tile> values = new List<Tile>();
+
             for (int i = 0; i < board.jokers.Count(); i++)
             {
-                for(int j=0; j<best_jokers.Count(); j++)
+                for (int j = 0; j < best_jokers.Count(); j++)
                 {
-                    if (best_jokers[j].getNumber() == board.jokers[i].getNumber() && best_jokers[j].getColor() == board.jokers[i].getColor())
+                    if (best_jokers[j].getNumber() == board.jokers[i].getNumber() 
+                        && best_jokers[j].getColor() == board.jokers[i].getColor())
                     {
-                        board.jokers.RemoveAt(i);
+                        values.Add((Tile)board.jokers[i]);
                     }
                 }
             }
-            return result;
+            
+            // removing used jokers
+            for(int i=0;i<values.Count;i++)
+                board.jokers.Remove(values[i]);
+
+             return result;
         }
 
         // ---------------------------------------------------------
@@ -489,12 +497,41 @@ namespace rummikubGame
                 //    hand_temp.Remove(temp[indexes[i]]);
                 //}
 
+                List<Tile> hand_temp_complete = new List<Tile>(hand_temp);
+                List<Tile>[] color_sorted_hand_complete = new List<Tile>[4];
+
+                for (int i = 0; i < color_sorted_hand.Length; i++)
+                {
+                    color_sorted_hand_complete[i] = new List<Tile>();
+
+                    for (int j = 0; j < color_sorted_hand[i].Count(); j++)
+                    {
+                        color_sorted_hand_complete[i].Add(color_sorted_hand[i][j]);
+                    }
+                }
+
+
+
                 // if one of the partialSets has a tile that we are looking for
                 for (int i = 0; i < runPartialSets.Count(); i++)
                 {
                     // check if tile_temp exists in hand_temp
                     for (int j = 0; j < hand_temp.Count(); j++)
                     {
+                        color_sorted_hand = new List<Tile>[4];
+
+                        for (int k = 0; k < color_sorted_hand_complete.Length; k++)
+                        {
+                            color_sorted_hand[k] = new List<Tile>();
+
+                            for (int l = 0; l < color_sorted_hand_complete[k].Count(); l++)
+                            {
+                                color_sorted_hand[k].Add(color_sorted_hand_complete[k][l]);
+                            }
+                        }
+
+                        hand_temp = new List<Tile>(hand_temp_complete);
+
                         if (runPartialSets[i].Tile2.getNumber() + 2 == hand_temp[j].getNumber() && runPartialSets[i].Tile2.getColor() == hand_temp[j].getColor())
                         {
                             // add to sequences
@@ -583,11 +620,11 @@ namespace rummikubGame
             if (hand_temp.Count() < best_hand.Count())
             {
                 best_sequences = sequences_temp;
-                /*
-                List<Tile> temp_hand = new List<Tile>();
-                temp_hand.AddRange(color_sorted_hand[0]); temp_hand.AddRange(color_sorted_hand[1]); temp_hand.AddRange(color_sorted_hand[2]); temp_hand.AddRange(color_sorted_hand[3]);
-                temp_hand = temp_hand.OrderBy(card => card.getNumber()).ToList();
-                */
+
+                //List<Tile> temp_hand = new List<Tile>();
+                //temp_hand.AddRange(color_sorted_hand[0]); temp_hand.AddRange(color_sorted_hand[1]); temp_hand.AddRange(color_sorted_hand[2]); temp_hand.AddRange(color_sorted_hand[3]);
+                //temp_hand = temp_hand.OrderBy(card => card.getNumber()).ToList();
+
                 best_hand = hand_temp;
 
                 best_jokers = new List<Tile>();

@@ -48,11 +48,17 @@ namespace rummikubGame
             drawn_computer_cards = new List<Button>();
             hand = new List<Tile>();
 
+            string str = "";
+
             // fills the tiles list
+            /*
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
             {
                 // change this
                 Tile tile = GameTable.pool.getTile();
+
+                str += "tile: " + i + "num:" + tile.getNumber() + "color: " + tile.getColor() + "\n";
+
                 if (tile.getNumber() == 0)
                 {
                     jokers.Add(tile);
@@ -62,6 +68,9 @@ namespace rummikubGame
                     hand.Add(tile);
                 }
             }
+            */
+
+            // GameTable.global_current_pool_size_lbl.Text = str;
 
             /*
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
@@ -102,6 +111,24 @@ namespace rummikubGame
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 4));
             jokers.Add(new Tile(GameTable.RED_COLOR, 0));
             */
+
+            hand.Add(new Tile(1, 6));
+            hand.Add(new Tile(1, 7));
+            jokers.Add(new Tile(3, 0));
+            hand.Add(new Tile(1, 9));
+            hand.Add(new Tile(1, 10));
+
+            hand.Add(new Tile(2, 4));
+            hand.Add(new Tile(2, 2));
+
+            hand.Add(new Tile(3, 11));
+            hand.Add(new Tile(3, 12));
+
+            hand.Add(new Tile(1, 2));
+            hand.Add(new Tile(0, 6));
+            hand.Add(new Tile(1, 13));
+            hand.Add(new Tile(0, 11));
+            hand.Add(new Tile(2, 1));
         }
 
         public void generateBoard()

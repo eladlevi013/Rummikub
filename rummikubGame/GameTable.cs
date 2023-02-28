@@ -96,6 +96,21 @@ namespace rummikubGame
             }
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            bool bHandled = false;
+            // switch case is the easy way, a hash or map would be better, 
+            // but more work to get set up.
+            switch (keyData)
+            {
+                case Keys.F5:
+                    // do whatever
+                    startNewGame();
+                    bHandled = true;
+                    break;
+            }
+            return bHandled;
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
             // update global variables
@@ -361,6 +376,9 @@ namespace rummikubGame
             GameTable.global_dropped_tiles_btn.Enabled = true;
             PlayerBoard.tookCard = false;
 
+            // reset dragging var
+            TileButton.currently_dragging = false;
+
             // Sets the game to start
             startGameObjectCreation();
             startGameSetTurn();
@@ -467,6 +485,11 @@ namespace rummikubGame
             gameRules_form.Size = this.Size;
             gameRules_form.Icon = this.Icon;
             gameRules_form.ShowDialog();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
