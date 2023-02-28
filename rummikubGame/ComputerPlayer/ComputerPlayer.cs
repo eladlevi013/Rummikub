@@ -15,19 +15,11 @@ namespace rummikubGame
 
         public ComputerPlayer()
         {
-            // Takes care of the graphical representation of the tiles of the computer
             board = new ComputerBoard();
-
-            // arrange given tiles in optimal way for the first time
             board.sequences = meldsSets(ref board.hand);
-
-            // create partial sets from the given hand
             createPartialSets();
 
-            // Add jokers
-            // AddJokers();
-
-            // draw the tiles on the screen
+            // takes care of the graphical board of the computer
             if (GameTable.global_view_computer_tiles_groupbox.Checked)
                 board.generateBoard();
         }
@@ -40,9 +32,8 @@ namespace rummikubGame
         // ---------------------------------------------------------
         public void createPartialSets()
         {
-            // list indexes of the parital_sets tiles
             List<int> indexes = new List<int>();
-            
+
             // find runs
             for (int i = 0; i < board.hand.Count(); i++)
             {
@@ -111,8 +102,14 @@ namespace rummikubGame
             List<List<Tile>> optimal_solution_sequences = board.sequences;
             Tile optimal_dropped_tile = null;
 
+            // count number of jokers in sequences
+            int jokers_in_sequences = board.jokers.Count();
+            for (int i = 0; i < board.sequences.Count(); i++)
+                for (int j = 0; j < board.sequences[i].Count(); j++)
+                    if (board.sequences[i][j].getNumber() == 0)
+                        jokers_in_sequences++;
 
-            int replace_tiles_number = GameTable.RUMMIKUB_TILES_IN_GAME - board.jokers.Count();
+            int replace_tiles_number = GameTable.RUMMIKUB_TILES_IN_GAME - jokers_in_sequences;
 
             // replacing every tile in starting_tiles with the given paramter in order to get better result
             for (int i = 0; i < replace_tiles_number; i++)
@@ -123,21 +120,33 @@ namespace rummikubGame
                 for (int j = 0; j < board.hand.Count(); j++)
                 {
                     // adds the hand cards to the temp_tiles list
-                    if (board.hand[j] != null)
+                    if (board.hand[j] != null && board.hand[j].getNumber() != 0)
                         starting_tiles.Add(board.hand[j]);
+                    else
+                        board.jokers.Add(board.hand[j]);
                 }
                 if (board.sequences != null)
                 { // adds the tiles in sets to the temp_tiles list
                     for (int j = 0; j < board.sequences.Count(); j++)
                         for (int k = 0; k < board.sequences[j].Count(); k++)
-                            starting_tiles.Add(board.sequences[j][k]);
+                            if (board.sequences[j][k].getNumber() != 0)
+                                starting_tiles.Add(board.sequences[j][k]);
+                            else
+                                board.jokers.Add(board.sequences[j][k]);
                 }
                 if (board.partial_sets != null)
                 {
                     for (int j = 0; j < board.partial_sets.Count(); j++)
                     {
-                        starting_tiles.Add((Tile)board.partial_sets[j].Tile1);
-                        starting_tiles.Add((Tile)board.partial_sets[j].Tile2);
+                        if(board.partial_sets[j].Tile1.getNumber() != 0)
+                            starting_tiles.Add((Tile)board.partial_sets[j].Tile1);
+                        else
+                            board.jokers.Add((Tile)board.partial_sets[j].Tile1);
+
+                        if (board.partial_sets[j].Tile2.getNumber() != 0)
+                            starting_tiles.Add((Tile)board.partial_sets[j].Tile2);
+                        else
+                            board.jokers.Add((Tile)board.partial_sets[j].Tile2);
                     }
                 }
 
@@ -319,12 +328,6 @@ namespace rummikubGame
         // ---------------------------------------------------------
         public void extendSets(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
         {
-            /*  we have to sort the hand_tiles
-                here's why:
-                    hand: 5,4
-                    seq: {{1,2,3}}
-               if we wont sort the output will be 1,2,3,4 instead of 1,2,3,4,5 */
-
             List<Tile> hand_no_null = new List<Tile>();
             for(int i=0; i<hand_tiles.Count(); i++)
             {
@@ -384,6 +387,18 @@ namespace rummikubGame
         {
             // sorting the hand tiles
             starting_tiles = starting_tiles.OrderBy(card => card.getNumber()).ToList();
+
+            //// adding jokers to board.jokers and removing from starting_tiles
+            //for(int i=0; i<starting_tiles.Count(); i++)
+            //{
+            //    if (starting_tiles[i].getNumber() == 0)
+            //    {
+            //        board.jokers.Add(starting_tiles[i]);
+            //        starting_tiles.RemoveAt(i);
+            //        i--;
+            //    }
+            //}
+
             List<Tile> sorted_tiles_no_dup = new List<Tile>(starting_tiles);
 
             // classify to 4 different lists(every color in every array)
@@ -416,7 +431,6 @@ namespace rummikubGame
             // for loop over board.jokers
             // board.jokers - best_jokers
             List<Tile> values = new List<Tile>();
-
             for (int i = 0; i < board.jokers.Count(); i++)
             {
                 for (int j = 0; j < best_jokers.Count(); j++)
@@ -428,7 +442,7 @@ namespace rummikubGame
                     }
                 }
             }
-            
+
             // removing used jokers
             for(int i=0;i<values.Count;i++)
                 board.jokers.Remove(values[i]);
@@ -561,7 +575,7 @@ namespace rummikubGame
                             sequences_temp = new List<List<Tile>>();
                             for (int k = 0; k < sequences.Count; k++)
                             {
-                                sequences_temp.Add(new List<Tile>(sequences[i]));
+                                sequences_temp.Add(new List<Tile>(sequences[k]));
                             }
                             sequences_temp.Add(sequence);
 
@@ -596,7 +610,7 @@ namespace rummikubGame
                             sequences_temp = new List<List<Tile>>();
                             for (int k = 0; k < sequences.Count; k++)
                             {
-                                sequences_temp.Add(new List<Tile>(sequences[i]));
+                                sequences_temp.Add(new List<Tile>(sequences[k]));
                             }
                             sequences_temp.Add(sequence);
 
