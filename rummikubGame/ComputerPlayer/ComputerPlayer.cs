@@ -17,6 +17,29 @@ namespace rummikubGame
         {
             board = new ComputerBoard();
             board.sequences = meldsSets(ref board.hand);
+
+            // deleting the jokers from board.hand
+            // for loop over board.jokers
+            // board.jokers - best_jokers
+            List<Tile> values = new List<Tile>();
+
+            for (int i = 0; i < board.jokers.Count(); i++)
+            {
+                for (int j = 0; j < board.sequences.Count(); j++)
+                {
+                    for (int k = 0; k < board.sequences[j].Count(); k++)
+                    {
+                        if (board.jokers[i].getNumber() == board.sequences[j][k].getNumber() && board.jokers[i].getColor() == board.sequences[j][k].getColor())
+                        {
+                            values.Add((Tile)board.jokers[i]);
+                        }
+                    }
+                }
+            }
+            // removing used jokers
+            for (int i = 0; i < values.Count; i++)
+                board.jokers.Remove(values[i]);
+
             createPartialSets();
 
             // takes care of the graphical board of the computer
@@ -97,6 +120,10 @@ namespace rummikubGame
         // ---------------------------------------------------------
         public bool OptimalTileToReplaceExists(Tile new_tile)
         {
+            // starting jokers
+            List<Tile> starting_jokers = new List<Tile>(board.jokers);
+
+
             bool replaced_card_gives_better_result = false;
             List<Tile> optimal_solution_hand = board.hand;
             List<List<Tile>> optimal_solution_sequences = board.sequences;
@@ -116,6 +143,7 @@ namespace rummikubGame
             for (int i = 0; i < replace_tiles_number; i++)
             {
                 List<Tile> starting_tiles = new List<Tile>();
+                board.jokers = new List<Tile>();
 
                 // starting_tiles will be a list of all of the tiles
                 for (int j = 0; j < board.hand.Count(); j++)
@@ -186,6 +214,9 @@ namespace rummikubGame
 
                 // for loop over board.jokers
                 // board.jokers - best_jokers
+
+                board.jokers = new List<Tile>(starting_jokers);
+
                 List<Tile> values = new List<Tile>();
 
                 for(int i=0; i<board.jokers.Count(); i++)
@@ -194,7 +225,7 @@ namespace rummikubGame
                     {
                         for(int k=0; k < board.sequences[j].Count(); k++)
                         {
-                            if (board.jokers[i] == board.sequences[j][k])
+                            if (board.jokers[i].getNumber() == board.sequences[j][k].getNumber() && board.jokers[i].getColor() == board.sequences[j][k].getColor())
                             {
                                 values.Add((Tile)board.jokers[i]);
                             }
@@ -218,6 +249,9 @@ namespace rummikubGame
                 board.GenerateComputerThrownTile(dropped_tile);
                 return (true);
             }
+
+            // if not found something better
+            board.jokers = starting_jokers;
             return (false);
         }
 
