@@ -14,8 +14,8 @@ namespace rummikubGame
         public ComputerPlayer()
         {
             board = new ComputerBoard();
-            board.sequences = meldsSets(ref board.hand);
-             
+            board.sequences = MeldsSets(ref board.hand, ref board.unused_jokers);
+            
             // removing jokers that are in sequences
             UpdatingUnusedJokers();
             createPartialSets();
@@ -133,123 +133,52 @@ namespace rummikubGame
         // ---------------------------------------------------------
         public bool BetterArrangementFound(Tile tile_to_replace)
         {
-            // starting jokers
-            List<Tile> starting_jokers = new List<Tile>(board.unused_jokers);
+            // vars for finding the best option
+            List<Tile> better_option_hand = board.hand;
+            List<List<Tile>> better_option_sequences = board.sequences;
+            List<Tile> starting_jokers = board.unused_jokers;
 
-            bool replaced_card_gives_better_result = false;
-            List<Tile> optimal_solution_hand = board.hand;
-            List<List<Tile>> optimal_solution_sequences = board.sequences;
+            bool better_option_found = false;
             Tile optimal_dropped_tile = null;
-            List<Tile> optimal_jokers = board.unused_jokers;
 
-            // count number of jokers in sequences
-            int jokers_in_sequences = board.unused_jokers.Count();
-            for (int i = 0; i < board.sequences.Count(); i++)
-                for (int j = 0; j < board.sequences[i].Count(); j++)
-                    if (board.sequences[i][j].getNumber() == 0)
-                        jokers_in_sequences++;
-
-            int replace_tiles_number = GameTable.RUMMIKUB_TILES_IN_GAME - jokers_in_sequences;
-
-            // replacing every tile in starting_tiles with the given paramter in order to get better result
-            for (int i = 0; i < replace_tiles_number; i++)
+            // replacing every tile in starting_tiles with the given paramter in order to get best result
+            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME - board.CountJokers(); i++)
             {
-                List<Tile> starting_tiles = new List<Tile>();
-                board.unused_jokers = new List<Tile>();
+                // all the tiles that are not jokers
+                List<Tile> all_tiles = new List<Tile>();
+                List<Tile> jokers = new List<Tile>();
+                board.GetAllTiles(ref all_tiles, ref jokers);
 
-                // starting_tiles will be a list of all of the tiles
-                for (int j = 0; j < board.hand.Count(); j++)
-                {
-                    // adds the hand cards to the temp_tiles list
-                    if (board.hand[j] != null && board.hand[j].getNumber() != 0)
-                        starting_tiles.Add(board.hand[j]);
-                    else
-                        board.unused_jokers.Add(board.hand[j]);
-                }
-                if (board.sequences != null)
-                { // adds the tiles in sets to the temp_tiles list
-                    for (int j = 0; j < board.sequences.Count(); j++)
-                        for (int k = 0; k < board.sequences[j].Count(); k++)
-                            if (board.sequences[j][k].getNumber() != 0)
-                                starting_tiles.Add(board.sequences[j][k]);
-                            else
-                                board.unused_jokers.Add(board.sequences[j][k]);
-                }
-                if (board.partial_sets != null)
-                {
-                    for (int j = 0; j < board.partial_sets.Count(); j++)
-                    {
-                        if(board.partial_sets[j].Tile1.getNumber() != 0)
-                            starting_tiles.Add((Tile)board.partial_sets[j].Tile1);
-                        else
-                            board.unused_jokers.Add((Tile)board.partial_sets[j].Tile1);
+                // the tile that is being replaced by the given parameter
+                Tile dropped_tile = all_tiles[i];
+                all_tiles[i] = tile_to_replace;
 
-                        if (board.partial_sets[j].Tile2.getNumber() != 0)
-                            starting_tiles.Add((Tile)board.partial_sets[j].Tile2);
-                        else
-                            board.unused_jokers.Add((Tile)board.partial_sets[j].Tile2);
-                    }
-                }
-
-                // variables that changes every iteration
-                List<List<Tile>> temp_extendedSets = new List<List<Tile>>();
-                List<Tile> temp_hand = new List<Tile>();
-                Tile curr_dropped_tile = starting_tiles[i];
-                // List<Tile> temp_jokers = new List<Tile>();
-
-                starting_tiles[i] = tile_to_replace;
-
-                temp_extendedSets = meldsSets(ref starting_tiles);
-                temp_hand = starting_tiles;
-                // emp_jokers = new List<Tile>(board.jokers);
+                List<List<Tile>> temp_sequences = MeldsSets(ref all_tiles, ref jokers);
+                List<Tile> temp_hand = all_tiles;
 
                 // check current situation is better than the optimal
-                if (getNumberOfTilesInAllSets(optimal_solution_sequences) < getNumberOfTilesInAllSets(temp_extendedSets))
+                if (getNumberOfTilesInAllSets(better_option_sequences) < getNumberOfTilesInAllSets(temp_sequences))
                 {
-                    optimal_solution_sequences = temp_extendedSets;
-                    optimal_solution_hand = temp_hand;
-                    // optimal_jokers = temp_jokers;
-
-                    replaced_card_gives_better_result = true;
-                    optimal_dropped_tile = curr_dropped_tile;
+                    better_option_sequences = temp_sequences;
+                    better_option_hand = temp_hand;
+                    optimal_dropped_tile = dropped_tile;
+                    better_option_found = true;
                 }
             }
 
-            // better option than starting point
-            if (replaced_card_gives_better_result)
+            // better arrangment found
+            if (better_option_found)
             {
                 // updates global board variables
-                board.sequences = optimal_solution_sequences;
-                board.hand = optimal_solution_hand;
-                // board.jokers = optimal_jokers;
-                board.partial_sets = new List<PartialSet>();
+                board.sequences = better_option_sequences;
+                board.hand = better_option_hand;
 
-                // for loop over board.jokers
-                // board.jokers - best_jokers
-
+                // updating unused jokers
                 board.unused_jokers = new List<Tile>(starting_jokers);
-
-                List<Tile> values = new List<Tile>();
-
-                for(int i=0; i<board.unused_jokers.Count(); i++)
-                {
-                    for(int j=0; j<board.sequences.Count(); j++)
-                    {
-                        for(int k=0; k < board.sequences[j].Count(); k++)
-                        {
-                            if (board.unused_jokers[i].getNumber() == board.sequences[j][k].getNumber() 
-                                && board.unused_jokers[i].getColor() == board.sequences[j][k].getColor())
-                            {
-                                values.Add((Tile)board.unused_jokers[i]);
-                            }
-                        }
-                    }
-                }
-                // removing used jokers
-                for (int i = 0; i < values.Count; i++)
-                    board.unused_jokers.Remove(values[i]);
+                UpdatingUnusedJokers();
 
                 // create partial sets from the given hand
+                board.partial_sets = new List<PartialSet>();
                 createPartialSets();
 
                 // take the last thrown tile from the dropped tiles stack(graphically)
@@ -260,11 +189,10 @@ namespace rummikubGame
                 int[] tile_in_dropped_tiles_location = { GameTable.DROPPED_TILE_LOCATION, GameTable.DROPPED_TILE_LOCATION };
                 TileButton dropped_tile = new TileButton(optimal_dropped_tile.getColor(), optimal_dropped_tile.getNumber(), tile_in_dropped_tiles_location);
                 board.GenerateComputerThrownTile(dropped_tile);
+                
+                // returns true because better option found
                 return (true);
             }
-
-            // if not found something better
-            board.unused_jokers = starting_jokers;
             return (false);
         }
 
@@ -275,7 +203,7 @@ namespace rummikubGame
         /// </summary>
         /// <param name="to_be_replaced"></param>
         // ---------------------------------------------------------
-        public void play(Tile to_be_replaced)
+        public void ComputerPlay(Tile to_be_replaced)
         {
             // humanPlayer dropped tile, not giving better result 
             if(to_be_replaced != null && !BetterArrangementFound(to_be_replaced))
@@ -290,7 +218,15 @@ namespace rummikubGame
                     // if partial set found from dropped tile stack
                     if (board.hand.Count() > 1)
                     {
-                        board.hand.Add(tile);
+                        if(tile.getNumber() == 0)
+                        {
+                            board.unused_jokers.Add(tile);
+                        }
+                        else
+                        {
+                            board.hand.Add(tile);
+                        }
+
                         createPartialSets();
 
                         // AddJokers();
@@ -326,7 +262,11 @@ namespace rummikubGame
                                 }
                             }
 
-                            board.hand.Add(tile);
+                            if(tile.getNumber() == 0)
+                                board.unused_jokers.Add(tile);
+                            else
+                                board.hand.Add(tile);
+                            
                             board.hand.Add(board.partial_sets[random_tile_to_drop_index].Tile2);
                             board.partial_sets.RemoveAt(random_tile_to_drop_index);
                             board.GenerateComputerThrownTile(random_tile_to_drop);
@@ -351,7 +291,12 @@ namespace rummikubGame
 
                             if(board.hand.Count() > 0)
                                 board.hand.RemoveAt(random_tile_to_drop_index);
-                            board.hand.Add(tile);
+
+                            if (tile.getNumber() == 0)
+                                board.unused_jokers.Add(tile);
+                            else
+                                board.hand.Add(tile);
+
                             board.GenerateComputerThrownTile(random_tile_to_drop);
                         }
                     }
@@ -396,10 +341,8 @@ namespace rummikubGame
         /// Create a set class, which contains the data of what type the set is (Group, Run)
         /// for group we dont need to check the two of the ways to arrange
         /// </summary>
-        /// <param name="sequences">Current sequences we need to extend</param>
-        /// <param name="hand_tiles">Remained tiles that we can extend the sequences with</param>
         // ---------------------------------------------------------
-        public void extendSets(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
+        public void ExtendSets(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
         {
             List<Tile> hand_no_null = new List<Tile>();
             for(int i=0; i<hand_tiles.Count(); i++)
@@ -452,56 +395,37 @@ namespace rummikubGame
         // ---------------------------------------------------------
         /// <summary>
         /// Overloaded function to meldSets, takes care of the things we need to do before calling
-        /// the meldsSets function(like splitting the hand into 4 lists by color).
+        /// the MeldsSets function(like splitting the hand into 4 lists by color).
         /// </summary>
         /// <param name="hand_tiles">Passing the tiles that we need to build sequences from</param>
         // ---------------------------------------------------------
-        public List<List<Tile>> meldsSets(ref List<Tile> starting_tiles)
+        public List<List<Tile>> MeldsSets(ref List<Tile> all_tiles, ref List<Tile> jokers)
         {
             // sorting the hand tiles
-            starting_tiles = starting_tiles.OrderBy(card => card.getNumber()).ToList();
+            all_tiles = all_tiles.OrderBy(card => card.getNumber()).ToList();
 
-            //// adding jokers to board.jokers and removing from starting_tiles
-            //for(int i=0; i<starting_tiles.Count(); i++)
-            //{
-            //    if (starting_tiles[i].getNumber() == 0)
-            //    {
-            //        board.jokers.Add(starting_tiles[i]);
-            //        starting_tiles.RemoveAt(i);
-            //        i--;
-            //    }
-            //}
+            // prepering the hand tiles for the MeldsSets function
+            List<Tile>[] tiles_lst_color = new List<Tile>[Pool.COLORS_COUNT];
 
-            List<Tile> sorted_tiles_no_dup = new List<Tile>(starting_tiles);
-
-            // classify to 4 different lists(every color in every array)
-            List<Tile>[] tiles_lst_color = new List<Tile>[4];
-            for (int color_index = 0; color_index < 4; color_index++)
+            // classify to Pool.COLORS_COUNT different lists(every color in every array)
+            for (int color_index = 0; color_index < Pool.COLORS_COUNT; color_index++)
             {
                 tiles_lst_color[color_index] = new List<Tile>();
-                for (int i = 0; i < sorted_tiles_no_dup.Count(); i++)
+                for (int i = 0; i < all_tiles.Count(); i++)
                 {
-                    if (sorted_tiles_no_dup[i].getColor() == color_index)
+                    if (all_tiles[i].getColor() == color_index)
                     {
-                        tiles_lst_color[color_index].Add(sorted_tiles_no_dup[i]);
+                        tiles_lst_color[color_index].Add(all_tiles[i]);
                     }
                 }
             }
 
             List<List<Tile>> result = new List<List<Tile>>();
             List<List<Tile>> sequences = new List<List<Tile>>();
-            List<Tile> best_jokers = new List<Tile>();
 
-            // cloning board.jokers
-            List<Tile> temp_jokers = new List<Tile>();
-            for (int i = 0; i < board.unused_jokers.Count(); i++)
-            {
-                temp_jokers.Add(board.unused_jokers[i]);
-            }
+            MeldsSets(tiles_lst_color, sequences, jokers, ref result, ref all_tiles);
 
-            meldsSets(tiles_lst_color, sequences, temp_jokers, ref result, ref starting_tiles, ref best_jokers);
-
-             return result;
+             return (result);
         }
 
         // ---------------------------------------------------------
@@ -513,7 +437,7 @@ namespace rummikubGame
         /// <param name="best_sequences"></param>
         /// <param name="best_hand"></param>
         // ---------------------------------------------------------
-        public void meldsSets(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, List<Tile> jokers, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand, ref List<Tile> best_jokers)
+        public void MeldsSets(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, List<Tile> jokers, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
         {
             List<Tile> hand_temp = new List<Tile>();
             hand_temp.AddRange(color_sorted_hand[0]); hand_temp.AddRange(color_sorted_hand[1]); hand_temp.AddRange(color_sorted_hand[2]); hand_temp.AddRange(color_sorted_hand[3]);
@@ -631,7 +555,7 @@ namespace rummikubGame
                             }
                             sequences_temp.Add(sequence);
 
-                            meldsSets(color_sorted_hand, sequences_temp, temp_joker_best, ref best_sequences, ref best_hand, ref best_jokers);
+                            MeldsSets(color_sorted_hand, sequences_temp, temp_joker_best, ref best_sequences, ref best_hand);
                         }
                         else if (runPartialSets[i].Tile1.getNumber() - 2 == hand_temp[j].getNumber() && runPartialSets[i].Tile1.getColor() == hand_temp[j].getColor())
                         {
@@ -666,7 +590,7 @@ namespace rummikubGame
                             }
                             sequences_temp.Add(sequence);
 
-                            meldsSets(color_sorted_hand, sequences_temp, temp_joker_best, ref best_sequences, ref best_hand, ref best_jokers);
+                            MeldsSets(color_sorted_hand, sequences_temp, temp_joker_best, ref best_sequences, ref best_hand);
                         }
                     }
                 }
@@ -679,8 +603,8 @@ namespace rummikubGame
 
 
 
-            extendSets(ref sequences_temp, ref hand_temp);
-            extendSets(ref best_sequences, ref best_hand);
+            ExtendSets(ref sequences_temp, ref hand_temp);
+            ExtendSets(ref best_sequences, ref best_hand);
 
             // if current sequences is better, we would like to replace the global sequences and hand vars
             if (hand_temp.Count() < best_hand.Count())
@@ -692,19 +616,6 @@ namespace rummikubGame
                 //temp_hand = temp_hand.OrderBy(card => card.getNumber()).ToList();
 
                 best_hand = hand_temp;
-
-                best_jokers = new List<Tile>();
-                // update best_jokers
-                for (int i = 0; i < best_sequences.Count(); i++)
-                {
-                    for (int j = 0; j < best_sequences[i].Count(); j++)
-                    {
-                        if (best_sequences[i][j].getNumber() == 0)
-                        {
-                            best_jokers.Add(best_sequences[i][j]);
-                        }
-                    }
-                }
             }
             else if (hand_temp.Count() == best_hand.Count())
             {
@@ -715,18 +626,6 @@ namespace rummikubGame
                     temp_hand.AddRange(color_sorted_hand[0]); temp_hand.AddRange(color_sorted_hand[1]); temp_hand.AddRange(color_sorted_hand[2]); temp_hand.AddRange(color_sorted_hand[3]);
                     temp_hand = temp_hand.OrderBy(card => card.getNumber()).ToList();
                     best_hand = temp_hand;
-
-                    // update best_jokers
-                    for(int i=0; i<best_sequences.Count(); i++)
-                    {
-                        for(int j=0; j < best_sequences[i].Count(); j++)
-                        {
-                            if (best_sequences[i][j].getNumber() == 0)
-                            {
-                                best_jokers.Add(best_sequences[i][j]);
-                            }
-                        }
-                    }
                 }
             }
 
@@ -762,7 +661,7 @@ namespace rummikubGame
                         temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]); temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j + 1]); temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j + 2]);
 
                         color_sorted_hand[i] = new List<Tile>(temp_curr_hand_color_clone.Values.ToList());
-                        meldsSets(color_sorted_hand, temp_sequences, jokers, ref best_sequences, ref best_hand, ref best_jokers);
+                        MeldsSets(color_sorted_hand, temp_sequences, jokers, ref best_sequences, ref best_hand);
 
                         // fix what we ruined
                         color_sorted_hand[i] = temp_curr_hand_color_clone.Values.ToList();
@@ -814,7 +713,7 @@ namespace rummikubGame
                     for (int i = 0; i < sorted_tiles_no_dup.Count(); i++)
                         tiles_lst_color[sorted_tiles_no_dup[i].getColor()].Add(sorted_tiles_no_dup[i]);
                         
-                    meldsSets(tiles_lst_color, temp_sequences, jokers, ref best_sequences, ref best_hand, ref best_jokers);
+                    MeldsSets(tiles_lst_color, temp_sequences, jokers, ref best_sequences, ref best_hand);
                 }
             }
             return;

@@ -12,9 +12,9 @@ namespace rummikubGame
     public class Pool
     {
         // consts
-        const int NUMBER_OF_TIMES = 1;
-        const int COLORS_COUNT = 4;
-        const int N = 13; // numbers range
+        public static int NUMBER_OF_TIMES = 1;
+        public static int COLORS_COUNT = 4;
+        public static int N = 13; // numbers range
 
         private Queue<Tile> tilesQueue;
         public Pool()

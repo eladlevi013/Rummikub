@@ -245,7 +245,7 @@ namespace rummikubGame
                     Thread.Sleep(5);
 
                     // call the computerPlayer play function in another thread in order to prevent crashes
-                    GameTable.computer_player.play(GameTable.dropped_tiles_stack.Peek());
+                    GameTable.computer_player.ComputerPlay(GameTable.dropped_tiles_stack.Peek());
                 }
                 // otherwise we would like to search the first empty slot to put in the TileButton
                 else

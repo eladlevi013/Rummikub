@@ -88,7 +88,7 @@ namespace rummikubGame
             if (current_turn == COMPUTER_PLAYER_TURN)
             {
                 game_indicator_lbl.Text = "Computer's turn";
-                computer_player.play(null);
+                computer_player.ComputerPlay(null);
             }
             else
             {

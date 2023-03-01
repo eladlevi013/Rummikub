@@ -51,7 +51,6 @@ namespace rummikubGame
             string str = "";
 
             // fills the tiles list
-            /*
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
             {
                 // change this
@@ -61,17 +60,17 @@ namespace rummikubGame
 
                 if (tile.getNumber() == 0)
                 {
-                    jokers.Add(tile);
+                    unused_jokers.Add(tile);
                 }
                 else
                 {
                     hand.Add(tile);
                 }
             }
-            */
 
             // GameTable.global_current_pool_size_lbl.Text = str;
 
+            /*
             hand.Add(new Tile(GameTable.BLACK_COLOR, 4));
             hand.Add(new Tile(GameTable.BLACK_COLOR, 5));
             hand.Add(new Tile(GameTable.BLACK_COLOR, 6));
@@ -89,6 +88,57 @@ namespace rummikubGame
 
             hand.Add(new Tile(GameTable.RED_COLOR, 9));
             hand.Add(new Tile(GameTable.RED_COLOR, 13));
+            */
+        }
+
+        public void GetAllTiles(ref List<Tile> all_tiles, ref List<Tile> jokers)
+        {
+            // adding hand to all_tiles
+            for (int j = 0; j < hand.Count(); j++)
+            {
+                if (hand[j] != null && hand[j].getNumber() != 0)
+                    all_tiles.Add(hand[j]);
+                else
+                    jokers.Add(hand[j]);
+            }
+
+            // adding sequences to all_tiles
+            for (int j = 0; j < sequences.Count(); j++)
+            {
+                for (int k = 0; k < sequences[j].Count(); k++)
+                {
+                    if (sequences[j][k].getNumber() != 0)
+                        all_tiles.Add(sequences[j][k]);
+                    else
+                        jokers.Add(sequences[j][k]);
+                }
+            }
+
+            // adding partial sets to all_tiles
+            for (int j = 0; j < partial_sets.Count(); j++)
+            {
+                if (partial_sets[j].Tile1.getNumber() != 0)
+                    all_tiles.Add((Tile)partial_sets[j].Tile1);
+                else
+                    jokers.Add((Tile)partial_sets[j].Tile1);
+
+                if (partial_sets[j].Tile2.getNumber() != 0)
+                    all_tiles.Add((Tile)partial_sets[j].Tile2);
+                else
+                    jokers.Add((Tile)partial_sets[j].Tile2);
+            }
+        }
+
+        public int CountJokers()
+        {
+            // count number of jokers in sequences
+            int jokers_in_sequences = unused_jokers.Count();
+            for (int i = 0; i < sequences.Count(); i++)
+                for (int j = 0; j < sequences[i].Count(); j++)
+                    if (sequences[i][j].getNumber() == 0)
+                        jokers_in_sequences++;
+
+            return jokers_in_sequences;
         }
 
         public void generateBoard()
