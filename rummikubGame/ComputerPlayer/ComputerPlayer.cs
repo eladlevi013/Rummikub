@@ -101,6 +101,7 @@ namespace rummikubGame
             List<Tile> optimal_solution_hand = board.hand;
             List<List<Tile>> optimal_solution_sequences = board.sequences;
             Tile optimal_dropped_tile = null;
+            List<Tile> optimal_jokers = board.jokers;
 
             // count number of jokers in sequences
             int jokers_in_sequences = board.jokers.Count();
@@ -154,16 +155,21 @@ namespace rummikubGame
                 List<List<Tile>> temp_extendedSets = new List<List<Tile>>();
                 List<Tile> temp_hand = new List<Tile>();
                 Tile curr_dropped_tile = starting_tiles[i];
+                // List<Tile> temp_jokers = new List<Tile>();
 
                 starting_tiles[i] = new_tile;
+
                 temp_extendedSets = meldsSets(ref starting_tiles);
                 temp_hand = starting_tiles;
+                // emp_jokers = new List<Tile>(board.jokers);
 
                 // check current situation is better than the optimal
                 if (getNumberOfTilesInAllSets(optimal_solution_sequences) < getNumberOfTilesInAllSets(temp_extendedSets))
                 {
                     optimal_solution_sequences = temp_extendedSets;
                     optimal_solution_hand = temp_hand;
+                    // optimal_jokers = temp_jokers;
+
                     replaced_card_gives_better_result = true;
                     optimal_dropped_tile = curr_dropped_tile;
                 }
@@ -175,12 +181,32 @@ namespace rummikubGame
                 // updates global board variables
                 board.sequences = optimal_solution_sequences;
                 board.hand = optimal_solution_hand;
+                // board.jokers = optimal_jokers;
                 board.partial_sets = new List<PartialSet>();
+
+                // for loop over board.jokers
+                // board.jokers - best_jokers
+                List<Tile> values = new List<Tile>();
+
+                for(int i=0; i<board.jokers.Count(); i++)
+                {
+                    for(int j=0; j<board.sequences.Count(); j++)
+                    {
+                        for(int k=0; k < board.sequences[j].Count(); k++)
+                        {
+                            if (board.jokers[i] == board.sequences[j][k])
+                            {
+                                values.Add((Tile)board.jokers[i]);
+                            }
+                        }
+                    }
+                }
+                // removing used jokers
+                for (int i = 0; i < values.Count; i++)
+                    board.jokers.Remove(values[i]);
 
                 // create partial sets from the given hand
                 createPartialSets();
-
-                // AddJokers();
 
                 // take the last thrown tile from the dropped tiles stack(graphically)
                 if (GameTable.dropped_tiles_stack.Count() > 0)
@@ -423,29 +449,10 @@ namespace rummikubGame
             List<Tile> temp_jokers = new List<Tile>();
             for (int i = 0; i < board.jokers.Count(); i++)
             {
-                temp_jokers.Add(board.jokers[i].Clone(board.jokers[i].getColor(), board.jokers[i].getNumber()));
+                temp_jokers.Add(board.jokers[i]);
             }
 
             meldsSets(tiles_lst_color, sequences, temp_jokers, ref result, ref starting_tiles, ref best_jokers);
-
-            // for loop over board.jokers
-            // board.jokers - best_jokers
-            List<Tile> values = new List<Tile>();
-            for (int i = 0; i < board.jokers.Count(); i++)
-            {
-                for (int j = 0; j < best_jokers.Count(); j++)
-                {
-                    if (best_jokers[j].getNumber() == board.jokers[i].getNumber() 
-                        && best_jokers[j].getColor() == board.jokers[i].getColor())
-                    {
-                        values.Add((Tile)board.jokers[i]);
-                    }
-                }
-            }
-
-            // removing used jokers
-            for(int i=0;i<values.Count;i++)
-                board.jokers.Remove(values[i]);
 
              return result;
         }
