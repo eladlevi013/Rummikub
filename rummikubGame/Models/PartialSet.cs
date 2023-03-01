@@ -29,5 +29,15 @@ namespace rummikubGame.Models
             get { return tile2; }
             set { tile2 = value; }
         }
+
+        public void SortPartialSet()
+        {
+            if (tile1.getNumber() > tile2.getNumber())
+            {
+                Tile temp = tile1;
+                tile1 = tile2;
+                tile2 = temp;
+            }
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace rummikubGame
         public List<Tile> hand;
         public List<PartialSet> partial_sets;
         public List<List<Tile>> sequences;
-        public List<Tile> jokers;
+        public List<Tile> unused_jokers;
 
         [NonSerialized]
         public List<Button> drawn_computer_cards;
@@ -36,14 +36,14 @@ namespace rummikubGame
 
         public bool checkWinner()
         {
-            if (hand.Count() + partial_sets.Count()*2 == 0)
+            if (hand.Count() + 2*partial_sets.Count() == 0)
                 return true;
             return false;
         }
 
         public ComputerBoard()
         {
-            jokers = new List<Tile>();
+            unused_jokers = new List<Tile>();
             partial_sets = new List<PartialSet>();
             drawn_computer_cards = new List<Button>();
             hand = new List<Tile>();
@@ -51,6 +51,7 @@ namespace rummikubGame
             string str = "";
 
             // fills the tiles list
+            /*
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
             {
                 // change this
@@ -67,29 +68,27 @@ namespace rummikubGame
                     hand.Add(tile);
                 }
             }
+            */
 
             // GameTable.global_current_pool_size_lbl.Text = str;
 
-            /*
-            hand.Add(new Tile(GameTable.RED_COLOR, 2));
-            hand.Add(new Tile(GameTable.RED_COLOR, 3));
-            hand.Add(new Tile(GameTable.RED_COLOR, 4));
-            hand.Add(new Tile(GameTable.RED_COLOR, 7));
-            hand.Add(new Tile(GameTable.RED_COLOR, 11));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 4));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 5));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 6));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 7));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 13));
 
-            jokers.Add(new Tile(GameTable.RED_COLOR, 0));
-
-            hand.Add(new Tile(GameTable.BLUE_COLOR,1));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 3));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 5));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 12));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 9));
             hand.Add(new Tile(GameTable.BLUE_COLOR, 13));
 
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 4));
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 5));
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 13));
 
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 11));
-            */
+            hand.Add(new Tile(GameTable.RED_COLOR, 9));
+            hand.Add(new Tile(GameTable.RED_COLOR, 13));
         }
 
         public void generateBoard()
@@ -167,12 +166,12 @@ namespace rummikubGame
 
             curr_x_location_drawing_point = STARTING_HAND_X_LOCATION_COMPUTER_TILES + 495 + 40;
             curr_y_location_drawing_point = STARTING_HAND_Y_LOCATION_COMPUTER_TILES;
-            if(jokers != null)
+            if(unused_jokers != null)
             {
-                for (int i = 0; i < jokers.Count(); i++)
+                for (int i = 0; i < unused_jokers.Count(); i++)
                 {
                     Point tile_location = new Point(curr_x_location_drawing_point, curr_y_location_drawing_point);
-                    drawSingleComputerCard(jokers[i], tile_location);
+                    drawSingleComputerCard(unused_jokers[i], tile_location);
                     curr_x_location_drawing_point += X_SPACE_BETWEEN_COMPUTER_TILES;
                 }
             }
