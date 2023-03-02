@@ -18,7 +18,7 @@ namespace rummikubGame
             
             // removing jokers that are in sequences
             UpdatingUnusedJokers();
-            createPartialSets();
+            CreatePartialSets();
 
             // takes care of the graphical board of the computer
             if (GameTable.global_view_computer_tiles_groupbox.Checked)
@@ -61,7 +61,7 @@ namespace rummikubGame
         /// </summary>
         /// <param></param>
         // ---------------------------------------------------------
-        public void createPartialSets()
+        public void CreatePartialSets()
         {
             List<int> indexes = new List<int>();
 
@@ -146,7 +146,7 @@ namespace rummikubGame
             {
                 // all the tiles that are not jokers
                 List<Tile> all_tiles = new List<Tile>();
-                List<Tile> jokers = new List<Tile>();
+                List<Tile> jokers = new List<Tile>(starting_jokers);
                 board.GetAllTiles(ref all_tiles, ref jokers);
 
                 // the tile that is being replaced by the given parameter
@@ -179,7 +179,7 @@ namespace rummikubGame
 
                 // create partial sets from the given hand
                 board.partial_sets = new List<PartialSet>();
-                createPartialSets();
+                CreatePartialSets();
 
                 // take the last thrown tile from the dropped tiles stack(graphically)
                 if (GameTable.dropped_tiles_stack.Count() > 0)
@@ -227,7 +227,7 @@ namespace rummikubGame
                             board.hand.Add(tile);
                         }
 
-                        createPartialSets();
+                        CreatePartialSets();
 
                         // AddJokers();
 

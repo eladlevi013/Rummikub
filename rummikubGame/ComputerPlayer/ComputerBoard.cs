@@ -69,27 +69,27 @@ namespace rummikubGame
             }
 
             // GameTable.global_current_pool_size_lbl.Text = str;
-
             /*
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 4));
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 5));
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 6));
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 7));
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 13));
+            unused_jokers.Add(new Tile(GameTable.BLACK_COLOR, 0));
+            hand.Add(new Tile(GameTable.RED_COLOR, 10));
+            hand.Add(new Tile(GameTable.RED_COLOR, 6));
+            hand.Add(new Tile(GameTable.RED_COLOR, 11));
+            hand.Add(new Tile(GameTable.RED_COLOR, 12));
+            hand.Add(new Tile(GameTable.RED_COLOR, 13));
+            unused_jokers.Add(new Tile(GameTable.RED_COLOR, 0));
 
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 9));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 13));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 3));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 4));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 10));
 
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 4));
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 5));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 12));
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 13));
 
-            hand.Add(new Tile(GameTable.RED_COLOR, 9));
-            hand.Add(new Tile(GameTable.RED_COLOR, 13));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
             */
         }
+
 
         public void GetAllTiles(ref List<Tile> all_tiles, ref List<Tile> jokers)
         {
