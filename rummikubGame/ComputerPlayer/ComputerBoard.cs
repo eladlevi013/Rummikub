@@ -51,6 +51,7 @@ namespace rummikubGame
             string str = "";
 
             // fills the tiles list
+            /*
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
             {
                 // change this
@@ -67,29 +68,62 @@ namespace rummikubGame
                     hand.Add(tile);
                 }
             }
+            */
 
             // GameTable.global_current_pool_size_lbl.Text = str;
-            /*
-            unused_jokers.Add(new Tile(GameTable.BLACK_COLOR, 0));
-            hand.Add(new Tile(GameTable.RED_COLOR, 10));
-            hand.Add(new Tile(GameTable.RED_COLOR, 6));
-            hand.Add(new Tile(GameTable.RED_COLOR, 11));
-            hand.Add(new Tile(GameTable.RED_COLOR, 12));
-            hand.Add(new Tile(GameTable.RED_COLOR, 13));
-            unused_jokers.Add(new Tile(GameTable.RED_COLOR, 0));
-
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 3));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 10));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 9));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 2));
             hand.Add(new Tile(GameTable.BLUE_COLOR, 4));
             hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 10));
-
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 12));
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 13));
-
             hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
-            */
+
+            unused_jokers.Add(new Tile(GameTable.BLACK_COLOR, 0));
+            unused_jokers.Add(new Tile(GameTable.RED_COLOR, 0));
+
+            hand.Add(new Tile(GameTable.RED_COLOR, 8));
+            hand.Add(new Tile(GameTable.RED_COLOR, 6));
+
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 6));
+
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 10));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 13));
         }
 
+        //public List<Tile> GetAllJokers()
+        //{
+        //    List<Tile> jokers = new List<Tile>();
+
+        //    // adding hand to all_tiles
+        //    for (int j = 0; j < hand.Count(); j++)
+        //    {
+        //        if (hand[j] != null && hand[j].getNumber() == 0)
+        //            jokers.Add(hand[j]);
+        //    }
+
+        //    // adding sequences to all_tiles
+        //    for (int j = 0; j < sequences.Count(); j++)
+        //    {
+        //        for (int k = 0; k < sequences[j].Count(); k++)
+        //        {
+        //            if (sequences[j][k].getNumber() == 0)
+        //                jokers.Add(sequences[j][k]);
+        //        }
+        //    }
+
+        //    // adding partial sets to all_tiles
+        //    for (int j = 0; j < partial_sets.Count(); j++)
+        //    {
+        //        if (partial_sets[j].Tile1.getNumber() == 0)
+        //            jokers.Add((Tile)partial_sets[j].Tile1);
+
+        //        if (partial_sets[j].Tile2.getNumber() == 0)
+        //            jokers.Add((Tile)partial_sets[j].Tile2);
+        //    }
+
+        //    return jokers;
+        //}
 
         public void GetAllTiles(ref List<Tile> all_tiles, ref List<Tile> jokers)
         {
