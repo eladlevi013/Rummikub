@@ -468,7 +468,9 @@ namespace rummikubGame
                         {
                             if (!indexes.Contains(i) && !indexes.Contains(j))
                             {
-                                runPartialSets.Add(new PartialSet(tile1, tile2));
+                                PartialSet partialSet = new PartialSet(tile1, tile2);
+                                partialSet.SortPartialSet();
+                                runPartialSets.Add(partialSet);
                                 indexes.Add(i);
                                 indexes.Add(j);
                             }

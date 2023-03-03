@@ -51,7 +51,6 @@ namespace rummikubGame
             string str = "";
 
             // fills the tiles list
-            /*
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
             {
                 // change this
@@ -68,9 +67,10 @@ namespace rummikubGame
                     hand.Add(tile);
                 }
             }
-            */
 
             // GameTable.global_current_pool_size_lbl.Text = str;
+
+            /*
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 2));
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 4));
@@ -87,6 +87,9 @@ namespace rummikubGame
 
             hand.Add(new Tile(GameTable.BLACK_COLOR, 4));
             hand.Add(new Tile(GameTable.BLACK_COLOR, 12));
+            unused_jokers.Add(new Tile(GameTable.RED_COLOR, 0));
+            */
+
         }
 
         public List<Tile> GetAllJokers()
