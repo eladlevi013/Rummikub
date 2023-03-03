@@ -525,7 +525,8 @@ namespace rummikubGame
 
                         hand_temp = new List<Tile>(hand_temp_complete);
 
-                        if (runPartialSets[i].Tile2.getNumber() + 2 == hand_temp[j].getNumber() && runPartialSets[i].Tile2.getColor() == hand_temp[j].getColor())
+                        if (runPartialSets[i].Tile2.getNumber() + 2 == hand_temp[j].getNumber() 
+                            && runPartialSets[i].Tile2.getColor() == hand_temp[j].getColor())
                         {
                             // add to sequences
                             List<Tile> sequence = new List<Tile>();

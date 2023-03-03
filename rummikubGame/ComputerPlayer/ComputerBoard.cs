@@ -51,6 +51,7 @@ namespace rummikubGame
             string str = "";
 
             // fills the tiles list
+
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
             {
                 // change this
@@ -68,27 +69,27 @@ namespace rummikubGame
                 }
             }
 
+
             // GameTable.global_current_pool_size_lbl.Text = str;
 
-            /*
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 2));
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 4));
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 5));
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 12));
+            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 11));
+            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 13));
 
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 12));
+            //hand.Add(new Tile(GameTable.BLUE_COLOR, 4));
+            //hand.Add(new Tile(GameTable.BLUE_COLOR, 5));
+            //hand.Add(new Tile(GameTable.BLUE_COLOR,1));
+            //hand.Add(new Tile(GameTable.BLUE_COLOR, 11));
+            //hand.Add(new Tile(GameTable.BLUE_COLOR, 13));
 
-            hand.Add(new Tile(GameTable.RED_COLOR, 1));
-            hand.Add(new Tile(GameTable.RED_COLOR, 2));
-            hand.Add(new Tile(GameTable.RED_COLOR, 11));
-            hand.Add(new Tile(GameTable.RED_COLOR, 12));
+            //hand.Add(new Tile(GameTable.RED_COLOR, 4));
+            //hand.Add(new Tile(GameTable.RED_COLOR, 13));
+            //hand.Add(new Tile(GameTable.RED_COLOR, 11));
 
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 4));
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 12));
-            unused_jokers.Add(new Tile(GameTable.RED_COLOR, 0));
-            */
+            //hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
+            //hand.Add(new Tile(GameTable.BLACK_COLOR, 10));
+            
+            //unused_jokers.Add(new Tile(GameTable.RED_COLOR, 0));
+            //unused_jokers.Add(new Tile(GameTable.BLACK_COLOR, 0));
 
         }
 
@@ -128,6 +129,8 @@ namespace rummikubGame
 
         public void GetAllTiles(ref List<Tile> all_tiles, ref List<Tile> jokers)
         {
+            jokers = new List<Tile>(unused_jokers);
+
             // adding hand to all_tiles
             for (int j = 0; j < hand.Count(); j++)
             {
