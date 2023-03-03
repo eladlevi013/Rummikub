@@ -136,7 +136,7 @@ namespace rummikubGame
             // vars for finding the best option
             List<Tile> better_option_hand = board.hand;
             List<List<Tile>> better_option_sequences = board.sequences;
-            List<Tile> starting_jokers = board.unused_jokers;
+            List<Tile> starting_jokers = board.GetAllJokers();
 
             bool better_option_found = false;
             Tile optimal_dropped_tile = null;
@@ -146,7 +146,8 @@ namespace rummikubGame
             {
                 // all the tiles that are not jokers
                 List<Tile> all_tiles = new List<Tile>();
-                List<Tile> jokers = new List<Tile>(starting_jokers);
+                List<Tile> jokers = new List<Tile>();
+
                 board.GetAllTiles(ref all_tiles, ref jokers);
 
                 // the tile that is being replaced by the given parameter
