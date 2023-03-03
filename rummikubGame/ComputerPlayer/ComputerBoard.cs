@@ -17,7 +17,7 @@ namespace rummikubGame
         const int STARTING_SEQUENCES_Y_LOCATION_COMPUTER_TILES = 185;
         const int SECOND_SEQUENCES_X_LOCATION_COMPUTER_TILES = 300;
         const int SECOND_SEQUENCES_Y_LOCATION_COMPUTER_TILES = 170;
-        const int X_SPACE_BETWEEN_COMPUTER_TILES = 40;
+        const int X_SPACE_BETWEEN_COMPUTER_TILES = 32;
         const int Y_SPACE_BETWEEN_SEQUENCES = 50;
 
         // variables of the board
@@ -51,7 +51,7 @@ namespace rummikubGame
             string str = "";
 
             // fills the tiles list
-
+            /*
             for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
             {
                 // change this
@@ -68,30 +68,25 @@ namespace rummikubGame
                     hand.Add(tile);
                 }
             }
-
+            */
 
             // GameTable.global_current_pool_size_lbl.Text = str;
-            /*
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 10));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 9));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 2));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 4));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 5));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 12));
 
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 2));
-            hand.Add(new Tile(GameTable.BLUE_COLOR, 4));
             hand.Add(new Tile(GameTable.BLUE_COLOR, 1));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 12));
 
-            unused_jokers.Add(new Tile(GameTable.BLACK_COLOR, 0));
-            unused_jokers.Add(new Tile(GameTable.RED_COLOR, 0));
+            hand.Add(new Tile(GameTable.RED_COLOR, 1));
+            hand.Add(new Tile(GameTable.RED_COLOR, 2));
+            hand.Add(new Tile(GameTable.RED_COLOR, 11));
+            hand.Add(new Tile(GameTable.RED_COLOR, 12));
 
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 10));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 4));
             hand.Add(new Tile(GameTable.BLACK_COLOR, 12));
-            hand.Add(new Tile(GameTable.BLACK_COLOR, 13));
-
-            hand.Add(new Tile(GameTable.RED_COLOR, 8));
-            hand.Add(new Tile(GameTable.RED_COLOR, 6));
-
-            hand.Add(new Tile(GameTable.YELLOW_COLOR, 6));
-            */
         }
 
         public List<Tile> GetAllJokers()
@@ -268,7 +263,7 @@ namespace rummikubGame
         {
             // draws the given tile at the given location
             Button tileButton = new Button();
-            tileButton.Size = new Size(35, 40);
+            tileButton.Size = new Size(29, 40);
             tileButton.BackgroundImageLayout = ImageLayout.Stretch;
             tileButton.FlatStyle = FlatStyle.Flat;
             tileButton.FlatAppearance.BorderSize = 0;
@@ -298,7 +293,7 @@ namespace rummikubGame
             }
 
 
-            tileButton.Font = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
+            tileButton.Font = new Font("Microsoft Sans Serif", 8, FontStyle.Bold);
             drawn_computer_cards.Add(tileButton);
             GameTable.global_gametable_context.Controls.Add(drawn_computer_cards[drawn_computer_cards.Count() - 1]);
             tileButton.BringToFront();
