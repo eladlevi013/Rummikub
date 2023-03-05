@@ -17,7 +17,7 @@ namespace rummikubGame
             board.sequences = MeldsSets(ref board.hand, ref board.unused_jokers);
             
             // removing jokers that are in sequences
-            UpdatingUnusedJokers();
+            UpdatingUnusedJokers(ref board.unused_jokers, ref board.sequences);
             board.partial_sets = CreatePartialSets(ref board.hand);
             AddJokersAfterMeldsSets(ref board.partial_sets, ref board.sequences, ref board.unused_jokers);
 
@@ -31,21 +31,21 @@ namespace rummikubGame
         /// deleting from board.jokers the jokers that are in the sequences
         /// </summary>
         // ---------------------------------------------------------
-        public void UpdatingUnusedJokers()
+        public void UpdatingUnusedJokers(ref List<Tile> jokers, ref List<List<Tile>> sequences)
         {
             List<Tile> tiles_to_remove = new List<Tile>();
 
-            for (int i = 0; i < board.unused_jokers.Count(); i++)
+            for (int i = 0; i < jokers.Count(); i++)
             {
-                for (int j = 0; j < board.sequences.Count(); j++)
+                for (int j = 0; j < sequences.Count(); j++)
                 {
-                    for (int k = 0; k < board.sequences[j].Count(); k++)
+                    for (int k = 0; k < sequences[j].Count(); k++)
                     {
                         // if the joker is in the sequence - add it to the values list
-                        if (board.unused_jokers[i].getNumber() == board.sequences[j][k].getNumber()
-                            && board.unused_jokers[i].getColor() == board.sequences[j][k].getColor())
+                        if (jokers[i].getNumber() == sequences[j][k].getNumber()
+                            && jokers[i].getColor() == sequences[j][k].getColor())
                         {
-                            tiles_to_remove.Add(board.unused_jokers[i]);
+                            tiles_to_remove.Add(jokers[i]);
                         }
                     }
                 }
@@ -53,7 +53,7 @@ namespace rummikubGame
 
             // removing used jokers
             for (int i = 0; i < tiles_to_remove.Count; i++)
-                board.unused_jokers.Remove(tiles_to_remove[i]);
+                jokers.Remove(tiles_to_remove[i]);
         }
 
         // ---------------------------------------------------------
@@ -140,6 +140,7 @@ namespace rummikubGame
             // vars for finding the best option
             List<Tile> better_option_hand = board.hand;
             List<List<Tile>> better_option_sequences = board.sequences;
+            List<PartialSet> better_option_partial_sets = board.partial_sets;
             List<Tile> starting_jokers = board.GetAllJokers();
 
             bool better_option_found = false;
@@ -171,6 +172,8 @@ namespace rummikubGame
                 List<List<Tile>> temp_sequences = MeldsSets(ref all_tiles, ref jokers);
                 List<Tile> temp_hand = new List<Tile>(all_tiles);
 
+                UpdatingUnusedJokers(ref jokers, ref temp_sequences);
+
                 List<PartialSet> temp_partial_set = CreatePartialSets(ref temp_hand);
                 AddJokersAfterMeldsSets(ref temp_partial_set, ref temp_sequences, ref jokers);
 
@@ -179,6 +182,7 @@ namespace rummikubGame
                 {
                     better_option_sequences = temp_sequences;
                     better_option_hand = temp_hand;
+                    better_option_partial_sets = temp_partial_set;
                     optimal_dropped_tile = dropped_tile;
                     better_option_found = true;
                 }
@@ -193,11 +197,12 @@ namespace rummikubGame
 
                 // updating unused jokers
                 board.unused_jokers = new List<Tile>(starting_jokers);
-                UpdatingUnusedJokers();
+                UpdatingUnusedJokers(ref board.unused_jokers, ref board.sequences);
 
                 // create partial sets from the given hand
-                board.partial_sets = new List<PartialSet>();
-                board.partial_sets = CreatePartialSets(ref board.hand);
+                board.partial_sets = better_option_partial_sets;
+                //board.partial_sets = new List<PartialSet>();
+                //board.partial_sets = CreatePartialSets(ref board.hand);
 
                 AddJokersAfterMeldsSets(ref board.partial_sets, ref board.sequences, ref board.unused_jokers);
 
@@ -773,64 +778,48 @@ namespace rummikubGame
                     }
                 }
 
-                for(int i=0; i < partial_set.Count() &&  best_runs_indexes.Count() > 0 && jokers.Count() > 0; i++)
+                // Remove elements from partial_set that correspond to indexes in best_runs_indexes
+                for (int i = best_runs_indexes.Count - 1; i >= 0 && jokers.Count() > 0; i--)
                 {
                     // adding to sequences
-                    sequences.Add(new List<Tile>() 
-                    {
-                        partial_set[best_runs_indexes[i]].Tile1,
-                        jokers[0],
-                        partial_set[best_runs_indexes[i]].Tile2, 
-                    });
+                    List<Tile> temp_list = new List<Tile>();
+                    temp_list.Add(partial_set[best_runs_indexes[i]].Tile1);
+                    temp_list.Add(jokers[0]);
+                    temp_list.Add(partial_set[best_runs_indexes[i]].Tile2);
+                    sequences.Add(temp_list);
 
-                    // removing joker
-                    jokers.RemoveAt(0);
-
-                    // removing partial set
                     partial_set.RemoveAt(best_runs_indexes[i]);
-                    best_runs_indexes.RemoveAt(i);
-                    i--;
+                    jokers.RemoveAt(0);
                 }
 
-                for (int i = 0; i < partial_set.Count() && runs_indexes.Count() > 0 && jokers.Count() > 0; i++)
+                // Remove elements from partial_set that correspond to indexes in best_runs_indexes
+                for (int i = runs_indexes.Count - 1; i >= 0 && jokers.Count() > 0; i--)
                 {
                     // adding to sequences
-                    sequences.Add(new List<Tile>()
-                    {
-                        partial_set[runs_indexes[i]].Tile1,
-                        partial_set[runs_indexes[i]].Tile2,
-                        jokers[0],
+                    List<Tile> temp_list = new List<Tile>();
+                    temp_list.Add(partial_set[runs_indexes[i]].Tile1);
+                    temp_list.Add(partial_set[runs_indexes[i]].Tile2);
+                    temp_list.Add(jokers[0]);
+                    sequences.Add(temp_list);
 
-                    });
-
-                    // removing joker
-                    jokers.RemoveAt(0);
-
-                    // removing partial set
                     partial_set.RemoveAt(runs_indexes[i]);
-                    runs_indexes.RemoveAt(i);
-                    i--;
+                    jokers.RemoveAt(0);
                 }
 
-                for (int i = 0; i < partial_set.Count() && groups_indexes.Count() > 0 && jokers.Count() > 0; i++)
+                // Remove elements from partial_set that correspond to indexes in best_runs_indexes
+                for (int i = groups_indexes.Count - 1; i >= 0 && jokers.Count() > 0; i--)
                 {
                     // adding to sequences
-                    sequences.Add(new List<Tile>()
-                    {
-                        partial_set[groups_indexes[i]].Tile1,
-                        partial_set[groups_indexes[i]].Tile2,
-                        jokers[0],
+                    List<Tile> temp_list = new List<Tile>();
+                    temp_list.Add(partial_set[groups_indexes[i]].Tile1);
+                    temp_list.Add(partial_set[groups_indexes[i]].Tile2);
+                    temp_list.Add(jokers[0]);
+                    sequences.Add(temp_list);
 
-                    });
-
-                    // removing joker
-                    jokers.RemoveAt(0);
-
-                    // removing partial set
                     partial_set.RemoveAt(groups_indexes[i]);
-                    groups_indexes.RemoveAt(i);
-                    i--;
+                    jokers.RemoveAt(0);
                 }
+
             }
         }
     }
