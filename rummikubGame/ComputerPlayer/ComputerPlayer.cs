@@ -750,14 +750,14 @@ namespace rummikubGame
         // ------------------------------------------------------------------------------------------------
         public void AddJokersAfterMeldsSets(ref List<PartialSet> partial_set, ref List<List<Tile>> sequences, ref List<Tile> jokers)
         {
-            JokerCompletePartialSet(ref partial_set, ref sequences, ref jokers);
+           JokerCompletePartialSet(ref partial_set, ref sequences, ref jokers);
         }
 
         public void JokerCompletePartialSet(ref List<PartialSet> partial_set, ref List<List<Tile>> sequences, ref List<Tile> jokers)
         {
-            List<int> best_runs_indexes = new List<int>();
-            List<int> runs_indexes = new List<int>();
-            List<int> groups_indexes = new List<int>();
+            List<PartialSet> best_runs_values = new List<PartialSet>();
+            List<PartialSet> runs_values = new List<PartialSet>();
+            List<PartialSet> groups_values = new List<PartialSet>();
 
             // classifing partial sets
             if (partial_set.Count() > 0)
@@ -766,60 +766,59 @@ namespace rummikubGame
                 {
                     if (partial_set[i].Tile2.getNumber() - partial_set[i].Tile1.getNumber() == 2)
                     {
-                        best_runs_indexes.Add(i);
+                        best_runs_values.Add(partial_set[i]);
                     }
                     else if (partial_set[i].Tile2.getNumber() - partial_set[i].Tile1.getNumber() == 1)
                     {
-                        runs_indexes.Add(i);
+                        runs_values.Add(partial_set[i]);
                     }
                     else
                     {
-                        groups_indexes.Add(i);
+                        groups_values.Add(partial_set[i]);
                     }
                 }
 
-                // Remove elements from partial_set that correspond to indexes in best_runs_indexes
-                for (int i = best_runs_indexes.Count - 1; i >= 0 && jokers.Count() > 0; i--)
+                // Removing partial sets that can be completed with jokers
+                for(int i=0; i < best_runs_values.Count() && jokers.Count() > 0; i++)
                 {
                     // adding to sequences
                     List<Tile> temp_list = new List<Tile>();
-                    temp_list.Add(partial_set[best_runs_indexes[i]].Tile1);
+                    temp_list.Add(best_runs_values[i].Tile1);
                     temp_list.Add(jokers[0]);
-                    temp_list.Add(partial_set[best_runs_indexes[i]].Tile2);
+                    temp_list.Add(best_runs_values[i].Tile2);
                     sequences.Add(temp_list);
 
-                    partial_set.RemoveAt(best_runs_indexes[i]);
+                    partial_set.Remove(best_runs_values[i]);
                     jokers.RemoveAt(0);
                 }
 
-                // Remove elements from partial_set that correspond to indexes in best_runs_indexes
-                for (int i = runs_indexes.Count - 1; i >= 0 && jokers.Count() > 0; i--)
+                // Removing partial sets that can be completed with jokers
+                for (int i = 0; i < runs_values.Count() && jokers.Count() > 0; i++)
                 {
                     // adding to sequences
                     List<Tile> temp_list = new List<Tile>();
-                    temp_list.Add(partial_set[runs_indexes[i]].Tile1);
-                    temp_list.Add(partial_set[runs_indexes[i]].Tile2);
+                    temp_list.Add(runs_values[i].Tile1);
+                    temp_list.Add(runs_values[i].Tile2);
                     temp_list.Add(jokers[0]);
                     sequences.Add(temp_list);
 
-                    partial_set.RemoveAt(runs_indexes[i]);
+                    partial_set.Remove(runs_values[i]);
                     jokers.RemoveAt(0);
                 }
 
-                // Remove elements from partial_set that correspond to indexes in best_runs_indexes
-                for (int i = groups_indexes.Count - 1; i >= 0 && jokers.Count() > 0; i--)
+                // Removing partial sets that can be completed with jokers
+                for (int i = 0; i < groups_values.Count() && jokers.Count() > 0; i++)
                 {
                     // adding to sequences
                     List<Tile> temp_list = new List<Tile>();
-                    temp_list.Add(partial_set[groups_indexes[i]].Tile1);
-                    temp_list.Add(partial_set[groups_indexes[i]].Tile2);
+                    temp_list.Add(groups_values[i].Tile1);
                     temp_list.Add(jokers[0]);
+                    temp_list.Add(groups_values[i].Tile2);
                     sequences.Add(temp_list);
 
-                    partial_set.RemoveAt(groups_indexes[i]);
+                    partial_set.Remove(groups_values[i]);
                     jokers.RemoveAt(0);
                 }
-
             }
         }
     }
