@@ -54,41 +54,41 @@ namespace rummikubGame
             string str = "";
 
             // fills the tiles list
-            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
-            {
-                // change this
-                Tile tile = GameTable.pool.getTile();
+            //for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
+            //{
+            //    // change this
+            //    Tile tile = GameTable.pool.getTile();
 
-                str += "tile: " + i + "num:" + tile.getNumber() + "color: " + tile.getColor() + "\n";
+            //    str += "tile: " + i + "num:" + tile.getNumber() + "color: " + tile.getColor() + "\n";
 
-                if (tile.getNumber() == 0)
-                {
-                    unused_jokers.Add(tile);
-                }
-                else
-                {
-                    hand.Add(tile);
-                }
-            }
+            //    if (tile.getNumber() == 0)
+            //    {
+            //        unused_jokers.Add(tile);
+            //    }
+            //    else
+            //    {
+            //        hand.Add(tile);
+            //    }
+            //}
 
             // GameTable.global_current_pool_size_lbl.Text = str;
 
-            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 8));
-            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 9));
-            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 10));
-            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 12));
-            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 13));
-            //unused_jokers.Add(new Tile(GameTable.BLACK_COLOR, 0));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 3));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 4));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 5));
+            unused_jokers.Add(new Tile(GameTable.BLACK_COLOR, 0));
 
-            //// hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            // hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
         }
 
         // ---------------------------------------------------------
