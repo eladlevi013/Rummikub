@@ -18,7 +18,7 @@ namespace rummikubGame
             
             // removing jokers that are in sequences
             UpdatingUnusedJokers(ref board.unused_jokers, ref board.sequences);
-            board.partial_sets = CreatePartialSets(ref board.hand);
+            board.partial_sets = board.CreatePartialSets(ref board.hand);
             AddJokersAfterMeldsSets(ref board.partial_sets, ref board.sequences, ref board.unused_jokers);
 
             // takes care of the graphical board of the computer
@@ -54,80 +54,6 @@ namespace rummikubGame
             // removing used jokers
             for (int i = 0; i < tiles_to_remove.Count; i++)
                 jokers.Remove(tiles_to_remove[i]);
-        }
-
-        // ---------------------------------------------------------
-        /// <summary>
-        /// creates partial sets from the given hand
-        /// </summary>
-        /// <param></param>
-        // ---------------------------------------------------------
-        public List<PartialSet> CreatePartialSets(ref List<Tile> hand)
-        {
-            List<PartialSet> partial_sets = new List<PartialSet>();
-            List<int> indexes = new List<int>();
-
-            // find runs
-            for (int i = 0; i < hand.Count(); i++)
-            {
-                for (int j = 0; j < hand.Count(); j++)
-                {
-                    Tile tile1 = hand[i];
-                    Tile tile2 = hand[j];
-
-                    if (i != j && (Math.Abs(tile1.getNumber() - tile2.getNumber()) == 1
-                        && tile1.getColor() == tile2.getColor()))
-                    {
-                        if (!indexes.Contains(i) && !indexes.Contains(j))
-                        {
-                            // create partial set
-                            PartialSet partialSet = new PartialSet(tile1, tile2);
-                            partialSet.SortPartialSet();
-                            partial_sets.Add(partialSet);
-
-                            // add the indexes of the tiles that are in the partial set
-                            indexes.Add(i);
-                            indexes.Add(j);
-                        }
-                    }
-                }
-            }
-
-            // find groups
-            for (int i = 0; i < hand.Count(); i++)
-            {
-                for (int j = 0; j < hand.Count(); j++)
-                {
-                    Tile tile1 = hand[i];
-                    Tile tile2 = hand[j];
-                    if (i != j && (tile1.getNumber() == tile2.getNumber() && tile1.getColor() != tile2.getColor()) ||
-                    ((Math.Abs(tile1.getNumber() - tile2.getNumber()) == 2 || Math.Abs(tile1.getNumber() - tile2.getNumber()) == 1)
-                    && tile1.getColor() == tile2.getColor()))
-                    {
-                        if (!indexes.Contains(i) && !indexes.Contains(j))
-                        {
-                            partial_sets.Add(new PartialSet(tile1, tile2));
-                            indexes.Add(i);
-                            indexes.Add(j);
-                        }
-                    }
-                }
-            }
-
-            // duplicating the hand
-            List<Tile> temp_hand = new List<Tile>();
-            for (int i = 0; i < hand.Count(); i++)
-            {
-                temp_hand.Add(hand[i]);
-            }
-
-            // remove the tiles that are in partial sets
-            for (int i = 0; i < indexes.Count(); i++)
-            {
-                hand.Remove(temp_hand[indexes[i]]);
-            }
-
-            return partial_sets;
         }
 
         // ---------------------------------------------------------
@@ -174,7 +100,7 @@ namespace rummikubGame
 
                 UpdatingUnusedJokers(ref jokers, ref temp_sequences);
 
-                List<PartialSet> temp_partial_set = CreatePartialSets(ref temp_hand);
+                List<PartialSet> temp_partial_set = board.CreatePartialSets(ref temp_hand);
                 AddJokersAfterMeldsSets(ref temp_partial_set, ref temp_sequences, ref jokers);
 
                 // check current situation is better than the optimal
@@ -218,6 +144,7 @@ namespace rummikubGame
                 // returns true because better option found
                 return (true);
             }
+            // board.partial_sets = CreatePartialSets(ref board.hand);
             return (false);
         }
 
@@ -253,7 +180,6 @@ namespace rummikubGame
                         }
 
                         // board.partial_sets = CreatePartialSets(ref board.hand);
-
                         // AddJokers();
 
                         if (board.hand.Count() > 0)
@@ -327,6 +253,9 @@ namespace rummikubGame
                     }
                 }
             }
+
+            // updating partial-set after taking tiles
+            board.partial_sets = board.CreatePartialSets(ref board.hand, board.partial_sets);
 
             // done in both cases(better option or not)
             GameTable.current_turn = GameTable.HUMAN_PLAYER_TURN;

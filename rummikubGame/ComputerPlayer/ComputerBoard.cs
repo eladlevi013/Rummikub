@@ -20,6 +20,9 @@ namespace rummikubGame
         const int X_SPACE_BETWEEN_COMPUTER_TILES = 32;
         const int Y_SPACE_BETWEEN_SEQUENCES = 50;
 
+        // board consts
+        const List<PartialSet> PARTIAL_SET_VAR_PASSED = null;
+
         // variables of the board
         public List<Tile> hand;
         public List<PartialSet> partial_sets;
@@ -73,21 +76,98 @@ namespace rummikubGame
             //hand.Add(new Tile(GameTable.YELLOW_COLOR, 8));
             //hand.Add(new Tile(GameTable.YELLOW_COLOR, 9));
             //hand.Add(new Tile(GameTable.YELLOW_COLOR, 10));
-            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 11));
-
-            //hand.Add(new Tile(GameTable.BLACK_COLOR, 7));
-            //hand.Add(new Tile(GameTable.RED_COLOR, 7));
+            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 12));
+            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 13));
             //unused_jokers.Add(new Tile(GameTable.BLACK_COLOR, 0));
 
-            //hand.Add(new Tile(GameTable.BLACK_COLOR, 5));
-            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 5));
-            //unused_jokers.Add(new Tile(GameTable.RED_COLOR, 0));
-
-            //hand.Add(new Tile(GameTable.BLACK_COLOR, 1));
-            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 1));
-
-            //hand.Add(new Tile(GameTable.BLACK_COLOR, 11));
+            //// hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
             //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+        }
+
+        // ---------------------------------------------------------
+        /// <summary>
+        /// creates partial sets from the given hand
+        /// </summary>
+        /// <param></param>
+        // ---------------------------------------------------------
+        public List<PartialSet> CreatePartialSets(ref List<Tile> hand, List<PartialSet> existing_partial_set = PARTIAL_SET_VAR_PASSED)
+        {
+            if (existing_partial_set == PARTIAL_SET_VAR_PASSED)
+            {
+                existing_partial_set = new List<PartialSet>();
+            }
+
+            List<PartialSet> partial_sets = existing_partial_set;
+            List<int> indexes = new List<int>();
+
+            // find runs
+            for (int i = 0; i < hand.Count(); i++)
+            {
+                for (int j = 0; j < hand.Count(); j++)
+                {
+                    Tile tile1 = hand[i];
+                    Tile tile2 = hand[j];
+
+                    if (i != j && (Math.Abs(tile1.getNumber() - tile2.getNumber()) == 1
+                        && tile1.getColor() == tile2.getColor()))
+                    {
+                        if (!indexes.Contains(i) && !indexes.Contains(j))
+                        {
+                            // create partial set
+                            PartialSet partialSet = new PartialSet(tile1, tile2);
+                            partialSet.SortPartialSet();
+                            partial_sets.Add(partialSet);
+
+                            // add the indexes of the tiles that are in the partial set
+                            indexes.Add(i);
+                            indexes.Add(j);
+                        }
+                    }
+                }
+            }
+
+            // find groups
+            for (int i = 0; i < hand.Count(); i++)
+            {
+                for (int j = 0; j < hand.Count(); j++)
+                {
+                    Tile tile1 = hand[i];
+                    Tile tile2 = hand[j];
+                    if (i != j && (tile1.getNumber() == tile2.getNumber() && tile1.getColor() != tile2.getColor()) ||
+                    ((Math.Abs(tile1.getNumber() - tile2.getNumber()) == 2 || Math.Abs(tile1.getNumber() - tile2.getNumber()) == 1)
+                    && tile1.getColor() == tile2.getColor()))
+                    {
+                        if (!indexes.Contains(i) && !indexes.Contains(j))
+                        {
+                            partial_sets.Add(new PartialSet(tile1, tile2));
+                            indexes.Add(i);
+                            indexes.Add(j);
+                        }
+                    }
+                }
+            }
+
+            // duplicating the hand
+            List<Tile> temp_hand = new List<Tile>();
+            for (int i = 0; i < hand.Count(); i++)
+            {
+                temp_hand.Add(hand[i]);
+            }
+
+            // remove the tiles that are in partial sets
+            for (int i = 0; i < indexes.Count(); i++)
+            {
+                hand.Remove(temp_hand[indexes[i]]);
+            }
+
+            return partial_sets;
         }
 
         public List<Tile> GetAllJokers()
