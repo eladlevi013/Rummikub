@@ -763,8 +763,8 @@ namespace rummikubGame
                     if (sequences[i][sequences[i].Count() - 1].getNumber() + 2 == hand[j].getNumber()
                         && sequences[i][sequences[i].Count() - 1].getColor() == hand[j].getColor())
                     {
-                        sequences[i].Insert(0, unused_jokers[0]);
-                        sequences[i].Insert(0, hand[j]);
+                        sequences[i].Add(unused_jokers[0]);
+                        sequences[i].Add(hand[j]);
 
                         // Removing used joker and tile from hand
                         unused_jokers.RemoveAt(0);
@@ -774,8 +774,8 @@ namespace rummikubGame
                     else if (sequences[i][0].getNumber() - 2 == hand[j].getNumber()
                         && sequences[i][0].getColor() == hand[j].getColor())
                     {
-                        sequences[i].Add(unused_jokers[0]);
-                        sequences[i].Add(hand[j]);
+                        sequences[i].Insert(0, unused_jokers[0]);
+                        sequences[i].Insert(0, hand[j]);
 
                         // Removing used joker and tile from hand
                         unused_jokers.RemoveAt(0);
