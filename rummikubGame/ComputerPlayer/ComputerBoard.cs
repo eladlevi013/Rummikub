@@ -54,41 +54,44 @@ namespace rummikubGame
             string str = "";
 
             // fills the tiles list
-            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
-            {
-                // change this
-                Tile tile = GameTable.pool.getTile();
+            //for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
+            //{
+            //    // change this
+            //    Tile tile = GameTable.pool.getTile();
 
-                str += "tile: " + i + "num:" + tile.getNumber() + "color: " + tile.getColor() + "\n";
+            //    str += "tile: " + i + "num:" + tile.getNumber() + "color: " + tile.getColor() + "\n";
 
-                if (tile.getNumber() == 0)
-                {
-                    unused_jokers.Add(tile);
-                }
-                else
-                {
-                    hand.Add(tile);
-                }
-            }
+            //    if (tile.getNumber() == 0)
+            //    {
+            //        unused_jokers.Add(tile);
+            //    }
+            //    else
+            //    {
+            //        hand.Add(tile);
+            //    }
+            //}
 
             // GameTable.global_current_pool_size_lbl.Text = str;
 
-            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 3));
-            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 4));
-            //hand.Add(new Tile(GameTable.YELLOW_COLOR, 5));
-            //unused_jokers.Add(new Tile(GameTable.BLACK_COLOR, 0));
+            unused_jokers.Add(new Tile(GameTable.RED_COLOR, 0));
+            // hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
 
-            //// hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-            //hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
+            hand.Add(new Tile(GameTable.BLACK_COLOR, 7));
+
+            hand.Add(new Tile(GameTable.RED_COLOR, 5));
+            hand.Add(new Tile(GameTable.RED_COLOR, 7));
+
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 10));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 11));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 12));
+            hand.Add(new Tile(GameTable.YELLOW_COLOR, 5));
+
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 11));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 12));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 13));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 3));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 5));
+            hand.Add(new Tile(GameTable.BLUE_COLOR, 7));
         }
 
         // ---------------------------------------------------------
@@ -340,6 +343,12 @@ namespace rummikubGame
                     curr_x_location_drawing_point += X_SPACE_BETWEEN_COMPUTER_TILES;
                 }
             }
+        }
+
+        public bool IsRun(List<Tile> sequence)
+        {
+            // assuming valid sequence
+            return sequence[0].getColor() == sequence[1].getColor();
         }
 
         public void drawSingleComputerCard(Tile tile, Point point)

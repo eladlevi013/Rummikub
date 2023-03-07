@@ -403,10 +403,9 @@ namespace rummikubGame
                 sequences_temp.Add(new List<Tile>(sequences[i]));
             }
 
+            // jokers
             if (jokers.Count() > 0)
             {
-                // jokers part
-                // find run partialSet
                 List<PartialSet> runPartialSets = new List<PartialSet>();
                 List<int> indexes = new List<int>();
 
@@ -430,20 +429,6 @@ namespace rummikubGame
                         }
                     }
                 }
-            
-
-                // duplicating the board.hand
-                //List<Tile> temp = new List<Tile>();
-                //for (int i = 0; i < hand_temp.Count(); i++)
-                //{
-                //    temp.Add(hand_temp[i]);
-                //}
-
-                //// remove the tiles that are in partial sets
-                //for (int i = 0; i < indexes.Count(); i++)
-                //{
-                //    hand_temp.Remove(temp[indexes[i]]);
-                //}
 
                 List<Tile> hand_temp_complete = new List<Tile>(hand_temp);
                 List<Tile>[] color_sorted_hand_complete = new List<Tile>[4];
@@ -554,13 +539,6 @@ namespace rummikubGame
                 }
             }
 
-
-
-
-
-
-
-
             ExtendSets(ref sequences_temp, ref hand_temp);
             ExtendSets(ref best_sequences, ref best_hand);
 
@@ -568,11 +546,6 @@ namespace rummikubGame
             if (hand_temp.Count() < best_hand.Count())
             {
                 best_sequences = sequences_temp;
-
-                //List<Tile> temp_hand = new List<Tile>();
-                //temp_hand.AddRange(color_sorted_hand[0]); temp_hand.AddRange(color_sorted_hand[1]); temp_hand.AddRange(color_sorted_hand[2]); temp_hand.AddRange(color_sorted_hand[3]);
-                //temp_hand = temp_hand.OrderBy(card => card.getNumber()).ToList();
-
                 best_hand = hand_temp;
             }
             else if (hand_temp.Count() == best_hand.Count())
@@ -677,7 +650,6 @@ namespace rummikubGame
             return;
         }
 
-        // ------------------------------------------------------------------------------------------------
         public void AddJokersAfterMeldsSets(ref List<PartialSet> partial_set, ref List<List<Tile>> sequences, ref List<Tile> jokers, ref List<Tile> hand)
         {
            JokerCompletePartialSet(ref partial_set, ref sequences, ref jokers);
@@ -760,27 +732,30 @@ namespace rummikubGame
             {
                 for(int j=0; j< hand.Count() && unused_jokers.Count() > 0; j++)
                 {
-                    if (sequences[i][sequences[i].Count() - 1].getNumber() + 2 == hand[j].getNumber()
-                        && sequences[i][sequences[i].Count() - 1].getColor() == hand[j].getColor())
+                    if (board.IsRun(sequences[i]))
                     {
-                        sequences[i].Add(unused_jokers[0]);
-                        sequences[i].Add(hand[j]);
+                        if (sequences[i][sequences[i].Count() - 1].getNumber() + 2 == hand[j].getNumber()
+                            && sequences[i][sequences[i].Count() - 1].getColor() == hand[j].getColor())
+                        {
+                            sequences[i].Add(unused_jokers[0]);
+                            sequences[i].Add(hand[j]);
 
-                        // Removing used joker and tile from hand
-                        unused_jokers.RemoveAt(0);
-                        hand.RemoveAt(j);
-                        j--;
-                    }
-                    else if (sequences[i][0].getNumber() - 2 == hand[j].getNumber()
-                        && sequences[i][0].getColor() == hand[j].getColor())
-                    {
-                        sequences[i].Insert(0, unused_jokers[0]);
-                        sequences[i].Insert(0, hand[j]);
+                            // Removing used joker and tile from hand
+                            unused_jokers.RemoveAt(0);
+                            hand.RemoveAt(j);
+                            j--;
+                        }
+                        else if (sequences[i][0].getNumber() - 2 == hand[j].getNumber()
+                            && sequences[i][0].getColor() == hand[j].getColor())
+                        {
+                            sequences[i].Insert(0, unused_jokers[0]);
+                            sequences[i].Insert(0, hand[j]);
 
-                        // Removing used joker and tile from hand
-                        unused_jokers.RemoveAt(0);
-                        hand.RemoveAt(j);
-                        j--;
+                            // Removing used joker and tile from hand
+                            unused_jokers.RemoveAt(0);
+                            hand.RemoveAt(j);
+                            j--;
+                        }
                     }
                 }
             }
