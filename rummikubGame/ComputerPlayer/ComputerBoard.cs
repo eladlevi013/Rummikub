@@ -74,18 +74,13 @@ namespace rummikubGame
             // GameTable.global_current_pool_size_lbl.Text = str;
 
             unused_jokers.Add(new Tile(GameTable.RED_COLOR, 0));
-            // hand.Add(new Tile(GameTable.BLUE_COLOR, 8));
-
             hand.Add(new Tile(GameTable.BLACK_COLOR, 7));
-
             hand.Add(new Tile(GameTable.RED_COLOR, 5));
             hand.Add(new Tile(GameTable.RED_COLOR, 7));
-
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 10));
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 11));
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 12));
             hand.Add(new Tile(GameTable.YELLOW_COLOR, 5));
-
             hand.Add(new Tile(GameTable.BLUE_COLOR, 11));
             hand.Add(new Tile(GameTable.BLUE_COLOR, 12));
             hand.Add(new Tile(GameTable.BLUE_COLOR, 13));

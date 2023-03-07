@@ -382,6 +382,50 @@ namespace rummikubGame
              return (result);
         }
 
+        public List<PartialSet> FindRunPartialSets(List<Tile> hand)
+        {
+            List<PartialSet> run_partial_sets = new List<PartialSet>();
+            List<int> indexes = new List<int>();
+            // find runs
+            for (int i = 0; i < hand.Count(); i++)
+            {
+                for (int j = 0; j < hand.Count(); j++)
+                {
+                    Tile tile1 = hand[i];
+                    Tile tile2 = hand[j];
+                    if (i != j && (Math.Abs(tile1.getNumber() - tile2.getNumber()) == 1 && tile1.getColor() == tile2.getColor()))
+                    {
+                        if (!indexes.Contains(i) && !indexes.Contains(j))
+                        {
+                            PartialSet partial_set = new PartialSet(tile1, tile2);
+                            partial_set.SortPartialSet();
+                            run_partial_sets.Add(partial_set);
+                            indexes.Add(i);
+                            indexes.Add(j);
+                        }
+                    }
+                }
+            }
+            return run_partial_sets;
+        }
+
+        public List<Tile>[] CloneColorSortedHand(List<Tile>[] color_sorted_hand)
+        {
+            List<Tile>[] color_sorted_hand_temp = new List<Tile>[4];
+
+            for (int k = 0; k < color_sorted_hand.Length; k++)
+            {
+                color_sorted_hand_temp[k] = new List<Tile>();
+
+                for (int l = 0; l < color_sorted_hand[k].Count(); l++)
+                {
+                    color_sorted_hand_temp[k].Add(color_sorted_hand[k][l]);
+                }
+            }
+
+            return color_sorted_hand_temp;
+        }
+
         // ---------------------------------------------------------
         /// <summary>
         /// finds the optimal way arranging the given tiles
@@ -393,9 +437,9 @@ namespace rummikubGame
         // ---------------------------------------------------------
         public void MeldsSets(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, List<Tile> jokers, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
         {
-            List<Tile> hand_temp = new List<Tile>();
-            hand_temp.AddRange(color_sorted_hand[0]); hand_temp.AddRange(color_sorted_hand[1]); hand_temp.AddRange(color_sorted_hand[2]); hand_temp.AddRange(color_sorted_hand[3]);
-            hand_temp = hand_temp.OrderBy(card => card.getNumber()).ToList();
+            List<Tile> hand = new List<Tile>();
+            hand.AddRange(color_sorted_hand[0]); hand.AddRange(color_sorted_hand[1]); hand.AddRange(color_sorted_hand[2]); hand.AddRange(color_sorted_hand[3]);
+            hand = hand.OrderBy(card => card.getNumber()).ToList();
 
             List<List<Tile>> sequences_temp = new List<List<Tile>>();
             for (int i = 0; i < sequences.Count; i++)
@@ -406,149 +450,73 @@ namespace rummikubGame
             // jokers
             if (jokers.Count() > 0)
             {
-                List<PartialSet> runPartialSets = new List<PartialSet>();
-                List<int> indexes = new List<int>();
+                List<PartialSet> run_partial_sets = FindRunPartialSets(hand);
 
-                // find runs
-                for (int i = 0; i < hand_temp.Count(); i++)
+                // iterating over all the partial sets while searching for a way to meld the jokers
+                for (int i = 0; i < run_partial_sets.Count(); i++)
                 {
-                    for (int j = 0; j < hand_temp.Count(); j++)
+                    for (int j = 0; j < hand.Count(); j++)
                     {
-                        Tile tile1 = hand_temp[i];
-                        Tile tile2 = hand_temp[j];
-                        if (i != j && (Math.Abs(tile1.getNumber() - tile2.getNumber()) == 1 && tile1.getColor() == tile2.getColor()))
+                        if ((run_partial_sets[i].Tile2.getNumber() + 2 == hand[j].getNumber() 
+                            && run_partial_sets[i].Tile2.getColor() == hand[j].getColor())
+                            || (run_partial_sets[i].Tile1.getNumber() - 2 == hand[j].getNumber()
+                            && run_partial_sets[i].Tile1.getColor() == hand[j].getColor()))
                         {
-                            if (!indexes.Contains(i) && !indexes.Contains(j))
-                            {
-                                PartialSet partialSet = new PartialSet(tile1, tile2);
-                                partialSet.SortPartialSet();
-                                runPartialSets.Add(partialSet);
-                                indexes.Add(i);
-                                indexes.Add(j);
-                            }
-                        }
-                    }
-                }
+                            // Clone original color sorted hand
+                            List<Tile>[] color_sorted_hand_temp = CloneColorSortedHand(color_sorted_hand);
 
-                List<Tile> hand_temp_complete = new List<Tile>(hand_temp);
-                List<Tile>[] color_sorted_hand_complete = new List<Tile>[4];
+                            // save the best hand to drop
+                            Tile removed_tile = hand[j];
 
-                for (int i = 0; i < color_sorted_hand.Length; i++)
-                {
-                    color_sorted_hand_complete[i] = new List<Tile>();
-
-                    for (int j = 0; j < color_sorted_hand[i].Count(); j++)
-                    {
-                        color_sorted_hand_complete[i].Add(color_sorted_hand[i][j]);
-                    }
-                }
-
-                // if one of the partialSets has a tile that we are looking for
-                for (int i = 0; i < runPartialSets.Count(); i++)
-                {
-                    // check if tile_temp exists in hand_temp
-                    for (int j = 0; j < hand_temp.Count(); j++)
-                    {
-                        color_sorted_hand = new List<Tile>[4];
-
-                        for (int k = 0; k < color_sorted_hand_complete.Length; k++)
-                        {
-                            color_sorted_hand[k] = new List<Tile>();
-
-                            for (int l = 0; l < color_sorted_hand_complete[k].Count(); l++)
-                            {
-                                color_sorted_hand[k].Add(color_sorted_hand_complete[k][l]);
-                            }
-                        }
-
-                        hand_temp = new List<Tile>(hand_temp_complete);
-
-                        if (runPartialSets[i].Tile2.getNumber() + 2 == hand_temp[j].getNumber() 
-                            && runPartialSets[i].Tile2.getColor() == hand_temp[j].getColor())
-                        {
-                            // add to sequences
+                            // create sequence
                             List<Tile> sequence = new List<Tile>();
-                            sequence.Add(runPartialSets[i].Tile1);
-                            sequence.Add(runPartialSets[i].Tile2);
-                            sequence.Add(jokers[0]);
-                            sequence.Add(hand_temp[j]);
 
-                            // remove tiles we used
-                            Tile temp_tile = hand_temp[j];
-
-                            hand_temp.Remove(runPartialSets[i].Tile1);  
-                            hand_temp.Remove(runPartialSets[i].Tile2);
-                            hand_temp.Remove(temp_tile);
-
-                            // remove tiles we used from color_sorted_hand
-                            color_sorted_hand[runPartialSets[i].Tile1.getColor()].Remove(runPartialSets[i].Tile1);
-                            color_sorted_hand[runPartialSets[i].Tile2.getColor()].Remove(runPartialSets[i].Tile2);
-                            color_sorted_hand[temp_tile.getColor()].Remove(temp_tile);
-
-                            // remove jokers to the next function call
-                            List<Tile> temp_joker_best =  new  List<Tile>(jokers);
-                            temp_joker_best.Remove(jokers[0]);
-
-                            // add to sequences_temp the new sequence(need to be reset because of the recursion in the loop)
-                            sequences_temp = new List<List<Tile>>();
-                            for (int k = 0; k < sequences.Count; k++)
+                            if(run_partial_sets[i].Tile2.getNumber() + 2 == hand[j].getNumber()
+                            && run_partial_sets[i].Tile2.getColor() == hand[j].getColor())
                             {
-                                sequences_temp.Add(new List<Tile>(sequences[k]));
+                                sequence.Add(run_partial_sets[i].Tile1);
+                                sequence.Add(run_partial_sets[i].Tile2);
+                                sequence.Add(jokers[0]);
+                                sequence.Add(removed_tile);
                             }
+                            else if(run_partial_sets[i].Tile1.getNumber() - 2 == hand[j].getNumber()
+                            && run_partial_sets[i].Tile1.getColor() == hand[j].getColor())
+                            {
+                                sequence.Add(removed_tile);
+                                sequence.Add(jokers[0]);
+                                sequence.Add(run_partial_sets[i].Tile1);
+                                sequence.Add(run_partial_sets[i].Tile2);
+                            }
+
+                            // add sequence to sequences
+                            sequences_temp = sequences.GetRange(0, sequences.Count);
                             sequences_temp.Add(sequence);
 
-                            MeldsSets(color_sorted_hand, sequences_temp, temp_joker_best, ref best_sequences, ref best_hand);
-                        }
-                        else if (runPartialSets[i].Tile1.getNumber() - 2 == hand_temp[j].getNumber() 
-                            && runPartialSets[i].Tile1.getColor() == hand_temp[j].getColor())
-                        {
-                            // add to sequences
-                            List<Tile> sequence = new List<Tile>();
-                            sequence.Add(hand_temp[j]);
-                            sequence.Add(jokers[0]);
-                            sequence.Add(runPartialSets[i].Tile1);
-                            sequence.Add(runPartialSets[i].Tile2);
-
-                            // remove tiles we used
-                            Tile temp_tile = hand_temp[j];
-
-                            hand_temp.Remove(runPartialSets[i].Tile1);
-                            hand_temp.Remove(runPartialSets[i].Tile2);
-                            hand_temp.Remove(temp_tile);
-
                             // remove tiles we used from color_sorted_hand
-                            color_sorted_hand[runPartialSets[i].Tile1.getColor()].Remove(runPartialSets[i].Tile1);
-                            color_sorted_hand[runPartialSets[i].Tile2.getColor()].Remove(runPartialSets[i].Tile2);
-                            color_sorted_hand[temp_tile.getColor()].Remove(temp_tile);
+                            color_sorted_hand_temp[run_partial_sets[i].Tile1.getColor()].Remove(run_partial_sets[i].Tile1);
+                            color_sorted_hand_temp[run_partial_sets[i].Tile2.getColor()].Remove(run_partial_sets[i].Tile2);
+                            color_sorted_hand_temp[removed_tile.getColor()].Remove(removed_tile);
 
                             // remove jokers to the next function call
-                            List<Tile> temp_joker_best = new List<Tile>(jokers);
+                            List<Tile> temp_joker_best =  new List<Tile>(jokers);
                             temp_joker_best.Remove(jokers[0]);
 
-                            // add to sequences_temp the new sequence(need to be reset because of the recursion in the loop)
-                            sequences_temp = new List<List<Tile>>();
-                            for (int k = 0; k < sequences.Count; k++)
-                            {
-                                sequences_temp.Add(new List<Tile>(sequences[k]));
-                            }
-                            sequences_temp.Add(sequence);
-
-                            MeldsSets(color_sorted_hand, sequences_temp, temp_joker_best, ref best_sequences, ref best_hand);
+                            MeldsSets(color_sorted_hand_temp, sequences_temp, temp_joker_best, ref best_sequences, ref best_hand);
                         }
                     }
                 }
             }
 
-            ExtendSets(ref sequences_temp, ref hand_temp);
+            ExtendSets(ref sequences_temp, ref hand);
             ExtendSets(ref best_sequences, ref best_hand);
 
             // if current sequences is better, we would like to replace the global sequences and hand vars
-            if (hand_temp.Count() < best_hand.Count())
+            if (hand.Count() < best_hand.Count())
             {
                 best_sequences = sequences_temp;
-                best_hand = hand_temp;
+                best_hand = hand;
             }
-            else if (hand_temp.Count() == best_hand.Count())
+            else if (hand.Count() == best_hand.Count())
             {
                 if (sequences.Count() > best_sequences.Count())
                 {
