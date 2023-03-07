@@ -682,6 +682,7 @@ namespace rummikubGame
         {
            JokerCompletePartialSet(ref partial_set, ref sequences, ref jokers);
            JokerCombineSequencesWithHand(ref sequences, ref jokers, ref hand);
+           JokerExtendSequenceWithJoker(ref jokers, ref sequences);
         }
 
         public void JokerCompletePartialSet(ref List<PartialSet> partial_set, ref List<List<Tile>> sequences, ref List<Tile> jokers)
@@ -782,6 +783,15 @@ namespace rummikubGame
                         j--;
                     }
                 }
+            }
+        }
+
+        public void JokerExtendSequenceWithJoker(ref List<Tile> unused_jokers, ref List<List<Tile>> sequences)
+        {
+            for(int i=0; i < sequences.Count() && unused_jokers.Count() > 0; i++)
+            {
+                sequences[i].Add(unused_jokers[0]);
+                unused_jokers.RemoveAt(0);
             }
         }
     }
