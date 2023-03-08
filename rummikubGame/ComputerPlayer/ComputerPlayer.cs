@@ -23,7 +23,7 @@ namespace rummikubGame
 
             // takes care of the graphical board of the computer
             if (GameTable.global_view_computer_tiles_groupbox.Checked)
-                board.generateBoard();
+                board.GenerateBoard();
         }
 
         // ---------------------------------------------------------
@@ -261,13 +261,13 @@ namespace rummikubGame
             GameTable.current_turn = GameTable.HUMAN_PLAYER_TURN;
             GameTable.global_game_indicator_lbl.Text = GameTable.TAKE_TILE_FROM_POOL_STACK_MSG;
             PlayerBoard.tookCard = false;
-            GameTable.computer_player.board.clearBoard();
+            GameTable.computer_player.board.ClearBoard();
 
             if (GameTable.global_view_computer_tiles_groupbox.Checked == true)
-                GameTable.computer_player.board.generateBoard();
+                GameTable.computer_player.board.GenerateBoard();
 
             // if the game is over, and the computer won
-            if (board.checkWinner() == true && GameTable.game_over == false)
+            if (board.CheckWinner() == true && GameTable.game_over == false)
             {
                 MessageBox.Show("Computer Won!");
                 GameTable.global_game_indicator_lbl.Text = "Game Over - Computer Won";

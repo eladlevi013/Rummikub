@@ -8,8 +8,8 @@ namespace rummikubGame
 {
     public interface Board
     {
-        void generateBoard();
-        void clearBoard();
-        bool checkWinner();
+        void GenerateBoard();
+        void ClearBoard();
+        bool CheckWinner();
     }
 }

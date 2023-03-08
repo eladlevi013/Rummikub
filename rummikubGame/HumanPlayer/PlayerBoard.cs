@@ -39,7 +39,7 @@ namespace rummikubGame
 
         public PlayerBoard()
         {
-            generateBoard();
+            GenerateBoard();
             GameTable.dropped_tiles_stack = new Stack<TileButton>();
         }
 
@@ -314,7 +314,7 @@ namespace rummikubGame
                         TileButtons[(int)current_card.Tag].setSlotLocation(updated_TileButton_location);
                 }
             }
-            if (checkWinner() == true && GameTable.game_over == false)
+            if (CheckWinner() == true && GameTable.game_over == false)
             {
                 MessageBox.Show("You Won!");
                 GameTable.global_game_indicator_lbl.Text = "Game Over - You Won";
@@ -324,7 +324,7 @@ namespace rummikubGame
             }
         }
 
-        public bool checkWinner()
+        public bool CheckWinner()
         {
             List<List<Tile>> melds = meldsArrangedByPlayer();
             return GameTable.checkWinner(melds);
@@ -434,7 +434,7 @@ namespace rummikubGame
             }
         }
 
-        public void generateBoard()
+        public void GenerateBoard()
         {
             int x_location = STARTING_X_LOCATION;
             int y_location = STARTING_Y_LOCATION;
@@ -514,7 +514,7 @@ namespace rummikubGame
             }
         }
 
-        public void clearBoard()
+        public void ClearBoard()
         {
             for (int i = 0; i < TileButtons.Values.ToList().Count(); i++)
             {

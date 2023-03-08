@@ -149,7 +149,7 @@ namespace rummikubGame
             startGameSetTurn();
 
             // if the game is over, and the computer won
-            if (computer_player.board.checkWinner() == true && GameTable.game_over == false)
+            if (computer_player.board.CheckWinner() == true && GameTable.game_over == false)
             {
                 MessageBox.Show("Computer Won!");
                 GameTable.global_game_indicator_lbl.Text = "Game Over - Computer Won";
@@ -344,20 +344,20 @@ namespace rummikubGame
             if (show_computer_tiles_checkbox.Checked == false)
             {
                 computerTiles_groupbox.Visible = false;
-                computer_player.board.clearBoard();
+                computer_player.board.ClearBoard();
             }
             else
             {
                 computerTiles_groupbox.Visible = true;
-                computer_player.board.generateBoard();
+                computer_player.board.GenerateBoard();
             }
         }
 
         private void clearAllTilesFromScreen()
         {
             // Clearning the boards
-            human_player.board.clearBoard();
-            computer_player.board.clearBoard();
+            human_player.board.ClearBoard();
+            computer_player.board.ClearBoard();
 
             // Clearing dropped tiles
             while (GameTable.dropped_tiles_stack.Count > 0)
@@ -458,10 +458,10 @@ namespace rummikubGame
                 }
 
                 // fix to the computer player board
-                computer_player.board.drawn_computer_cards = new List<Button>();
+                computer_player.board.drawn_computer_cards = new List<Label>();
 
                 human_player.board.generateTiles();
-                computer_player.board.generateBoard();
+                computer_player.board.GenerateBoard();
 
                 // changing the labels
                 pool.updatePoolSizeLabel();
