@@ -1,4 +1,5 @@
 ﻿using rummikubGame.Models;
+using rummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,7 +9,7 @@ using System.Windows.Forms;
 namespace rummikubGame
 {
     [Serializable]
-    public class ComputerBoard : Board
+    public class ComputerBoard : IBoard
     {
         // consts
         const int STARTING_HAND_X_LOCATION_COMPUTER_TILES = 50;
@@ -32,7 +33,7 @@ namespace rummikubGame
 
         public int getHandTilesNumber()
         {
-            return GameTable.RUMMIKUB_TILES_IN_GAME - GameTable.computer_player.getNumberOfTilesInAllSets(sequences);
+            return Constants.RUMMIKUB_TILES_IN_GAME - GameTable.computer_player.board.getNumberOfTilesInAllSets(sequences);
         }
 
         public bool CheckWinner()
@@ -50,12 +51,12 @@ namespace rummikubGame
             hand = new List<Tile>();
 
             // fills the tiles list
-            for (int i = 0; i < GameTable.RUMMIKUB_TILES_IN_GAME; i++)
+            for (int i = 0; i < Constants.RUMMIKUB_TILES_IN_GAME; i++)
             {
                 // change this
-                Tile tile = GameTable.pool.getTile();
+                Tile tile = GameTable.pool.GetTile();
 
-                if (tile.getNumber() == 0)
+                if (tile.Number == 0)
                 {
                     unused_jokers.Add(tile);
                 }
@@ -90,8 +91,8 @@ namespace rummikubGame
                     Tile tile1 = hand[i];
                     Tile tile2 = hand[j];
 
-                    if (i != j && (Math.Abs(tile1.getNumber() - tile2.getNumber()) == 1
-                        && tile1.getColor() == tile2.getColor()))
+                    if (i != j && (Math.Abs(tile1.Number - tile2.Number) == 1
+                        && tile1.Color == tile2.Color))
                     {
                         if (!indexes.Contains(i) && !indexes.Contains(j))
                         {
@@ -115,9 +116,9 @@ namespace rummikubGame
                 {
                     Tile tile1 = hand[i];
                     Tile tile2 = hand[j];
-                    if (i != j && (tile1.getNumber() == tile2.getNumber() && tile1.getColor() != tile2.getColor()) ||
-                    ((Math.Abs(tile1.getNumber() - tile2.getNumber()) == 2 || Math.Abs(tile1.getNumber() - tile2.getNumber()) == 1)
-                    && tile1.getColor() == tile2.getColor()))
+                    if (i != j && (tile1.Number == tile2.Number && tile1.Color != tile2.Color) ||
+                    ((Math.Abs(tile1.Number - tile2.Number) == 2 || Math.Abs(tile1.Number - tile2.Number) == 1)
+                    && tile1.Color == tile2.Color))
                     {
                         if (!indexes.Contains(i) && !indexes.Contains(j))
                         {
@@ -152,7 +153,7 @@ namespace rummikubGame
             // adding hand to all_tiles
             for (int j = 0; j < hand.Count(); j++)
             {
-                if (hand[j] != null && hand[j].getNumber() == 0)
+                if (hand[j] != null && hand[j].Number == 0)
                     jokers.Add(hand[j]);
             }
 
@@ -161,7 +162,7 @@ namespace rummikubGame
             {
                 for (int k = 0; k < sequences[j].Count(); k++)
                 {
-                    if (sequences[j][k].getNumber() == 0)
+                    if (sequences[j][k].Number == 0)
                         jokers.Add(sequences[j][k]);
                 }
             }
@@ -169,10 +170,10 @@ namespace rummikubGame
             // adding partial sets to all_tiles
             for (int j = 0; j < partial_sets.Count(); j++)
             {
-                if (partial_sets[j].Tile1.getNumber() == 0)
+                if (partial_sets[j].Tile1.Number == 0)
                     jokers.Add((Tile)partial_sets[j].Tile1);
 
-                if (partial_sets[j].Tile2.getNumber() == 0)
+                if (partial_sets[j].Tile2.Number == 0)
                     jokers.Add((Tile)partial_sets[j].Tile2);
             }
 
@@ -186,7 +187,7 @@ namespace rummikubGame
             // adding hand to all_tiles
             for (int j = 0; j < hand.Count(); j++)
             {
-                if (hand[j] != null && hand[j].getNumber() != 0)
+                if (hand[j] != null && hand[j].Number != 0)
                     all_tiles.Add(hand[j]);
                 else
                     jokers.Add(hand[j]);
@@ -197,7 +198,7 @@ namespace rummikubGame
             {
                 for (int k = 0; k < sequences[j].Count(); k++)
                 {
-                    if (sequences[j][k].getNumber() != 0)
+                    if (sequences[j][k].Number != 0)
                         all_tiles.Add(sequences[j][k]);
                     else
                         jokers.Add(sequences[j][k]);
@@ -207,12 +208,12 @@ namespace rummikubGame
             // adding partial sets to all_tiles
             for (int j = 0; j < partial_sets.Count(); j++)
             {
-                if (partial_sets[j].Tile1.getNumber() != 0)
+                if (partial_sets[j].Tile1.Number != 0)
                     all_tiles.Add((Tile)partial_sets[j].Tile1);
                 else
                     jokers.Add((Tile)partial_sets[j].Tile1);
 
-                if (partial_sets[j].Tile2.getNumber() != 0)
+                if (partial_sets[j].Tile2.Number != 0)
                     all_tiles.Add((Tile)partial_sets[j].Tile2);
                 else
                     jokers.Add((Tile)partial_sets[j].Tile2);
@@ -225,7 +226,7 @@ namespace rummikubGame
             int jokers_in_sequences = unused_jokers.Count();
             for (int i = 0; i < sequences.Count(); i++)
                 for (int j = 0; j < sequences[i].Count(); j++)
-                    if (sequences[i][j].getNumber() == 0)
+                    if (sequences[i][j].Number == 0)
                         jokers_in_sequences++;
 
             return jokers_in_sequences;
@@ -320,7 +321,7 @@ namespace rummikubGame
         public bool IsRun(List<Tile> sequence)
         {
             // assuming valid sequence(group or run)
-            return sequence[0].getColor() == sequence[1].getColor();
+            return sequence[0].Color == sequence[1].Color;
         }
 
         public void DrawComputerTile(Tile tile, Point point)
@@ -330,12 +331,18 @@ namespace rummikubGame
             tilePictureBox.Location = point;
             tilePictureBox.BackColor = Color.FromArgb(247, 211, 184);
             tilePictureBox.TextAlign = ContentAlignment.MiddleCenter;
-            tilePictureBox.Text = tile.getNumber().ToString();
+            tilePictureBox.Text = tile.Number.ToString();
             tilePictureBox.Font = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
-            if (tile.getColor() == 0) tilePictureBox.ForeColor = (Color.Blue);
-            else if (tile.getColor() == 1) tilePictureBox.ForeColor = (Color.Black);
-            else if (tile.getColor() == 2) tilePictureBox.ForeColor = (Color.Yellow);
+            if (tile.Color == 0) tilePictureBox.ForeColor = (Color.Blue);
+            else if (tile.Color == 1) tilePictureBox.ForeColor = (Color.Black);
+            else if (tile.Color == 2) tilePictureBox.ForeColor = (Color.Yellow);
             else tilePictureBox.ForeColor = (Color.Red);
+
+            if (tile.Number == 0)
+            {
+                tilePictureBox.Text = "J";
+                tilePictureBox.Font = new Font("Microsoft Sans Serif", 8, FontStyle.Bold);
+            }
 
             drawn_computer_cards.Add(tilePictureBox);
             GameTable.global_gametable_context.Controls.Add(drawn_computer_cards[drawn_computer_cards.Count() - 1]);
@@ -352,15 +359,56 @@ namespace rummikubGame
         public void GenerateComputerThrownTile(Tile thrownTile)
         {
             if (GameTable.dropped_tiles_stack.Count() > 1)
-                GameTable.dropped_tiles_stack.Peek().setDraggable(false);
+                GameTable.dropped_tiles_stack.Peek().TileButton.SetDraggable(false);
 
             Tile current_tile_from_pool = thrownTile;
-            int[] slot_location = { GameTable.DROPPED_TILE_LOCATION, GameTable.DROPPED_TILE_LOCATION };
+            int[] slot_location = { Constants.DROPPED_TILE_LOCATION, Constants.DROPPED_TILE_LOCATION };
 
-            TileButton computers_thrown_tile = new TileButton(current_tile_from_pool.getColor(), current_tile_from_pool.getNumber(), slot_location);
-            computers_thrown_tile.getTileButton().Location = new Point(GameTable.global_dropped_tiles_btn.Location.X + 10, GameTable.global_dropped_tiles_btn.Location.Y + 18);
+            VisualTile computers_thrown_tile = new VisualTile(current_tile_from_pool.Color, current_tile_from_pool.Number, slot_location);
+            computers_thrown_tile.TileButton.GetButton().Location = new Point(GameTable.global_dropped_tiles_btn.Location.X + 10, GameTable.global_dropped_tiles_btn.Location.Y + 18);
             GameTable.human_player.board.TileDesigner(computers_thrown_tile, current_tile_from_pool, true);
             GameTable.dropped_tiles_stack.Push(computers_thrown_tile);
+        }
+
+        // ---------------------------------------------------------
+        /// <summary>
+        /// deleting from board.jokers the jokers that are in the sequences
+        /// </summary>
+        // ---------------------------------------------------------
+        public void UpdatingUnusedJokers(ref List<Tile> jokers, ref List<List<Tile>> sequences)
+        {
+            List<Tile> tiles_to_remove = new List<Tile>();
+
+            for (int i = 0; i < jokers.Count(); i++)
+            {
+                for (int j = 0; j < sequences.Count(); j++)
+                {
+                    for (int k = 0; k < sequences[j].Count(); k++)
+                    {
+                        // if the joker is in the sequence - add it to the values list
+                        if (jokers[i].Number == sequences[j][k].Number
+                            && jokers[i].Color == sequences[j][k].Color)
+                        {
+                            tiles_to_remove.Add(jokers[i]);
+                        }
+                    }
+                }
+            }
+
+            // removing used jokers
+            for (int i = 0; i < tiles_to_remove.Count; i++)
+                jokers.Remove(tiles_to_remove[i]);
+        }
+
+        public int getNumberOfTilesInAllSets(List<List<Tile>> sequences)
+        {
+            int sum = 0;
+            if (sequences != null)
+            {
+                for (int i = 0; i < sequences.Count(); i++)
+                    sum += sequences[i].Count();
+            }
+            return sum;
         }
     }
 }

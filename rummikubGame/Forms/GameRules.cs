@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using rummikubGame.Utilities;
+using System;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace rummikubGame
 {
     public partial class GameRules : Form
     {
-        // rtf file path
-        public static string RTF_INSTRUCTIONS_PATH = "InstructionsAssets/instructions_rtf.rtf";
+        public static string INSTRUCTIONS_ASSETS_PATH = ConfigurationManager.AppSettings["InstructionsAssetsPath"];
+        public static string RTF_INSTRUCTIONS_PATH = Path.Combine(INSTRUCTIONS_ASSETS_PATH, "instructions_rtf.rtf");
 
         public GameRules()
         {
@@ -25,24 +19,24 @@ namespace rummikubGame
 
         private void GameRules_Load(object sender, EventArgs e)
         {
-            // Set the background color of the form to the color of the header
-            this.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
+            this.BackColor = Constants.BACKGROUND_COLOR;
 
-            // sets design of the close button
-            close_instructions_btn.ForeColor = System.Drawing.ColorTranslator.FromHtml("#000000");
-            close_instructions_btn.BackColor = System.Drawing.ColorTranslator.FromHtml("#383B9A");
+            // Sets design of the close button
+            close_instructions_btn.ForeColor = Color.Black;
+            close_instructions_btn.BackColor = Constants.BACKGROUND_COLOR;
             close_instructions_btn.FlatStyle = FlatStyle.Flat;
             close_instructions_btn.FlatAppearance.BorderSize = 0;
 
-            // changing groupbox color
-            instructions_groupbox.BackColor = System.Drawing.ColorTranslator.FromHtml("#454691");
+            // Changing groupbox color
+            instructions_groupbox.BackColor = Constants.COMPUTER_BOARD_COLOR;
 
             // Define the RTF format for the instructions.
-            instructions_rtf.BackColor = System.Drawing.ColorTranslator.FromHtml("#454691");
+            instructions_rtf.BackColor = Constants.COMPUTER_BOARD_COLOR;
             instructions_rtf.ReadOnly = true;
             instructions_rtf.BorderStyle = BorderStyle.None;
-            instructions_rtf.GotFocus += new EventHandler(instructions_rtf_GotFocus);
+            instructions_rtf.GotFocus += new EventHandler(Instructions_GotFocus);
 
+            // Load the instructions from the RTF file.
             try
             {
                 string rtfContent = File.ReadAllText(RTF_INSTRUCTIONS_PATH);
@@ -55,14 +49,18 @@ namespace rummikubGame
             }
         }
 
-        private void instructions_rtf_GotFocus(object sender, EventArgs e)
+        private void Instructions_GotFocus(object sender, EventArgs e)
         {
+            /* This code is required in order to prevent the user from
+               selecting the text in the instructions_rtf file.
+               the solution is to convert the focus to another element,
+               in this case the close button. */
+            
             close_instructions_btn.Focus();
         }
 
-        private void close_instructions_btn_Click(object sender, EventArgs e)
+        private void CloseInstructions_ButtonClick(object sender, EventArgs e)
         {
-            // close the current form
             this.Close();
         }
     }

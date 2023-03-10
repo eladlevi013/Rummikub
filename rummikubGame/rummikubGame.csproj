@@ -49,6 +49,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -61,17 +62,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DraggableFunctionality\DraggableComponent.cs" />
+    <Compile Include="DraggableFunctionality\Elements\DraggableButton.cs" />
     <Compile Include="Forms\GameRules.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\GameRules.Designer.cs">
       <DependentUpon>GameRules.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\Board.cs" />
+    <Compile Include="Models\IBoard.cs" />
     <Compile Include="ComputerPlayer\ComputerBoard.cs" />
     <Compile Include="HumanPlayer\PlayerBoard.cs" />
     <Compile Include="ComputerPlayer\ComputerPlayer.cs" />
     <Compile Include="HumanPlayer\HumanPlayer.cs" />
+    <Compile Include="DraggableFunctionality\IDraggable.cs" />
     <Compile Include="Models\PartialSet.cs" />
     <Compile Include="Models\Pool.cs" />
     <Compile Include="Models\Tile.cs" />
@@ -82,9 +86,10 @@
     <Compile Include="Forms\GameTable.Designer.cs">
       <DependentUpon>GameTable.cs</DependentUpon>
     </Compile>
-    <Compile Include="Other\Program.cs" />
+    <Compile Include="Program\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Models\TileButton.cs" />
+    <Compile Include="Models\VisualTile.cs" />
+    <Compile Include="Utilities\Constants.cs" />
     <EmbeddedResource Include="Forms\GameRules.resx">
       <DependentUpon>GameRules.cs</DependentUpon>
     </EmbeddedResource>
@@ -96,7 +101,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="Other\packages.config" />
+    <None Include="Config\packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -113,7 +118,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Other\App.config" />
+    <None Include="Config\App.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\Debug\instractions_logo.png" />

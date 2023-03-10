@@ -91,7 +91,7 @@
             this.close_instructions_btn.TabIndex = 10;
             this.close_instructions_btn.Text = "Close Instructions";
             this.close_instructions_btn.UseVisualStyleBackColor = false;
-            this.close_instructions_btn.Click += new System.EventHandler(this.close_instructions_btn_Click);
+            this.close_instructions_btn.Click += new System.EventHandler(this.CloseInstructions_ButtonClick);
             // 
             // GameRules
             // 

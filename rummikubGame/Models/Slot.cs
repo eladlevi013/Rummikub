@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using rummikubGame.Utilities;
+using System;
 using System.Windows.Forms;
 
 namespace rummikubGame
@@ -10,37 +7,26 @@ namespace rummikubGame
     [Serializable]
     public class Slot
     {
-        // consts
-        public const bool AVAILABLE = false;
-        public const bool ALLOCATED = true;
-
         [NonSerialized]
-        private Button slot_button; // the actual button of the slot
-        private bool slot_state; // false-empty, true-not empty
+        private Button slotButton;
+        private bool slotState;
+        
         public Slot()
         {
-            this.slot_state = AVAILABLE;
-            this.slot_button = new Button();
+            slotState = Constants.AVAILABLE;
+            slotButton = new Button();
         }
 
-        public void changeState(bool state)
+        public Button SlotButton
         {
-            this.slot_state = state;
+            get { return slotButton; }
+            set { slotButton = value; }
         }
 
-        public bool getState()
+        public bool SlotState
         {
-            return this.slot_state;
-        }
-
-        public Button getSlotButton()
-        {
-            return this.slot_button;
-        }
-
-        public string ToString()
-        {
-            return "State: " + (this.slot_state) ;
+            get { return slotState; }
+            set { slotState = value; }
         }
     }
 }

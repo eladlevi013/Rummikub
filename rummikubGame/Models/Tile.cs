@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Collections;
 
 namespace rummikubGame
 {
@@ -14,30 +8,27 @@ namespace rummikubGame
         protected int color;
         protected int number;
 
-        public Tile Clone(int color, int number)
-        {
-            return new Tile(color, number);
-        }
-
         public Tile(int color, int number)
         {
             this.color = color;
             this.number = number;
         }
 
-        public int getColor()
+        public Tile Clone(int color, int number)
         {
-            return this.color;
+            return new Tile(color, number);
         }
 
-        public int getNumber()
+        public int Color
         {
-            return this.number;
+            get { return color; }
+            set { color = value; }
         }
 
-        public string ToString()
+        public int Number
         {
-            return "Color: " + this.color + ", Value: " + this.number;
+            get { return number; }
+            set { number = value; }
         }
     }
 }

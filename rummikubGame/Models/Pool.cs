@@ -1,79 +1,66 @@
-﻿using System;
+﻿using rummikubGame.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace rummikubGame
 {
     [Serializable]
     public class Pool
     {
-        // consts
-        public static int NUMBER_OF_TIMES = 2;
-        public static int COLORS_COUNT = 4;
-        public static int N = 13; // numbers range
-
         private Queue<Tile> tilesQueue;
+        
         public Pool()
         {
-            // the creation of the pool
+            tilesQueue = new Queue<Tile>();
             List<Tile> tiles_list = new List<Tile>();
-            for (int times = 0; times < NUMBER_OF_TIMES; times++)
+            
+            for (int times = 0; times < Constants.NUMBER_OF_TIMES; times++)
             {
-                for (int color = 0; color < COLORS_COUNT; color++)
+                for (int color = 0; color < Constants.COLORS_COUNT; color++)
                 {
-                    for (int n = 1; n <= N; n++)
+                    for (int n = 1; n <= Constants.N; n++)
                     {
                         tiles_list.Add(new Tile(color, n));
                     }
                 }
             }
 
-            // add the jokers
-            tiles_list.Add(new Tile(1, 0)); // black Joker added
-            tiles_list.Add(new Tile(3, 0)); // red Joker added
+            // adding jokers
+            tiles_list.Add(new Tile(Constants.BLACK_COLOR, Constants.JOKER_NUMBER));
+            tiles_list.Add(new Tile(Constants.RED_COLOR, Constants.JOKER_NUMBER));
 
-            // make the list of tiles randomized
+            // Shuffeling the tiles
             Random rand = new Random();
-            var randomized_list = tiles_list.OrderBy(c => rand.Next()).ToList();
+            List<Tile> randomized_list = tiles_list.OrderBy(c => rand.Next()).ToList();
 
             // now insert that list into the queue
-            tilesQueue = new Queue<Tile>();
             for(int i=0; i<randomized_list.Count; i++)
             {
                 tilesQueue.Enqueue(randomized_list[i]);
             }
         }
 
-        public Tile getTile()
+        public Tile GetTile()
         {
             // if tilesQueue is done check winner and return null
             if (tilesQueue.Count() == 0)
-            {   
-                // tilesQueue is empty -> tiles are over -> game over -> decide who is the winner(fewer files in hand)
-                if (GameTable.computer_player.board.getHandTilesNumber() == GameTable.human_player.board.getHandTilesNumber())
-                    MessageBox.Show("Tie!");
-                else if (GameTable.computer_player.board.getHandTilesNumber() > GameTable.human_player.board.getHandTilesNumber())
-                    MessageBox.Show("You Won!");
-                else
-                    MessageBox.Show("Computer Won!");
-                GameTable.game_over = true;
-                GameTable.human_player.board.disableHumanBoard();
+            {
+                GameTable.CheckWinnerWhenPoolOver();
                 return null;
             }
-            GameTable.global_current_pool_size_lbl.Text = getPoolSize() - 1 + " tiles in pool"; // minus 1, because we havent removed any tile yet
+
+            // minus 1, because we havent removed any tile yet
+            GameTable.global_current_pool_size_lbl.Text = GetPoolSize() - 1 + " tiles in pool";
             return tilesQueue.Dequeue();
         }
 
-        public void updatePoolSizeLabel()
+        public void UpdatePoolSizeLabel()
         {
-            GameTable.global_current_pool_size_lbl.Text = getPoolSize() + " tiles in pool";
+            GameTable.global_current_pool_size_lbl.Text = GetPoolSize() + " tiles in pool";
         }
 
-        public int getPoolSize()
+        private int GetPoolSize()
         {
             return tilesQueue.Count();
         }
