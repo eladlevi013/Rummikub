@@ -41,6 +41,7 @@ namespace rummikubGame
         public static Label global_current_pool_size_lbl;
         public static Form global_gametable_context; // used in order to add buttons from other classes
         public static Button global_dropped_tiles_btn; // dropped_tiles button, used in the mouseUp
+        public static Button global_pool_btn; // pool_stack button, used in the mouseUp
         public static CheckBox global_view_computer_tiles_groupbox; // groupBox show computer tiles
 
         // global variables
@@ -58,8 +59,8 @@ namespace rummikubGame
         {
             dropped_tiles_stack = new Stack<VisualTile>(); // empty dropped tiles
             pool = new Pool(); // generate rummikub tiles
-            human_player = new HumanPlayer("Player Default Name");
             computer_player = new ComputerPlayer();
+            human_player = new HumanPlayer("Player Default Name");
         }
 
         public void StartGameSetTurn()
@@ -101,6 +102,7 @@ namespace rummikubGame
             global_gametable_context = this; // updates the gameTable context
             global_dropped_tiles_btn = dropped_tiles_btn; // updates the dropped_tiles variable, so it'll be accessed outside that class
             global_game_indicator_lbl = game_indicator_lbl;
+            global_pool_btn = pool_btn;
 
             StartGameObjectCreation();
 

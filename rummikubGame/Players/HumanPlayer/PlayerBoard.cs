@@ -78,9 +78,10 @@ namespace rummikubGame
                 return;
 
             TileButtons[TAG_NUMBER] = (new VisualTile(current_tile_from_pool.Color, current_tile_from_pool.Number, slot_location));
-            TileButtons[TAG_NUMBER].TileButton.GetButton().Location = TileButton_slot[slot_location[0], slot_location[1]].SlotButton.Location;
+            // TileButtons[TAG_NUMBER].TileButton.GetButton().Location = TileButton_slot[slot_location[0], slot_location[1]].SlotButton.Location;
             TileButton_slot[TileButtons[TAG_NUMBER].SlotLocation[0], TileButtons[TAG_NUMBER].SlotLocation[1]].SlotState = true;
             TileDesigner(TileButtons[TAG_NUMBER], current_tile_from_pool, true);
+            ControlTransition.Move(TileButtons[TAG_NUMBER-1].TileButton.GetButton(), GameTable.global_pool_btn.Location, TileButton_slot[slot_location[0], slot_location[1]].SlotButton.Location);
         }
 
         public void TileDesigner(VisualTile tile, Tile tile_info, bool tag_update)
@@ -311,7 +312,7 @@ namespace rummikubGame
                             TileButtons[(int)((Button)sender).Tag].SlotLocation[1]].SlotState = true;
 
                     // update the location of the focused TileButton, to the location of the minimum distance that we found earlier
-                    current_card.Location = TileButton_slot[min_i, min_j].SlotButton.Location;
+                    ControlTransition.Move(current_card, current_card.Location, TileButton_slot[min_i, min_j].SlotButton.Location);
 
                     // now we need to update the status of the old slot to empty
                     if (TileButtons.ContainsKey((int)current_card.Tag) 
