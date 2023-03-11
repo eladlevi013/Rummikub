@@ -6,6 +6,13 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <SignAssembly>True</SignAssembly>
+    <Company>Elad and Itamar</Company>
+    <Product>A Rummikub game</Product>
+    <Description>this is a simple rummikub game.</Description>
+    <Copyright>Elad and Itamar</Copyright>
+    <Authors>Elad</Authors>
+    <Title>RummikubGame</Title>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="bin\Debug\net6.0-windows\Assets\rummikubLogo.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="bin\Debug\net6.0-windows\Assets\rummikubLogo.png" />
   </ItemGroup>
 
