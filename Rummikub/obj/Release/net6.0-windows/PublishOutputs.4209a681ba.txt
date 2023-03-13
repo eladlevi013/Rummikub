@@ -1,6 +1,0 @@
-C:\Users\eladl\OneDrive\Documents\GitHub\RummikubGame\Rummikub\bin\Release\net6.0-windows\publish\rummikubGame.exe
-C:\Users\eladl\OneDrive\Documents\GitHub\RummikubGame\Rummikub\bin\Release\net6.0-windows\publish\rummikubGame.dll
-C:\Users\eladl\OneDrive\Documents\GitHub\RummikubGame\Rummikub\bin\Release\net6.0-windows\publish\rummikubGame.deps.json
-C:\Users\eladl\OneDrive\Documents\GitHub\RummikubGame\Rummikub\bin\Release\net6.0-windows\publish\rummikubGame.runtimeconfig.json
-C:\Users\eladl\OneDrive\Documents\GitHub\RummikubGame\Rummikub\bin\Release\net6.0-windows\publish\rummikubGame.dll.config
-C:\Users\eladl\OneDrive\Documents\GitHub\RummikubGame\Rummikub\bin\Release\net6.0-windows\publish\rummikubGame.pdb
