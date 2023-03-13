@@ -1,5 +1,8 @@
 ﻿using rummikubGame.Models;
+using System;
 using System.Drawing;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace rummikubGame.Draggable
@@ -21,6 +24,9 @@ namespace rummikubGame.Draggable
         {
             this.control = control;
             draggableEnabled = false;
+
+            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
+            .SetValue(control, true, null);
         }
 
         public Control Control
@@ -28,7 +34,7 @@ namespace rummikubGame.Draggable
             get { return control; }
             set { control = value; }
         }
-        
+
         public bool DraggableEnabled
         {
             get { return draggableEnabled; }
@@ -65,7 +71,7 @@ namespace rummikubGame.Draggable
                 int deltaX = e.X - dragStart.X;
                 int deltaY = e.Y - dragStart.Y;
                 Control control = sender as Control;
-                control.Location = new Point(control.Location.X 
+                control.Location = new Point(control.Location.X
                     + deltaX, control.Location.Y + deltaY);
             }
         }
