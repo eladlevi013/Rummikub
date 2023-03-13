@@ -1,4 +1,5 @@
-﻿using rummikubGame.Models;
+﻿using Rummikub;
+using rummikubGame.Models;
 using System;
 using System.Drawing;
 using System.Reflection;
@@ -7,7 +8,7 @@ using System.Windows.Forms;
 
 namespace rummikubGame.Draggable
 {
-    public class DraggableComponent : IDraggable
+    public class DraggableComponent
     {
         /*
         The main target of the this class, converting any control
@@ -20,13 +21,12 @@ namespace rummikubGame.Draggable
         protected Control control;
         protected bool draggableEnabled;
 
+        Timer moveTimer;
+
         public DraggableComponent(Control control)
         {
             this.control = control;
             draggableEnabled = false;
-
-            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
-            .SetValue(control, true, null);
         }
 
         public Control Control
@@ -47,13 +47,11 @@ namespace rummikubGame.Draggable
             if (draggable)
             {
                 control.MouseDown += StartDragging;
-                control.MouseMove += Dragging;
                 control.MouseUp += StopDragging;
             }
             else
             {
                 control.MouseDown -= StartDragging;
-                control.MouseMove -= Dragging;
                 control.MouseUp -= StopDragging;
             }
         }
@@ -62,23 +60,33 @@ namespace rummikubGame.Draggable
         {
             IsCurrentlyDragging = true;
             dragStart = e.Location;
+
+            moveTimer = new Timer();
+            moveTimer.Interval = 10; // update every 10 milliseconds
+            moveTimer.Tick += MoveTimer_Tick;
+            moveTimer.Start();
         }
 
-        public void Dragging(object sender, MouseEventArgs e)
+        private void MoveTimer_Tick(object sender, EventArgs e)
         {
             if (IsCurrentlyDragging)
             {
-                int deltaX = e.X - dragStart.X;
-                int deltaY = e.Y - dragStart.Y;
-                Control control = sender as Control;
-                control.Location = new Point(control.Location.X
-                    + deltaX, control.Location.Y + deltaY);
+                Point screenPos = Cursor.Position;
+                Point clientPos = control.PointToClient(screenPos);
+                int deltaX = clientPos.X - dragStart.X;
+                int deltaY = clientPos.Y - dragStart.Y;
+                control.Location = new Point(control.Location.X + deltaX, control.Location.Y + deltaY);
             }
         }
+
 
         public void StopDragging(object sender, MouseEventArgs e)
         {
             IsCurrentlyDragging = false;
+
+            moveTimer.Stop();
+            moveTimer.Dispose();
         }
+
     }
 }
