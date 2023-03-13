@@ -67,6 +67,7 @@ namespace Rummikub
             this.sort_value_btn.TabIndex = 8;
             this.sort_value_btn.Text = "Sort By Value";
             this.sort_value_btn.UseVisualStyleBackColor = true;
+            this.sort_value_btn.Click += new System.EventHandler(this.sort_value_btn_click);
             // 
             // computerTiles_groupbox
             // 
@@ -75,7 +76,7 @@ namespace Rummikub
             this.computerTiles_groupbox.Controls.Add(this.hand_tiles_lbl);
             this.computerTiles_groupbox.Location = new System.Drawing.Point(18, 39);
             this.computerTiles_groupbox.Name = "computerTiles_groupbox";
-            this.computerTiles_groupbox.Size = new System.Drawing.Size(576, 301);
+            this.computerTiles_groupbox.Size = new System.Drawing.Size(617, 301);
             this.computerTiles_groupbox.TabIndex = 1;
             this.computerTiles_groupbox.TabStop = false;
             // 
@@ -115,7 +116,7 @@ namespace Rummikub
             // dropped_tiles_btn
             // 
             this.dropped_tiles_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dropped_tiles_btn.BackgroundImage")));
-            this.dropped_tiles_btn.Location = new System.Drawing.Point(665, 147);
+            this.dropped_tiles_btn.Location = new System.Drawing.Point(683, 147);
             this.dropped_tiles_btn.Name = "dropped_tiles_btn";
             this.dropped_tiles_btn.Size = new System.Drawing.Size(99, 135);
             this.dropped_tiles_btn.TabIndex = 2;
@@ -135,7 +136,7 @@ namespace Rummikub
             // dropped_tiles_lbl
             // 
             this.dropped_tiles_lbl.AutoSize = true;
-            this.dropped_tiles_lbl.Location = new System.Drawing.Point(680, 131);
+            this.dropped_tiles_lbl.Location = new System.Drawing.Point(698, 131);
             this.dropped_tiles_lbl.Name = "dropped_tiles_lbl";
             this.dropped_tiles_lbl.Size = new System.Drawing.Size(73, 13);
             this.dropped_tiles_lbl.TabIndex = 4;
@@ -164,7 +165,7 @@ namespace Rummikub
             // 
             this.game_indicator_lbl.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
             this.game_indicator_lbl.ForeColor = System.Drawing.Color.White;
-            this.game_indicator_lbl.Location = new System.Drawing.Point(680, 39);
+            this.game_indicator_lbl.Location = new System.Drawing.Point(700, 50);
             this.game_indicator_lbl.Name = "game_indicator_lbl";
             this.game_indicator_lbl.Size = new System.Drawing.Size(216, 50);
             this.game_indicator_lbl.TabIndex = 7;
@@ -210,18 +211,21 @@ namespace Rummikub
             this.saveGameToolStripMenuItem.Name = "saveGameToolStripMenuItem";
             this.saveGameToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.saveGameToolStripMenuItem.Text = "Save Game";
+            this.saveGameToolStripMenuItem.Click += new System.EventHandler(this.saveGameToolStripMenuItem_Click);
             // 
             // loadGameToolStripMenuItem
             // 
             this.loadGameToolStripMenuItem.Name = "loadGameToolStripMenuItem";
             this.loadGameToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.loadGameToolStripMenuItem.Text = "Load Game";
+            this.loadGameToolStripMenuItem.Click += new System.EventHandler(this.loadGameToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // gameToolStripMenuItem
             // 
@@ -237,12 +241,14 @@ namespace Rummikub
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
             this.resetToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.resetToolStripMenuItem.Text = "Reset";
+            this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
             // instructionsToolStripMenuItem
             // 
             this.instructionsToolStripMenuItem.Name = "instructionsToolStripMenuItem";
             this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.instructionsToolStripMenuItem.Text = "Instructions";
+            this.instructionsToolStripMenuItem.Click += new System.EventHandler(this.instructionsToolStripMenuItem_Click);
             // 
             // sort_color_btn
             // 
@@ -253,6 +259,7 @@ namespace Rummikub
             this.sort_color_btn.TabIndex = 9;
             this.sort_color_btn.Text = "Sort By Color";
             this.sort_color_btn.UseVisualStyleBackColor = false;
+            this.sort_color_btn.Click += new System.EventHandler(this.sort_color_btn_click);
             // 
             // board_panel
             // 

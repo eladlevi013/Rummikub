@@ -49,7 +49,7 @@ namespace Rummikub.Views
             this.instructions_groupbox.Controls.Add(this.pictureBox1);
             this.instructions_groupbox.Location = new System.Drawing.Point(45, 38);
             this.instructions_groupbox.Name = "instructions_groupbox";
-            this.instructions_groupbox.Size = new System.Drawing.Size(740, 501);
+            this.instructions_groupbox.Size = new System.Drawing.Size(887, 590);
             this.instructions_groupbox.TabIndex = 0;
             this.instructions_groupbox.TabStop = false;
             // 
@@ -57,9 +57,9 @@ namespace Rummikub.Views
             // 
             this.pictureBox2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox2.BackgroundImage")));
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox2.Location = new System.Drawing.Point(32, 392);
+            this.pictureBox2.Location = new System.Drawing.Point(24, 450);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(222, 91);
+            this.pictureBox2.Size = new System.Drawing.Size(250, 114);
             this.pictureBox2.TabIndex = 1;
             this.pictureBox2.TabStop = false;
             // 
@@ -67,7 +67,7 @@ namespace Rummikub.Views
             // 
             this.instructions_rtf.Location = new System.Drawing.Point(32, 95);
             this.instructions_rtf.Name = "instructions_rtf";
-            this.instructions_rtf.Size = new System.Drawing.Size(697, 388);
+            this.instructions_rtf.Size = new System.Drawing.Size(819, 472);
             this.instructions_rtf.TabIndex = 2;
             this.instructions_rtf.Text = "";
             // 
@@ -75,7 +75,7 @@ namespace Rummikub.Views
             // 
             this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox1.Location = new System.Drawing.Point(242, 26);
+            this.pictureBox1.Location = new System.Drawing.Point(319, 27);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(264, 62);
             this.pictureBox1.TabIndex = 0;
@@ -84,18 +84,19 @@ namespace Rummikub.Views
             // close_instructions_btn
             // 
             this.close_instructions_btn.BackColor = System.Drawing.Color.Sienna;
-            this.close_instructions_btn.Location = new System.Drawing.Point(268, 555);
+            this.close_instructions_btn.Location = new System.Drawing.Point(329, 648);
             this.close_instructions_btn.Name = "close_instructions_btn";
             this.close_instructions_btn.Size = new System.Drawing.Size(309, 49);
             this.close_instructions_btn.TabIndex = 1;
             this.close_instructions_btn.Text = "Close Instructions";
             this.close_instructions_btn.UseVisualStyleBackColor = false;
+            this.close_instructions_btn.Click += new System.EventHandler(this.close_instructions_btn_Click);
             // 
             // GameRulesView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(837, 628);
+            this.ClientSize = new System.Drawing.Size(979, 729);
             this.Controls.Add(this.close_instructions_btn);
             this.Controls.Add(this.instructions_groupbox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
