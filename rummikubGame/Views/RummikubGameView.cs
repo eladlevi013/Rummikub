@@ -102,6 +102,7 @@ namespace Rummikub
 
         private void RummikubGameView_Load(object sender, EventArgs e)
         {
+
             // update global variables
             global_view_computer_tiles_groupbox = show_computer_tiles_checkbox;
             global_current_pool_size_lbl = current_pool_size_lbl;

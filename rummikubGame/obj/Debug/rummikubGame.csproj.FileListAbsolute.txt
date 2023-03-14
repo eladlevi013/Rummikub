@@ -22,3 +22,15 @@ C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.CoreCompileInputs.cache
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.exe
 C:\Users\eladl\Documents\GitHub\RummikubGame\rummikubGame\obj\Debug\rummikubGame.pdb
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\bin\Debug\rummikubGame.exe.config
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\bin\Debug\rummikubGame.exe
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\bin\Debug\rummikubGame.pdb
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.AssemblyReference.cache
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.SuggestedBindingRedirects.cache
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.Properties.Resources.resources
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\Rummikub.Views.GameRulesView.resources
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\Rummikub.RummikubGameView.resources
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.GenerateResource.cache
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.csproj.CoreCompileInputs.cache
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.exe
+C:\Users\itama\Documents\git\RummikubGame\rummikubGame\obj\Debug\rummikubGame.pdb

@@ -30,5 +30,19 @@ namespace rummikubGame
             get { return number; }
             set { number = value; }
         }
+        public static bool operator ==(Tile t1, Tile t2)
+
+        {
+            if (ReferenceEquals(t1, t2)) return true;
+            if (ReferenceEquals(t1, null)) return false;
+            if (ReferenceEquals(t2, null)) return false;
+            return t1.number == t2.number && t1.color == t2.color;
+
+        }
+
+        public static bool operator !=(Tile t1, Tile t2)
+        {
+            return !(t1 == t2);
+        }
     }
 }
