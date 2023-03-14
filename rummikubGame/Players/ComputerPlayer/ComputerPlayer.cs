@@ -504,8 +504,10 @@ namespace rummikubGame
 
                 for (int j = 0; j < curr_hand_color_no_duplicates.Keys.Count() - 2; j++)
                 {
-                    if (curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].Number + 1 == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]].Number &&
-                        curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]].Number + 1 == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 2]].Number)
+                    if (curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]].Number + 1 
+                        == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]].Number &&
+                        curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]].Number + 1 
+                        == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 2]].Number)
                     {
                         // add to seq
                         List<List<Tile>> temp_sequences = new List<List<Tile>>(sequences);
@@ -621,15 +623,30 @@ namespace rummikubGame
                 // Removing partial sets that can be completed with jokers
                 for (int i = 0; i < runs_values.Count() && jokers.Count() > 0; i++)
                 {
-                    // adding to sequences
-                    List<Tile> temp_list = new List<Tile>();
-                    temp_list.Add(runs_values[i].Tile1);
-                    temp_list.Add(runs_values[i].Tile2);
-                    temp_list.Add(jokers[0]);
-                    sequences.Add(temp_list);
+                    if (runs_values[i].Tile2.Number == 13)
+                    {
+                        // adding to sequences
+                        List<Tile> temp_list = new List<Tile>();
+                        temp_list.Add(jokers[0]);
+                        temp_list.Add(runs_values[i].Tile1);
+                        temp_list.Add(runs_values[i].Tile2);
+                        sequences.Add(temp_list);
 
-                    partial_set.Remove(runs_values[i]);
-                    jokers.RemoveAt(0);
+                        partial_set.Remove(runs_values[i]);
+                        jokers.RemoveAt(0);
+                    }
+                    else
+                    {
+                        // adding to sequences
+                        List<Tile> temp_list = new List<Tile>();
+                        temp_list.Add(runs_values[i].Tile1);
+                        temp_list.Add(runs_values[i].Tile2);
+                        temp_list.Add(jokers[0]);
+                        sequences.Add(temp_list);
+
+                        partial_set.Remove(runs_values[i]);
+                        jokers.RemoveAt(0);
+                    }
                 }
 
                 // Removing partial sets that can be completed with jokers
@@ -687,8 +704,25 @@ namespace rummikubGame
         {
             for(int i=0; i < sequences.Count() && unused_jokers.Count() > 0; i++)
             {
-                sequences[i].Add(unused_jokers[0]);
-                unused_jokers.RemoveAt(0);
+                List<Tile> temp_sequence_from_top = new List<Tile>(sequences[i]);
+                temp_sequence_from_top.Add(unused_jokers[0]);
+
+                List<Tile> temp_sequence_from_bottom = new List<Tile>(sequences[i]);
+                temp_sequence_from_bottom.Insert(0, unused_jokers[0]);
+
+                // Checking if the sequence can be extended with a joker
+                if (RummikubGameView.IsLegalMeld(temp_sequence_from_top))
+                {
+                    sequences[i].Add(unused_jokers[0]);
+                    unused_jokers.RemoveAt(0);
+                    continue;
+                }
+                else if (RummikubGameView.IsLegalMeld(temp_sequence_from_bottom))
+                {
+                    sequences[i].Insert(0, unused_jokers[0]);
+                    unused_jokers.RemoveAt(0);
+                    continue;
+                }
             }
         }
     }

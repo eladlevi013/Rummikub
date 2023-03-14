@@ -69,7 +69,7 @@ namespace Rummikub
             dropped_tiles_stack = new Stack<VisualTile>(); // empty dropped tiles
             pool = new Pool(); // generate rummikub tiles
             computer_player = new ComputerPlayer();
-            human_player = new HumanPlayer("Player Default Name");
+            human_player = new HumanPlayer();
         }
 
         public void StartGameSetTurn()
