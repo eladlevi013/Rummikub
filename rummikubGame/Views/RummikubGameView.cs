@@ -50,6 +50,7 @@ namespace Rummikub
         public static Form global_RummikubGameView_context; // used in order to add buttons from other classes
         public static Button global_dropped_tiles_btn; // dropped_tiles button, used in the mouseUp
         public static Button global_pool_btn; // pool_stack button, used in the mouseUp
+        public static GroupBox global_pool_drop_groupbox;
 
         // global variables
         public static int current_turn;
@@ -105,11 +106,11 @@ namespace Rummikub
         private void RummikubGameView_Load(object sender, EventArgs e)
         {
             // update global variables
+            global_pool_btn = pool_btn;
             global_current_pool_size_lbl = current_pool_size_lbl;
             global_RummikubGameView_context = this; // updates the RummikubGameView context
             global_dropped_tiles_btn = dropped_tiles_btn; // updates the dropped_tiles variable, so it'll be accessed outside that class
             global_game_indicator_lbl = game_indicator_lbl;
-            global_pool_btn = pool_btn;
 
             StartGameObjectCreation();
 
@@ -120,7 +121,6 @@ namespace Rummikub
 
             // set background color
             computerTiles_groupbox.BackColor = Constants.COMPUTER_BOARD_COLOR;
-            pool_drop_groupbox.BackColor = Constants.COMPUTER_BOARD_COLOR;
             board_panel.BackColor = Constants.BACKGROUND_COLOR;
             this.BackColor = Constants.BACKGROUND_COLOR;
 
