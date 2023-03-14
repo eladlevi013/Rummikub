@@ -305,9 +305,37 @@ namespace Rummikub
 
         private void sort_color_btn_click(object sender, EventArgs e)
         {
-            List<VisualTile> sorted_cards = human_player.board.GetTilesDictionary().Values.ToList();
-            sorted_cards = sorted_cards.OrderBy(card => card.Color).ToList();
-            human_player.board.ArrangeCardsOnBoard(sorted_cards);
+            // getting the tiles of the user
+            List<VisualTile> tiles = human_player.board.GetTilesDictionary().Values.ToList();
+            List<VisualTile>[] colors_lst = new List<VisualTile>[Constants.COLORS_COUNT];
+
+            // initializing the lists
+            for(int i=0; i<colors_lst.Length; i++)
+            {
+                colors_lst[i] = new List<VisualTile>();
+            }
+
+            // Classiying the hand to N colors;
+            for(int i=0; i< tiles.Count; i++)
+            {
+                colors_lst[tiles[i].Color].Add(tiles[i]);
+            }
+            
+            // Sorting every array by number
+            for(int i=0; i<colors_lst.Length; i++)
+            {
+                colors_lst[i] = colors_lst[i].OrderBy(card => card.Number).ToList();
+            }
+
+            // merging the arrays
+            List<VisualTile> sorted_tiles = new List<VisualTile>();
+            
+            for(int i=0; i<colors_lst.Length; i++)
+            {
+                sorted_tiles.AddRange(colors_lst[i]);
+            }
+
+            human_player.board.ArrangeCardsOnBoard(sorted_tiles);
         }
 
         private void show_computer_tiles_checkbox_change(object sender, EventArgs e)
@@ -364,21 +392,28 @@ namespace Rummikub
         {
             try
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                Stream stream = new FileStream(Constants.SAVED_GAME_FILE_NAME, FileMode.Create);
-                formatter.Serialize(stream, human_player);
-                formatter.Serialize(stream, computer_player);
+                SaveFileDialog SaveFileDialog = new SaveFileDialog();
+                SaveFileDialog.Filter = "Rummikub File|*.rummikub";
+                SaveFileDialog.Title = "save";
 
-                // saving game info
-                formatter.Serialize(stream, RummikubGameView.current_turn);
-                formatter.Serialize(stream, RummikubGameView.game_over);
-                formatter.Serialize(stream, RummikubGameView.pool);
-                formatter.Serialize(stream, RummikubGameView.dropped_tiles_stack);
-                formatter.Serialize(stream, PlayerBoard.tookCard);
-                formatter.Serialize(stream, PlayerBoard.TAG_NUMBER);
-                formatter.Serialize(stream, RummikubGameView.global_game_indicator_lbl.Text);
-                stream.Close();
-                // MessageBox.Show("Game saved successfully!");
+                if (SaveFileDialog.ShowDialog() == DialogResult.OK &&
+                    SaveFileDialog.FileName != "")
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    Stream stream = new FileStream(SaveFileDialog.FileName, FileMode.Create);
+                    formatter.Serialize(stream, human_player);
+                    formatter.Serialize(stream, computer_player);
+
+                    // saving game info
+                    formatter.Serialize(stream, RummikubGameView.current_turn);
+                    formatter.Serialize(stream, RummikubGameView.game_over);
+                    formatter.Serialize(stream, RummikubGameView.pool);
+                    formatter.Serialize(stream, RummikubGameView.dropped_tiles_stack);
+                    formatter.Serialize(stream, PlayerBoard.tookCard);
+                    formatter.Serialize(stream, PlayerBoard.TAG_NUMBER);
+                    formatter.Serialize(stream, RummikubGameView.global_game_indicator_lbl.Text);
+                    stream.Close();
+                }
             }
             catch (Exception ex)
             {
@@ -390,56 +425,64 @@ namespace Rummikub
         {
             try
             {
-                // Clearning the boards
-                clearAllTilesFromScreen();
+                OpenFileDialog OpenFileDialog = new OpenFileDialog();
+                OpenFileDialog.Filter = "Rummikub File|*.rummikub";
+                OpenFileDialog.Title = "save";
 
-                // loading game info from binary file called save.rummikub
-                BinaryFormatter formatter = new BinaryFormatter();
-                Stream stream = new FileStream(Constants.SAVED_GAME_FILE_NAME, FileMode.Open);
-                human_player = (HumanPlayer)formatter.Deserialize(stream);
-                computer_player = (ComputerPlayer)formatter.Deserialize(stream);
-
-                RummikubGameView.current_turn = (int)formatter.Deserialize(stream);
-                RummikubGameView.game_over = (bool)formatter.Deserialize(stream);
-                RummikubGameView.pool = (Pool)formatter.Deserialize(stream);
-                RummikubGameView.dropped_tiles_stack = (Stack<VisualTile>)formatter.Deserialize(stream);
-                PlayerBoard.tookCard = (bool)formatter.Deserialize(stream);
-                PlayerBoard.TAG_NUMBER = (int)formatter.Deserialize(stream);
-                RummikubGameView.global_game_indicator_lbl.Text = (string)formatter.Deserialize(stream);
-                stream.Close();
-
-                // fix dropped tiles stack
-                Stack<VisualTile> temp_dropped_tiles = dropped_tiles_stack;
-                Stack<VisualTile> revered_dropped_tiles = new Stack<VisualTile>();
-                while (temp_dropped_tiles.Count > 0)
+                if (OpenFileDialog.ShowDialog() == DialogResult.OK &&
+                    OpenFileDialog.FileName != "")
                 {
-                    revered_dropped_tiles.Push(temp_dropped_tiles.Pop());
-                }
+                    // Clearning the boards
+                    clearAllTilesFromScreen();
 
-                while (revered_dropped_tiles.Count > 1)
-                {
-                    computer_player.board.GenerateComputerThrownTile(revered_dropped_tiles.Pop());
-                    human_player.board.DisableLastDroppedTile();
-                }
-                if (revered_dropped_tiles.Count > 0 && revered_dropped_tiles.Peek() != null)
-                {
-                    computer_player.board.GenerateComputerThrownTile(revered_dropped_tiles.Pop());
-                    if (PlayerBoard.tookCard == true)
+                    // loading game info from binary file called save.rummikub
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    Stream stream = new FileStream(Constants.SAVED_GAME_FILE_NAME, FileMode.Open);
+                    human_player = (HumanPlayer)formatter.Deserialize(stream);
+                    computer_player = (ComputerPlayer)formatter.Deserialize(stream);
+
+                    RummikubGameView.current_turn = (int)formatter.Deserialize(stream);
+                    RummikubGameView.game_over = (bool)formatter.Deserialize(stream);
+                    RummikubGameView.pool = (Pool)formatter.Deserialize(stream);
+                    RummikubGameView.dropped_tiles_stack = (Stack<VisualTile>)formatter.Deserialize(stream);
+                    PlayerBoard.tookCard = (bool)formatter.Deserialize(stream);
+                    PlayerBoard.TAG_NUMBER = (int)formatter.Deserialize(stream);
+                    RummikubGameView.global_game_indicator_lbl.Text = (string)formatter.Deserialize(stream);
+                    stream.Close();
+
+                    // fix dropped tiles stack
+                    Stack<VisualTile> temp_dropped_tiles = dropped_tiles_stack;
+                    Stack<VisualTile> revered_dropped_tiles = new Stack<VisualTile>();
+                    while (temp_dropped_tiles.Count > 0)
+                    {
+                        revered_dropped_tiles.Push(temp_dropped_tiles.Pop());
+                    }
+
+                    while (revered_dropped_tiles.Count > 1)
+                    {
+                        computer_player.board.GenerateComputerThrownTile(revered_dropped_tiles.Pop());
                         human_player.board.DisableLastDroppedTile();
+                    }
+                    if (revered_dropped_tiles.Count > 0 && revered_dropped_tiles.Peek() != null)
+                    {
+                        computer_player.board.GenerateComputerThrownTile(revered_dropped_tiles.Pop());
+                        if (PlayerBoard.tookCard == true)
+                            human_player.board.DisableLastDroppedTile();
+                    }
+
+                    // fix to the computer player board
+                    computer_player.board.drawn_computer_cards = new List<Label>();
+
+                    human_player.board.GenerateTiles();
+                    computer_player.board.GenerateBoard();
+
+                    // changing the labels
+                    pool.UpdatePoolSizeLabel();
+
+                    // checking if game over
+                    if (game_over)
+                        human_player.board.disableHumanBoard();
                 }
-
-                // fix to the computer player board
-                computer_player.board.drawn_computer_cards = new List<Label>();
-
-                human_player.board.GenerateTiles();
-                computer_player.board.GenerateBoard();
-
-                // changing the labels
-                pool.UpdatePoolSizeLabel();
-
-                // checking if game over
-                if (game_over)
-                    human_player.board.disableHumanBoard();
             }
             catch (Exception ex)
             {
