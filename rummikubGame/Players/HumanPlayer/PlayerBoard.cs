@@ -108,16 +108,40 @@ namespace rummikubGame
             {
                 if (tile.Color == Constants.BLACK_COLOR)
                 {
-                    tile.TileButton.GetButton().BackgroundImage = Image.FromFile(RummikubGameView.BLACK_JOKER_PATH);
+                    try
+                    {
+                        tile.TileButton.GetButton().BackgroundImage = Image.FromFile(RummikubGameView.BLACK_JOKER_PATH);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error: " + ex.Message);
+                        (RummikubGameView.global_RummikubGameView_context).Close();
+                    }
                 }
                 else
                 {
-                    tile.TileButton.GetButton().BackgroundImage = Image.FromFile(RummikubGameView.RED_JOKER_PATH);
+                    try
+                    {
+                        tile.TileButton.GetButton().BackgroundImage = Image.FromFile(RummikubGameView.RED_JOKER_PATH);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error: " + ex.Message);
+                        (RummikubGameView.global_RummikubGameView_context).Close();
+                    }
                 }
             }
             else
             {
-                tile.TileButton.GetButton().BackgroundImage = Image.FromFile(RummikubGameView.TILE_PATH);
+                try
+                {
+                    tile.TileButton.GetButton().BackgroundImage = Image.FromFile(RummikubGameView.TILE_PATH);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                    (RummikubGameView.global_RummikubGameView_context).Close();
+                }
                 tile.TileButton.GetButton().Text = tile_info.Number.ToString();
                 if (tile.Color == 0) tile.TileButton.GetButton().ForeColor = (Color.Blue);
                 else if (tile.Color == 1) tile.TileButton.GetButton().ForeColor = (Color.Black);
@@ -464,7 +488,15 @@ namespace rummikubGame
                 for (int j = 0; j < RummikubGameView.HUMAN_PLAYER_BOARD_WIDTH; j++)
                 {   // Generate a single slotButton
                     TileButton_slot[i, j] = new Slot();
-                    TileButton_slot[i, j].SlotButton.BackgroundImage = Image.FromFile(RummikubGameView.SLOT_PATH);
+                    try
+                    {
+                        TileButton_slot[i, j].SlotButton.BackgroundImage = Image.FromFile(RummikubGameView.SLOT_PATH);
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show("Error: " + ex.Message);
+                        (RummikubGameView.global_RummikubGameView_context).Close();
+                    }
                     TileButton_slot[i, j].SlotButton.BackgroundImageLayout = ImageLayout.Stretch;
                     TileButton_slot[i, j].SlotButton.FlatStyle = FlatStyle.Flat;
                     TileButton_slot[i, j].SlotButton.FlatAppearance.BorderSize = 0;
@@ -507,7 +539,15 @@ namespace rummikubGame
                 for (int j = 0; j < RummikubGameView.HUMAN_PLAYER_BOARD_WIDTH; j++)
                 {   // Generate a single slotButton
                     TileButton_slot[i, j] = new Slot();
-                    TileButton_slot[i, j].SlotButton.BackgroundImage = Image.FromFile(RummikubGameView.SLOT_PATH);
+                    try
+                    {
+                        TileButton_slot[i, j].SlotButton.BackgroundImage = Image.FromFile(RummikubGameView.SLOT_PATH);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error: " + ex.Message);
+                        (RummikubGameView.global_RummikubGameView_context).Close();
+                    }
                     TileButton_slot[i, j].SlotButton.BackgroundImageLayout = ImageLayout.Stretch;
                     TileButton_slot[i, j].SlotButton.FlatStyle = FlatStyle.Flat;
                     TileButton_slot[i, j].SlotButton.FlatAppearance.BorderSize = 0;
