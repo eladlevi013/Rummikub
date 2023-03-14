@@ -19,6 +19,9 @@ namespace Rummikub
 {
     public partial class RummikubGameView : Form
     {
+        // show computer tiles toggle
+        public static bool show_computer_tiles_toggle = true;
+
         // Assets path consts
         public static String ASSETS_PATH = ConfigurationManager.AppSettings["AssetsPath"];
         public static String SLOT_PATH = Path.Combine(ASSETS_PATH, ConfigurationManager.AppSettings["SlotPath"]);
@@ -47,7 +50,6 @@ namespace Rummikub
         public static Form global_RummikubGameView_context; // used in order to add buttons from other classes
         public static Button global_dropped_tiles_btn; // dropped_tiles button, used in the mouseUp
         public static Button global_pool_btn; // pool_stack button, used in the mouseUp
-        public static CheckBox global_view_computer_tiles_groupbox; // groupBox show computer tiles
 
         // global variables
         public static int current_turn;
@@ -102,9 +104,7 @@ namespace Rummikub
 
         private void RummikubGameView_Load(object sender, EventArgs e)
         {
-
             // update global variables
-            global_view_computer_tiles_groupbox = show_computer_tiles_checkbox;
             global_current_pool_size_lbl = current_pool_size_lbl;
             global_RummikubGameView_context = this; // updates the RummikubGameView context
             global_dropped_tiles_btn = dropped_tiles_btn; // updates the dropped_tiles variable, so it'll be accessed outside that class
@@ -120,6 +120,7 @@ namespace Rummikub
 
             // set background color
             computerTiles_groupbox.BackColor = Constants.COMPUTER_BOARD_COLOR;
+            pool_drop_groupbox.BackColor = Constants.COMPUTER_BOARD_COLOR;
             board_panel.BackColor = Constants.BACKGROUND_COLOR;
             this.BackColor = Constants.BACKGROUND_COLOR;
 
@@ -338,20 +339,6 @@ namespace Rummikub
             human_player.board.ArrangeCardsOnBoard(sorted_tiles);
         }
 
-        private void show_computer_tiles_checkbox_change(object sender, EventArgs e)
-        {   // if to delete or create the graphical representation of the computer tiles
-            if (show_computer_tiles_checkbox.Checked == false)
-            {
-                computerTiles_groupbox.Visible = false;
-                computer_player.board.ClearBoard();
-            }
-            else
-            {
-                computerTiles_groupbox.Visible = true;
-                computer_player.board.GenerateBoard();
-            }
-        }
-
         private void clearAllTilesFromScreen()
         {
             // Clearning the boards
@@ -504,6 +491,28 @@ namespace Rummikub
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void showComputerTilesToggleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (((ToolStripMenuItem)sender).Checked == true)
+            {
+                computerTiles_groupbox.Visible = false;
+                computer_player.board.ClearBoard();
+                show_computer_tiles_toggle = false;
+                ((ToolStripMenuItem)sender).Checked = false;
+
+                // center the groupbox
+
+                // pool_drop_groupbox.Left = (this.ClientSize.Width - pool_drop_groupbox.Width) / 2;
+            }
+            else
+            {
+                computerTiles_groupbox.Visible = true;
+                computer_player.board.GenerateBoard();
+                show_computer_tiles_toggle = true;
+                ((ToolStripMenuItem)sender).Checked = true;
+            }
         }
     }
 }

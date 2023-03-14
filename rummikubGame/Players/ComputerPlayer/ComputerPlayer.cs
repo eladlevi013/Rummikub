@@ -30,7 +30,7 @@ namespace rummikubGame
             AddJokersAfterMeldsSets(ref board.partial_sets, ref board.sequences, ref board.unused_jokers, ref board.hand);
 
             // takes care of the graphical board of the computer
-            if (RummikubGameView.global_view_computer_tiles_groupbox.Checked)
+            if (RummikubGameView.show_computer_tiles_toggle)
                 board.GenerateBoard();
         }
 
@@ -238,7 +238,7 @@ namespace rummikubGame
             PlayerBoard.tookCard = false;
             RummikubGameView.computer_player.board.ClearBoard();
 
-            if (RummikubGameView.global_view_computer_tiles_groupbox.Checked == true)
+            if (RummikubGameView.show_computer_tiles_toggle)
                 RummikubGameView.computer_player.board.GenerateBoard();
 
             // if the game is over, and the computer won

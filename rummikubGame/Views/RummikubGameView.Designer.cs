@@ -43,7 +43,6 @@ namespace Rummikub
             this.pool_lbl = new System.Windows.Forms.Label();
             this.current_pool_size_lbl = new System.Windows.Forms.Label();
             this.game_indicator_lbl = new System.Windows.Forms.Label();
-            this.show_computer_tiles_checkbox = new System.Windows.Forms.CheckBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,10 +51,13 @@ namespace Rummikub
             this.gameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.instructionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showComputerTilesToggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sort_color_btn = new System.Windows.Forms.Button();
             this.board_panel = new System.Windows.Forms.Panel();
+            this.pool_drop_groupbox = new System.Windows.Forms.GroupBox();
             this.computerTiles_groupbox.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.pool_drop_groupbox.SuspendLayout();
             this.SuspendLayout();
             // 
             // sort_value_btn
@@ -76,7 +78,7 @@ namespace Rummikub
             this.computerTiles_groupbox.Controls.Add(this.hand_tiles_lbl);
             this.computerTiles_groupbox.Location = new System.Drawing.Point(18, 39);
             this.computerTiles_groupbox.Name = "computerTiles_groupbox";
-            this.computerTiles_groupbox.Size = new System.Drawing.Size(617, 301);
+            this.computerTiles_groupbox.Size = new System.Drawing.Size(606, 324);
             this.computerTiles_groupbox.TabIndex = 1;
             this.computerTiles_groupbox.TabStop = false;
             // 
@@ -98,7 +100,7 @@ namespace Rummikub
             this.partial_sets_lbl.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.partial_sets_lbl.Location = new System.Drawing.Point(407, 20);
             this.partial_sets_lbl.Name = "partial_sets_lbl";
-            this.partial_sets_lbl.Size = new System.Drawing.Size(101, 25);
+            this.partial_sets_lbl.Size = new System.Drawing.Size(102, 25);
             this.partial_sets_lbl.TabIndex = 10;
             this.partial_sets_lbl.Text = "Partial Sets:";
             // 
@@ -116,7 +118,7 @@ namespace Rummikub
             // dropped_tiles_btn
             // 
             this.dropped_tiles_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("dropped_tiles_btn.BackgroundImage")));
-            this.dropped_tiles_btn.Location = new System.Drawing.Point(683, 147);
+            this.dropped_tiles_btn.Location = new System.Drawing.Point(33, 108);
             this.dropped_tiles_btn.Name = "dropped_tiles_btn";
             this.dropped_tiles_btn.Size = new System.Drawing.Size(99, 135);
             this.dropped_tiles_btn.TabIndex = 2;
@@ -126,7 +128,7 @@ namespace Rummikub
             // 
             this.pool_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pool_btn.BackgroundImage")));
             this.pool_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pool_btn.Location = new System.Drawing.Point(817, 147);
+            this.pool_btn.Location = new System.Drawing.Point(164, 108);
             this.pool_btn.Name = "pool_btn";
             this.pool_btn.Size = new System.Drawing.Size(99, 135);
             this.pool_btn.TabIndex = 3;
@@ -136,7 +138,7 @@ namespace Rummikub
             // dropped_tiles_lbl
             // 
             this.dropped_tiles_lbl.AutoSize = true;
-            this.dropped_tiles_lbl.Location = new System.Drawing.Point(698, 131);
+            this.dropped_tiles_lbl.Location = new System.Drawing.Point(49, 92);
             this.dropped_tiles_lbl.Name = "dropped_tiles_lbl";
             this.dropped_tiles_lbl.Size = new System.Drawing.Size(73, 13);
             this.dropped_tiles_lbl.TabIndex = 4;
@@ -145,7 +147,7 @@ namespace Rummikub
             // pool_lbl
             // 
             this.pool_lbl.AutoSize = true;
-            this.pool_lbl.Location = new System.Drawing.Point(840, 131);
+            this.pool_lbl.Location = new System.Drawing.Point(181, 92);
             this.pool_lbl.Name = "pool_lbl";
             this.pool_lbl.Size = new System.Drawing.Size(53, 13);
             this.pool_lbl.TabIndex = 5;
@@ -154,7 +156,7 @@ namespace Rummikub
             // current_pool_size_lbl
             // 
             this.current_pool_size_lbl.AutoSize = true;
-            this.current_pool_size_lbl.Location = new System.Drawing.Point(845, 285);
+            this.current_pool_size_lbl.Location = new System.Drawing.Point(161, 246);
             this.current_pool_size_lbl.Name = "current_pool_size_lbl";
             this.current_pool_size_lbl.Size = new System.Drawing.Size(51, 13);
             this.current_pool_size_lbl.TabIndex = 6;
@@ -165,24 +167,12 @@ namespace Rummikub
             // 
             this.game_indicator_lbl.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
             this.game_indicator_lbl.ForeColor = System.Drawing.Color.White;
-            this.game_indicator_lbl.Location = new System.Drawing.Point(700, 50);
+            this.game_indicator_lbl.Location = new System.Drawing.Point(47, 11);
             this.game_indicator_lbl.Name = "game_indicator_lbl";
             this.game_indicator_lbl.Size = new System.Drawing.Size(216, 50);
             this.game_indicator_lbl.TabIndex = 7;
             this.game_indicator_lbl.Text = "GAME INDICATOR";
             this.game_indicator_lbl.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // show_computer_tiles_checkbox
-            // 
-            this.show_computer_tiles_checkbox.AutoSize = true;
-            this.show_computer_tiles_checkbox.Checked = true;
-            this.show_computer_tiles_checkbox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.show_computer_tiles_checkbox.Location = new System.Drawing.Point(18, 346);
-            this.show_computer_tiles_checkbox.Name = "show_computer_tiles_checkbox";
-            this.show_computer_tiles_checkbox.Size = new System.Drawing.Size(126, 17);
-            this.show_computer_tiles_checkbox.TabIndex = 10;
-            this.show_computer_tiles_checkbox.Text = "Show Computer Tiles";
-            this.show_computer_tiles_checkbox.UseVisualStyleBackColor = true;
             // 
             // menuStrip1
             // 
@@ -231,7 +221,8 @@ namespace Rummikub
             // 
             this.gameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.resetToolStripMenuItem,
-            this.instructionsToolStripMenuItem});
+            this.instructionsToolStripMenuItem,
+            this.showComputerTilesToggleToolStripMenuItem});
             this.gameToolStripMenuItem.Name = "gameToolStripMenuItem";
             this.gameToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.gameToolStripMenuItem.Text = "Game";
@@ -239,16 +230,25 @@ namespace Rummikub
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
             this.resetToolStripMenuItem.Text = "Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
             // instructionsToolStripMenuItem
             // 
             this.instructionsToolStripMenuItem.Name = "instructionsToolStripMenuItem";
-            this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
             this.instructionsToolStripMenuItem.Text = "Instructions";
             this.instructionsToolStripMenuItem.Click += new System.EventHandler(this.instructionsToolStripMenuItem_Click);
+            // 
+            // showComputerTilesToggleToolStripMenuItem
+            // 
+            this.showComputerTilesToggleToolStripMenuItem.Checked = true;
+            this.showComputerTilesToggleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showComputerTilesToggleToolStripMenuItem.Name = "showComputerTilesToggleToolStripMenuItem";
+            this.showComputerTilesToggleToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.showComputerTilesToggleToolStripMenuItem.Text = "Show Computer Tiles Toggle";
+            this.showComputerTilesToggleToolStripMenuItem.Click += new System.EventHandler(this.showComputerTilesToggleToolStripMenuItem_Click);
             // 
             // sort_color_btn
             // 
@@ -270,6 +270,20 @@ namespace Rummikub
             this.board_panel.Size = new System.Drawing.Size(951, 334);
             this.board_panel.TabIndex = 0;
             // 
+            // pool_drop_groupbox
+            // 
+            this.pool_drop_groupbox.Controls.Add(this.current_pool_size_lbl);
+            this.pool_drop_groupbox.Controls.Add(this.dropped_tiles_btn);
+            this.pool_drop_groupbox.Controls.Add(this.game_indicator_lbl);
+            this.pool_drop_groupbox.Controls.Add(this.dropped_tiles_lbl);
+            this.pool_drop_groupbox.Controls.Add(this.pool_btn);
+            this.pool_drop_groupbox.Controls.Add(this.pool_lbl);
+            this.pool_drop_groupbox.Location = new System.Drawing.Point(653, 39);
+            this.pool_drop_groupbox.Name = "pool_drop_groupbox";
+            this.pool_drop_groupbox.Size = new System.Drawing.Size(292, 324);
+            this.pool_drop_groupbox.TabIndex = 12;
+            this.pool_drop_groupbox.TabStop = false;
+            // 
             // RummikubGameView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -277,15 +291,9 @@ namespace Rummikub
             this.ClientSize = new System.Drawing.Size(967, 721);
             this.Controls.Add(this.sort_color_btn);
             this.Controls.Add(this.sort_value_btn);
-            this.Controls.Add(this.show_computer_tiles_checkbox);
-            this.Controls.Add(this.game_indicator_lbl);
-            this.Controls.Add(this.current_pool_size_lbl);
-            this.Controls.Add(this.pool_lbl);
-            this.Controls.Add(this.dropped_tiles_lbl);
-            this.Controls.Add(this.pool_btn);
-            this.Controls.Add(this.dropped_tiles_btn);
             this.Controls.Add(this.computerTiles_groupbox);
             this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.pool_drop_groupbox);
             this.Controls.Add(this.board_panel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -296,6 +304,8 @@ namespace Rummikub
             this.computerTiles_groupbox.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.pool_drop_groupbox.ResumeLayout(false);
+            this.pool_drop_groupbox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -313,7 +323,6 @@ namespace Rummikub
         private Label partial_sets_lbl;
         private Label hand_tiles_lbl;
         private Button sort_value_btn;
-        private CheckBox show_computer_tiles_checkbox;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem saveGameToolStripMenuItem;
@@ -324,5 +333,7 @@ namespace Rummikub
         private ToolStripMenuItem instructionsToolStripMenuItem;
         private Button sort_color_btn;
         private Panel board_panel;
+        private ToolStripMenuItem showComputerTilesToggleToolStripMenuItem;
+        private GroupBox pool_drop_groupbox;
     }
 }
