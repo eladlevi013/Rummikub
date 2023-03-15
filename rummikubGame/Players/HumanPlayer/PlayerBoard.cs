@@ -1,5 +1,6 @@
 ﻿using Rummikub;
 using rummikubGame.Utilities;
+using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -56,7 +57,7 @@ namespace rummikubGame
 
         public void GenerateNewTileByClickingPool(int[] slot_location)
         {
-            if (tookCard == false && Constants.HUMAN_PLAYER_TURN == RummikubGameView.current_turn && RummikubGameView.game_over == false)
+            if (tookCard == false && Constants.HumanPlayerTurn == RummikubGameView.current_turn && RummikubGameView.game_over == false)
             {
                 GenerateNewTileToSlotLocation(slot_location, true);
                 tookCard = true; // prevent unlimited tile picking
@@ -106,7 +107,7 @@ namespace rummikubGame
             // if joker
             if (tile.Number == 0)
             {
-                if (tile.Color == Constants.BLACK_COLOR)
+                if (tile.Color == Constants.BlackColor)
                 {
                     try
                     {
@@ -174,7 +175,7 @@ namespace rummikubGame
                 {
                     // we'll make it available in order to be able to place to the current place if its the closest location
                     TileButton_slot[TileButtons[(int)((Button)sender).Tag].SlotLocation[0]
-                        , TileButtons[(int)((Button)sender).Tag].SlotLocation[1]].SlotState = Constants.AVAILABLE;
+                        , TileButtons[(int)((Button)sender).Tag].SlotLocation[1]].SlotState = Constants.Available;
                 }
             }
         }
@@ -259,7 +260,7 @@ namespace rummikubGame
             {
                 // first, we would like to check if the user wanted to put the TileButton on the drop_TileButton location
                 if (GetDistance(current_card, RummikubGameView.global_dropped_tiles_btn) < 100 
-                    && RummikubGameView.current_turn == Constants.HUMAN_PLAYER_TURN 
+                    && RummikubGameView.current_turn == Constants.HumanPlayerTurn 
                     && tookCard == true && TileButtons.ContainsKey((int)current_card.Tag))
                 {
                     current_card.Location = new Point(RummikubGameView.global_dropped_tiles_btn.Location.X 
@@ -276,7 +277,7 @@ namespace rummikubGame
 
                     // after we dropped a card, it is the end of the turn
                     tookCard = false;
-                    RummikubGameView.current_turn = Constants.COMPUTER_PLAYER_TURN;
+                    RummikubGameView.current_turn = Constants.ComputerPlayerTurn;
                     RummikubGameView.global_game_indicator_lbl.Text = "Computer's Turn";
 
                     // sleep
@@ -304,7 +305,7 @@ namespace rummikubGame
                     {
                         for (int j = 0; j < 10 && found_first_empty_slot == false; j++)
                         {
-                            if (TileButton_slot[i, j].SlotState == Constants.AVAILABLE)
+                            if (TileButton_slot[i, j].SlotState == Constants.Available)
                             {
                                 first_empty_slot = TileButton_slot[i, j].SlotButton;
                                 found_first_empty_slot = true;
@@ -324,7 +325,7 @@ namespace rummikubGame
                         {
                             // if the distance is smaller, and the slot is available
                             if (GetDistance(current_card, TileButton_slot[i, j].SlotButton) < min_distance 
-                                && TileButton_slot[i, j].SlotState == Constants.AVAILABLE)
+                                && TileButton_slot[i, j].SlotState == Constants.Available)
                             {
                                 min_distance = GetDistance(current_card, TileButton_slot[i, j].SlotButton);
                                 min_i = i;
@@ -406,7 +407,7 @@ namespace rummikubGame
                 if (RummikubGameView.IsLegalMeld(melds[set_index]))
                     tiles_in_sets += melds[set_index].Count();
 
-            return Constants.RUMMIKUB_TILES_IN_GAME - tiles_in_sets;
+            return Constants.RummikubTilesInGame - tiles_in_sets;
         }
 
         public static List<Tile> convertTilesButtonListToComputerFormat(List<VisualTile> tiles)
@@ -446,7 +447,7 @@ namespace rummikubGame
             {
                 for (int j = 0; j < RummikubGameView.HUMAN_PLAYER_BOARD_WIDTH; j++)
                 {
-                    TileButton_slot[i, j].SlotState = Constants.AVAILABLE;
+                    TileButton_slot[i, j].SlotState = Constants.Available;
                     if (card_index < sorted_cards.Count())
                     {
                         sorted_cards[card_index].TileButton.GetButton().Location = TileButton_slot[i, j].SlotButton.Location;
@@ -553,7 +554,7 @@ namespace rummikubGame
                     TileButton_slot[i, j].SlotButton.FlatAppearance.BorderSize = 0;
                     TileButton_slot[i, j].SlotButton.Size = new Size(RummikubGameView.TILE_WIDTH, RummikubGameView.TILE_HEIGHT);
                     TileButton_slot[i, j].SlotButton.Location = new Point(x_location, y_location);
-                    TileButton_slot[i, j].SlotState = Constants.AVAILABLE;
+                    TileButton_slot[i, j].SlotState = Constants.Available;
                     RummikubGameView.global_RummikubGameView_context.Controls.Add(TileButton_slot[i, j].SlotButton);
                     x_location += X_SPACE_BETWEEN_TileButtons;
                 }
@@ -566,7 +567,7 @@ namespace rummikubGame
             {
                 int[] start_location = { i / 10, i % 10 };
                 GenerateNewTileToSlotLocation(start_location, false);
-                TileButton_slot[i / 10, i % 10].SlotState = Constants.ALLOCATED;
+                TileButton_slot[i / 10, i % 10].SlotState = Constants.Allocated;
             }
         }
 

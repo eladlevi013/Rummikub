@@ -1,36 +1,36 @@
 ﻿using System.Drawing;
 
-namespace rummikubGame.Utilities
+namespace RummikubGame.Utilities
 {
     public class Constants
     {
         // Global consts
-        public const int COMPUTER_PLAYER_TURN = 0;
-        public const int HUMAN_PLAYER_TURN = 1;
-        public const int RUMMIKUB_TILES_IN_GAME = 14;
-        public const int MAX_POSSIBLE_SEQUENCES_NUMBER = 4;
-        public const int DROPPED_TILE_LOCATION = -1;
-        public const int BLUE_COLOR = 0;
-        public const int BLACK_COLOR = 1;
-        public const int YELLOW_COLOR = 2;
-        public const int RED_COLOR = 3;
-        public const int JOKER_NUMBER = 0;
+        public const int ComputerPlayerTurn = 0;
+        public const int HumanPlayerTurn = 1;
+        public const int RummikubTilesInGame = 14;
+        public const int MaxPossibleSequencesNumber = 4;
+        public const int DroppedTileLocation = -1;
+        public const int BlueColor = 0;
+        public const int BlackColor = 1;
+        public const int YellowColor = 2;
+        public const int RedColor = 3;
+        public const int JokerNumber = 0;
 
         // Pool related consts
-        public static int NUMBER_OF_TIMES = 2;
-        public static int COLORS_COUNT = 4;
-        public static int N = 13;
+        public const int NumberOfTimes = 2;
+        public const int ColorsCount = 4;
+        public const int N = 13;
 
         // Slot related consts
-        public const bool AVAILABLE = false;
-        public const bool ALLOCATED = true;
+        public const bool Available = false;
+        public const bool Allocated = true;
 
         // Colors
-        public static Color BACKGROUND_COLOR = System.Drawing.ColorTranslator.FromHtml("#383B9A");
-        public static Color COMPUTER_BOARD_COLOR = System.Drawing.ColorTranslator.FromHtml("#454691");
-        public static Color MAIN_BUTTONS_COLOR = System.Drawing.ColorTranslator.FromHtml("#98734a");
+        public static Color BackgroundColor = ColorTranslator.FromHtml("#383B9A");
+        public static Color ComputerBoardColor = ColorTranslator.FromHtml("#454691");
+        public static Color MainButtonsColor = ColorTranslator.FromHtml("#98734a");
 
         // Saved game file name
-        public static string SAVED_GAME_FILE_NAME = "save.rummikub";
+        public static string SavedGameFileName = "save.rummikub";
     }
 }

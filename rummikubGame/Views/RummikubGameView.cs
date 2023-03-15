@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using rummikubGame.Utilities;
 using Rummikub.Views;
 using System.IO;
+using RummikubGame.Utilities;
 
 namespace Rummikub
 {
@@ -76,7 +77,7 @@ namespace Rummikub
         {
             Random rnd = new Random();
             current_turn = rnd.Next(0, 2);
-            if (current_turn == Constants.COMPUTER_PLAYER_TURN)
+            if (current_turn == Constants.ComputerPlayerTurn)
             {
                 game_indicator_lbl.Text = "Computer's turn";
                 computer_player.ComputerPlay(null);
@@ -117,25 +118,25 @@ namespace Rummikub
             // change the style of the drop_TileButtons_location
             global_dropped_tiles_btn.FlatStyle = FlatStyle.Flat;
             global_dropped_tiles_btn.FlatAppearance.BorderSize = 0;
-            global_dropped_tiles_btn.BackColor = Constants.BACKGROUND_COLOR;
+            global_dropped_tiles_btn.BackColor = Constants.BackgroundColor;
 
             // set background color
-            computerTiles_groupbox.BackColor = Constants.COMPUTER_BOARD_COLOR;
-            board_panel.BackColor = Constants.BACKGROUND_COLOR;
-            this.BackColor = Constants.BACKGROUND_COLOR;
+            computerTiles_groupbox.BackColor = Constants.ComputerBoardColor;
+            board_panel.BackColor = Constants.BackgroundColor;
+            this.BackColor = Constants.BackgroundColor;
 
             // sets design of the pool_btn
-            pool_btn.BackColor = Constants.BACKGROUND_COLOR;
+            pool_btn.BackColor = Constants.BackgroundColor;
             pool_btn.FlatStyle = FlatStyle.Flat;
             pool_btn.FlatAppearance.BorderSize = 0;
 
             // set button flat design
             sort_color_btn.FlatStyle = FlatStyle.Flat;
             sort_color_btn.FlatAppearance.BorderSize = 0;
-            sort_color_btn.BackColor = Constants.MAIN_BUTTONS_COLOR;
+            sort_color_btn.BackColor = Constants.MainButtonsColor;
             sort_value_btn.FlatStyle = FlatStyle.Flat;
             sort_value_btn.FlatAppearance.BorderSize = 0;
-            sort_value_btn.BackColor = Constants.MAIN_BUTTONS_COLOR;
+            sort_value_btn.BackColor = Constants.MainButtonsColor;
 
             // this will send back the panel(the board)
             board_panel.SendToBack();
@@ -276,7 +277,7 @@ namespace Rummikub
 
         private static bool isJoker(Tile tile)
         {
-            return tile.Number == Constants.JOKER_NUMBER;
+            return tile.Number == Constants.JokerNumber;
         }
 
         private void pool_btn_Click(object sender, EventArgs e)
@@ -287,7 +288,7 @@ namespace Rummikub
             {
                 for (int j = HUMAN_PLAYER_BOARD_WIDTH - 1; j >= 0 && !found_last_empty_location; j--)
                 {
-                    if (human_player.board.TileButton_slot[i, j].SlotState == Constants.AVAILABLE)
+                    if (human_player.board.TileButton_slot[i, j].SlotState == Constants.Available)
                     {
                         int[] location_arr = { i, j }; // last empty place in board
                         human_player.board.GenerateNewTileByClickingPool(location_arr); // generate tile in that location
@@ -308,7 +309,7 @@ namespace Rummikub
         {
             // getting the tiles of the user
             List<VisualTile> tiles = human_player.board.GetTilesDictionary().Values.ToList();
-            List<VisualTile>[] colors_lst = new List<VisualTile>[Constants.COLORS_COUNT];
+            List<VisualTile>[] colors_lst = new List<VisualTile>[Constants.ColorsCount];
 
             // initializing the lists
             for(int i=0; i<colors_lst.Length; i++)
@@ -424,7 +425,7 @@ namespace Rummikub
 
                     // loading game info from binary file called save.rummikub
                     BinaryFormatter formatter = new BinaryFormatter();
-                    Stream stream = new FileStream(Constants.SAVED_GAME_FILE_NAME, FileMode.Open);
+                    Stream stream = new FileStream(Constants.SavedGameFileName, FileMode.Open);
                     human_player = (HumanPlayer)formatter.Deserialize(stream);
                     computer_player = (ComputerPlayer)formatter.Deserialize(stream);
 

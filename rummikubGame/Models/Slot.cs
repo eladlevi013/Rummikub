@@ -1,4 +1,5 @@
 ﻿using rummikubGame.Utilities;
+using RummikubGame.Utilities;
 using System;
 using System.Windows.Forms;
 
@@ -13,7 +14,7 @@ namespace rummikubGame
         
         public Slot()
         {
-            slotState = Constants.AVAILABLE;
+            slotState = Constants.Available;
             slotButton = new Button();
         }
 

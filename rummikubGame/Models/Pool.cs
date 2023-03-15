@@ -1,5 +1,6 @@
 ﻿using Rummikub;
 using rummikubGame.Utilities;
+using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,9 @@ namespace rummikubGame
             tilesQueue = new Queue<Tile>();
             List<Tile> tiles_list = new List<Tile>();
             
-            for (int times = 0; times < Constants.NUMBER_OF_TIMES; times++)
+            for (int times = 0; times < Constants.NumberOfTimes; times++)
             {
-                for (int color = 0; color < Constants.COLORS_COUNT; color++)
+                for (int color = 0; color < Constants.ColorsCount; color++)
                 {
                     for (int n = 1; n <= Constants.N; n++)
                     {
@@ -28,8 +29,8 @@ namespace rummikubGame
             }
 
             // adding jokers
-            tiles_list.Add(new Tile(Constants.BLACK_COLOR, Constants.JOKER_NUMBER));
-            tiles_list.Add(new Tile(Constants.RED_COLOR, Constants.JOKER_NUMBER));
+            tiles_list.Add(new Tile(Constants.BlackColor, Constants.JokerNumber));
+            tiles_list.Add(new Tile(Constants.RedColor, Constants.JokerNumber));
 
             // Shuffeling the tiles
             Random rand = new Random();

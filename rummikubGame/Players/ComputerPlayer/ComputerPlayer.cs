@@ -1,6 +1,7 @@
 ﻿using Rummikub;
 using rummikubGame.Models;
 using rummikubGame.Utilities;
+using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +51,7 @@ namespace rummikubGame
             Tile optimal_dropped_tile = null;
 
             // replacing every tile in starting_tiles with the given paramter in order to get best result
-            for (int i = 0; i < Constants.RUMMIKUB_TILES_IN_GAME - board.CountJokers(); i++)
+            for (int i = 0; i < Constants.RummikubTilesInGame - board.CountJokers(); i++)
             {
                 // all the tiles that are not jokers
                 List<Tile> all_tiles = new List<Tile>();
@@ -114,7 +115,7 @@ namespace rummikubGame
                     RummikubGameView.global_RummikubGameView_context.Controls.Remove(RummikubGameView.dropped_tiles_stack.Peek().TileButton.GetButton());
 
                 // generate computer thrown tile in Stack
-                int[] tile_in_dropped_tiles_location = { Constants.DROPPED_TILE_LOCATION, Constants.DROPPED_TILE_LOCATION };
+                int[] tile_in_dropped_tiles_location = { Constants.DroppedTileLocation, Constants.DroppedTileLocation };
                 VisualTile dropped_tile = new VisualTile(optimal_dropped_tile.Color, optimal_dropped_tile.Number, tile_in_dropped_tiles_location);
                 board.GenerateComputerThrownTile(dropped_tile);
                 
@@ -233,7 +234,7 @@ namespace rummikubGame
             board.partial_sets = board.CreatePartialSets(ref board.hand, board.partial_sets);
 
             // done in both cases(better option or not)
-            RummikubGameView.current_turn = Constants.HUMAN_PLAYER_TURN;
+            RummikubGameView.current_turn = Constants.HumanPlayerTurn;
             RummikubGameView.global_game_indicator_lbl.Text = RummikubGameView.TAKE_TILE_FROM_POOL_STACK_MSG;
             PlayerBoard.tookCard = false;
             RummikubGameView.computer_player.board.ClearBoard();
@@ -319,10 +320,10 @@ namespace rummikubGame
             all_tiles = all_tiles.OrderBy(card => card.Number).ToList();
 
             // prepering the hand tiles for the MeldsSets function
-            List<Tile>[] tiles_lst_color = new List<Tile>[Constants.COLORS_COUNT];
+            List<Tile>[] tiles_lst_color = new List<Tile>[Constants.ColorsCount];
 
             // classify to Pool.COLORS_COUNT different lists(every color in every array)
-            for (int color_index = 0; color_index < Constants.COLORS_COUNT; color_index++)
+            for (int color_index = 0; color_index < Constants.ColorsCount; color_index++)
             {
                 tiles_lst_color[color_index] = new List<Tile>();
                 for (int i = 0; i < all_tiles.Count(); i++)

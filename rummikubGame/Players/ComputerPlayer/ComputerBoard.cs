@@ -1,6 +1,7 @@
 ﻿using Rummikub;
 using rummikubGame.Models;
 using rummikubGame.Utilities;
+using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -34,7 +35,7 @@ namespace rummikubGame
 
         public int getHandTilesNumber()
         {
-            return Constants.RUMMIKUB_TILES_IN_GAME - RummikubGameView.computer_player.board.getNumberOfTilesInAllSets(sequences);
+            return Constants.RummikubTilesInGame - RummikubGameView.computer_player.board.getNumberOfTilesInAllSets(sequences);
         }
 
         public bool CheckWinner()
@@ -52,7 +53,7 @@ namespace rummikubGame
             hand = new List<Tile>();
 
             // fills the tiles list
-            for (int i = 0; i < Constants.RUMMIKUB_TILES_IN_GAME; i++)
+            for (int i = 0; i < Constants.RummikubTilesInGame; i++)
             {
                 // change this
                 Tile tile = RummikubGameView.pool.GetTile();
@@ -363,7 +364,7 @@ namespace rummikubGame
                 RummikubGameView.dropped_tiles_stack.Peek().TileButton.SetDraggable(false);
 
             Tile current_tile_from_pool = thrownTile;
-            int[] slot_location = { Constants.DROPPED_TILE_LOCATION, Constants.DROPPED_TILE_LOCATION };
+            int[] slot_location = {Constants.DroppedTileLocation, Constants.DroppedTileLocation };
 
             VisualTile computers_thrown_tile = new VisualTile(current_tile_from_pool.Color, current_tile_from_pool.Number, slot_location);
             computers_thrown_tile.TileButton.GetButton().Location = new Point(RummikubGameView.global_dropped_tiles_btn.Location.X + 10, RummikubGameView.global_dropped_tiles_btn.Location.Y + 18);

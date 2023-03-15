@@ -1,4 +1,5 @@
 ﻿using rummikubGame.Utilities;
+using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,19 +26,19 @@ namespace Rummikub.Views
 
         private void GameRulesView_Load(object sender, EventArgs e)
         {
-            this.BackColor = Constants.BACKGROUND_COLOR;
+            this.BackColor = Constants.BackgroundColor;
 
             // Sets design of the close button
             close_instructions_btn.ForeColor = Color.Black;
-            close_instructions_btn.BackColor = Constants.MAIN_BUTTONS_COLOR;
+            close_instructions_btn.BackColor = Constants.MainButtonsColor;
             close_instructions_btn.FlatStyle = FlatStyle.Flat;
             close_instructions_btn.FlatAppearance.BorderSize = 0;
 
             // Changing groupbox color
-            instructions_groupbox.BackColor = Constants.COMPUTER_BOARD_COLOR;
+            instructions_groupbox.BackColor = Constants.ComputerBoardColor;
 
             // Define the RTF format for the instructions.
-            instructions_rtf.BackColor = Constants.COMPUTER_BOARD_COLOR;
+            instructions_rtf.BackColor = Constants.ComputerBoardColor;
             instructions_rtf.ReadOnly = true;
             instructions_rtf.BorderStyle = BorderStyle.None;
             instructions_rtf.GotFocus += new EventHandler(Instructions_GotFocus);
