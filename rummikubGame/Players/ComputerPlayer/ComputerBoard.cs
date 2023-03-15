@@ -35,7 +35,7 @@ namespace rummikubGame
 
         public int getHandTilesNumber()
         {
-            return Constants.RummikubTilesInGame - RummikubGameView.computer_player.board.getNumberOfTilesInAllSets(sequences);
+            return Constants.RummikubTilesInGame - RummikubGameView.ComputerPlayer.board.getNumberOfTilesInAllSets(sequences);
         }
 
         public bool CheckWinner()
@@ -56,7 +56,7 @@ namespace rummikubGame
             for (int i = 0; i < Constants.RummikubTilesInGame; i++)
             {
                 // change this
-                Tile tile = RummikubGameView.pool.GetTile();
+                Tile tile = RummikubGameView.Pool.GetTile();
 
                 if (tile.Number == 0)
                 {
@@ -347,7 +347,7 @@ namespace rummikubGame
             }
 
             drawn_computer_cards.Add(tilePictureBox);
-            RummikubGameView.global_RummikubGameView_context.Controls.Add(drawn_computer_cards[drawn_computer_cards.Count() - 1]);
+            RummikubGameView.GlobalRummikubGameViewContext.Controls.Add(drawn_computer_cards[drawn_computer_cards.Count() - 1]);
             tilePictureBox.BringToFront();
         }
 
@@ -355,21 +355,21 @@ namespace rummikubGame
         {   
             // deletes the visibility of the computer tiles
             for (int i = 0; (drawn_computer_cards.Count != 0) && i < drawn_computer_cards.Count(); i++)
-                RummikubGameView.global_RummikubGameView_context.Controls.Remove(drawn_computer_cards[i]);
+                RummikubGameView.GlobalRummikubGameViewContext.Controls.Remove(drawn_computer_cards[i]);
         }
 
         public void GenerateComputerThrownTile(Tile thrownTile)
         {
-            if (RummikubGameView.dropped_tiles_stack.Count() > 1)
-                RummikubGameView.dropped_tiles_stack.Peek().TileButton.SetDraggable(false);
+            if (RummikubGameView.DroppedTilesStack.Count() > 1)
+                RummikubGameView.DroppedTilesStack.Peek().TileButton.SetDraggable(false);
 
             Tile current_tile_from_pool = thrownTile;
             int[] slot_location = {Constants.DroppedTileLocation, Constants.DroppedTileLocation };
 
             VisualTile computers_thrown_tile = new VisualTile(current_tile_from_pool.Color, current_tile_from_pool.Number, slot_location);
-            computers_thrown_tile.TileButton.GetButton().Location = new Point(RummikubGameView.global_dropped_tiles_btn.Location.X + 10, RummikubGameView.global_dropped_tiles_btn.Location.Y + 18);
-            RummikubGameView.human_player.board.TileDesigner(computers_thrown_tile, current_tile_from_pool, true);
-            RummikubGameView.dropped_tiles_stack.Push(computers_thrown_tile);
+            computers_thrown_tile.TileButton.GetButton().Location = new Point(RummikubGameView.GlobalDroppedTilesBtn.Location.X + 10, RummikubGameView.GlobalDroppedTilesBtn.Location.Y + 18);
+            RummikubGameView.HumanPlayer.board.TileDesigner(computers_thrown_tile, current_tile_from_pool, true);
+            RummikubGameView.DroppedTilesStack.Push(computers_thrown_tile);
         }
 
         // ---------------------------------------------------------

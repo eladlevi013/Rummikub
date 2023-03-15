@@ -53,13 +53,13 @@ namespace rummikubGame
             }
 
             // minus 1, because we havent removed any tile yet
-            RummikubGameView.global_current_pool_size_lbl.Text = GetPoolSize() - 1 + " tiles in pool";
+            RummikubGameView.GlobalCurrentPoolSizeLbl.Text = GetPoolSize() - 1 + " tiles in pool";
             return tilesQueue.Dequeue();
         }
 
         public void UpdatePoolSizeLabel()
         {
-            RummikubGameView.global_current_pool_size_lbl.Text = GetPoolSize() + " tiles in pool";
+            RummikubGameView.GlobalCurrentPoolSizeLbl.Text = GetPoolSize() + " tiles in pool";
         }
 
         private int GetPoolSize()

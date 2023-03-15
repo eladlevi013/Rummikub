@@ -32,26 +32,26 @@ namespace Rummikub.Views
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameRulesView));
-            this.instructions_groupbox = new System.Windows.Forms.GroupBox();
+            this.instructionsGroupbox = new System.Windows.Forms.GroupBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.instructions_rtf = new System.Windows.Forms.RichTextBox();
+            this.instructionsRtf = new System.Windows.Forms.RichTextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.close_instructions_btn = new System.Windows.Forms.Button();
-            this.instructions_groupbox.SuspendLayout();
+            this.closeInstructionsButton = new System.Windows.Forms.Button();
+            this.instructionsGroupbox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // instructions_groupbox
+            // instructionsGroupbox
             // 
-            this.instructions_groupbox.Controls.Add(this.pictureBox2);
-            this.instructions_groupbox.Controls.Add(this.instructions_rtf);
-            this.instructions_groupbox.Controls.Add(this.pictureBox1);
-            this.instructions_groupbox.Location = new System.Drawing.Point(45, 38);
-            this.instructions_groupbox.Name = "instructions_groupbox";
-            this.instructions_groupbox.Size = new System.Drawing.Size(887, 590);
-            this.instructions_groupbox.TabIndex = 0;
-            this.instructions_groupbox.TabStop = false;
+            this.instructionsGroupbox.Controls.Add(this.pictureBox2);
+            this.instructionsGroupbox.Controls.Add(this.instructionsRtf);
+            this.instructionsGroupbox.Controls.Add(this.pictureBox1);
+            this.instructionsGroupbox.Location = new System.Drawing.Point(45, 38);
+            this.instructionsGroupbox.Name = "instructionsGroupbox";
+            this.instructionsGroupbox.Size = new System.Drawing.Size(887, 590);
+            this.instructionsGroupbox.TabIndex = 0;
+            this.instructionsGroupbox.TabStop = false;
             // 
             // pictureBox2
             // 
@@ -63,13 +63,13 @@ namespace Rummikub.Views
             this.pictureBox2.TabIndex = 1;
             this.pictureBox2.TabStop = false;
             // 
-            // instructions_rtf
+            // instructionsRtf
             // 
-            this.instructions_rtf.Location = new System.Drawing.Point(32, 95);
-            this.instructions_rtf.Name = "instructions_rtf";
-            this.instructions_rtf.Size = new System.Drawing.Size(819, 472);
-            this.instructions_rtf.TabIndex = 2;
-            this.instructions_rtf.Text = "";
+            this.instructionsRtf.Location = new System.Drawing.Point(32, 95);
+            this.instructionsRtf.Name = "instructionsRtf";
+            this.instructionsRtf.Size = new System.Drawing.Size(819, 472);
+            this.instructionsRtf.TabIndex = 2;
+            this.instructionsRtf.Text = "";
             // 
             // pictureBox1
             // 
@@ -81,29 +81,29 @@ namespace Rummikub.Views
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
-            // close_instructions_btn
+            // closeInstructionsButton
             // 
-            this.close_instructions_btn.BackColor = System.Drawing.Color.Sienna;
-            this.close_instructions_btn.Location = new System.Drawing.Point(329, 648);
-            this.close_instructions_btn.Name = "close_instructions_btn";
-            this.close_instructions_btn.Size = new System.Drawing.Size(309, 49);
-            this.close_instructions_btn.TabIndex = 1;
-            this.close_instructions_btn.Text = "Close Instructions";
-            this.close_instructions_btn.UseVisualStyleBackColor = false;
-            this.close_instructions_btn.Click += new System.EventHandler(this.close_instructions_btn_Click);
+            this.closeInstructionsButton.BackColor = System.Drawing.Color.Sienna;
+            this.closeInstructionsButton.Location = new System.Drawing.Point(329, 648);
+            this.closeInstructionsButton.Name = "closeInstructionsButton";
+            this.closeInstructionsButton.Size = new System.Drawing.Size(309, 49);
+            this.closeInstructionsButton.TabIndex = 1;
+            this.closeInstructionsButton.Text = "Close Instructions";
+            this.closeInstructionsButton.UseVisualStyleBackColor = false;
+            this.closeInstructionsButton.Click += new System.EventHandler(this.CloseInstructionsButton_Click);
             // 
             // GameRulesView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(979, 729);
-            this.Controls.Add(this.close_instructions_btn);
-            this.Controls.Add(this.instructions_groupbox);
+            this.Controls.Add(this.closeInstructionsButton);
+            this.Controls.Add(this.instructionsGroupbox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "GameRulesView";
             this.Text = "GameRules";
             this.Load += new System.EventHandler(this.GameRulesView_Load);
-            this.instructions_groupbox.ResumeLayout(false);
+            this.instructionsGroupbox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
@@ -112,10 +112,10 @@ namespace Rummikub.Views
 
         #endregion
 
-        private GroupBox instructions_groupbox;
-        private Button close_instructions_btn;
+        private GroupBox instructionsGroupbox;
+        private Button closeInstructionsButton;
         private PictureBox pictureBox1;
         private PictureBox pictureBox2;
-        private RichTextBox instructions_rtf;
+        private RichTextBox instructionsRtf;
     }
 }

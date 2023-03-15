@@ -1,63 +1,58 @@
-﻿using rummikubGame.Draggable;
+﻿using Rummikub.Views;
 using rummikubGame;
+using rummikubGame.Draggable;
+using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Data;
-using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using rummikubGame.Utilities;
-using Rummikub.Views;
-using System.IO;
-using RummikubGame.Utilities;
 
 namespace Rummikub
 {
     public partial class RummikubGameView : Form
     {
-        // show computer tiles toggle
-        public static bool show_computer_tiles_toggle = true;
+        // Show computer tiles toggle
+        public static bool ShowComputerTilesToggle = true;
 
-        // Assets path consts
-        public static String ASSETS_PATH = ConfigurationManager.AppSettings["AssetsPath"];
-        public static String SLOT_PATH = Path.Combine(ASSETS_PATH, ConfigurationManager.AppSettings["SlotPath"]);
-        public static String TILE_PATH = Path.Combine(ASSETS_PATH, ConfigurationManager.AppSettings["TilePath"]);
-        public static String BRIGHT_TILE_PATH = Path.Combine(ASSETS_PATH, ConfigurationManager.AppSettings["BrightTilePath"]);
-        public static String BLACK_JOKER_PATH = Path.Combine(ASSETS_PATH, ConfigurationManager.AppSettings["BlackJokerPath"]);
-        public static String RED_JOKER_PATH = Path.Combine(ASSETS_PATH, ConfigurationManager.AppSettings["RedJokerPath"]);
+        // Assets path constants
+        public static string AssetsPath = ConfigurationManager.AppSettings["AssetsPath"];
+        public static string SlotPath = Path.Combine(AssetsPath, ConfigurationManager.AppSettings["SlotPath"]);
+        public static string TilePath = Path.Combine(AssetsPath, ConfigurationManager.AppSettings["TilePath"]);
+        public static string BrightTilePath = Path.Combine(AssetsPath, ConfigurationManager.AppSettings["BrightTilePath"]);
+        public static string BlackJokerPath = Path.Combine(AssetsPath, ConfigurationManager.AppSettings["BlackJokerPath"]);
+        public static string RedJokerPath = Path.Combine(AssetsPath, ConfigurationManager.AppSettings["RedJokerPath"]);
 
-        // Graphical consts
-        public const int HUMAN_PLAYER_BOARD_HEIGHT = 2;
-        public const int HUMAN_PLAYER_BOARD_WIDTH = 10;
-        public const int TILE_WIDTH = 75;
-        public const int TILE_HEIGHT = 100;
+        // Graphical constants
+        public const int HumanPlayerBoardHeight = 2;
+        public const int HumanPlayerBoardWidth = 10;
+        public const int TileWidth = 75;
+        public const int TileHeight = 100;
 
         // Game indicator messages
-        public static String TAKE_TILE_FROM_POOL_STACK_MSG = "Your turn - take tile from pool/stack";
-        public static String DROP_TILE_FROM_BOARD_MSG = "Your turn - drop tile from board";
+        public static string TakeTileFromPoolStackMsg = "Your turn - take tile from pool/stack";
+        public static string DropTileFromBoardMsg = "Your turn - drop tile from board";
 
-        // players
-        public static HumanPlayer human_player;
-        public static ComputerPlayer computer_player;
+        // Players
+        public static HumanPlayer HumanPlayer;
+        public static ComputerPlayer ComputerPlayer;
 
         // UI global elements - needs to be accessed outside this class
-        public static Label global_game_indicator_lbl;
-        public static Label global_current_pool_size_lbl;
-        public static Form global_RummikubGameView_context; // used in order to add buttons from other classes
-        public static Button global_dropped_tiles_btn; // dropped_tiles button, used in the mouseUp
-        public static Button global_pool_btn; // pool_stack button, used in the mouseUp
-        public static GroupBox global_pool_drop_groupbox;
+        public static Label GlobalGameIndicatorLbl;
+        public static Label GlobalCurrentPoolSizeLbl;
+        public static Form GlobalRummikubGameViewContext; // Used in order to add buttons from other classes
+        public static Button GlobalDroppedTilesBtn; // Dropped tiles button, used in the mouseUp
+        public static Button GlobalPoolBtn; // Pool/stack button, used in the mouseUp
+        public static GroupBox GlobalPoolDropGroupbox;
 
-        // global variables
-        public static int current_turn;
-        public static bool game_over = false;
-        public static Pool pool;
-        public static Stack<VisualTile> dropped_tiles_stack;
+        // Global variables
+        public static int CurrentTurn;
+        public static bool GameOver = false;
+        public static Pool Pool;
+        public static Stack<VisualTile> DroppedTilesStack;
 
         public RummikubGameView()
         {
@@ -67,20 +62,20 @@ namespace Rummikub
 
         public void StartGameObjectCreation()
         {
-            dropped_tiles_stack = new Stack<VisualTile>(); // empty dropped tiles
-            pool = new Pool(); // generate rummikub tiles
-            computer_player = new ComputerPlayer();
-            human_player = new HumanPlayer();
+            DroppedTilesStack = new Stack<VisualTile>(); // empty dropped tiles
+            Pool = new Pool(); // generate rummikub tiles
+            ComputerPlayer = new ComputerPlayer();
+            HumanPlayer = new HumanPlayer();
         }
 
         public void StartGameSetTurn()
         {
             Random rnd = new Random();
-            current_turn = rnd.Next(0, 2);
-            if (current_turn == Constants.ComputerPlayerTurn)
+            CurrentTurn = rnd.Next(0, 2);
+            if (CurrentTurn == Constants.ComputerPlayerTurn)
             {
                 game_indicator_lbl.Text = "Computer's turn";
-                computer_player.ComputerPlay(null);
+                ComputerPlayer.ComputerPlay(null);
             }
             else
             {
@@ -107,18 +102,18 @@ namespace Rummikub
         private void RummikubGameView_Load(object sender, EventArgs e)
         {
             // update global variables
-            global_pool_btn = pool_btn;
-            global_current_pool_size_lbl = current_pool_size_lbl;
-            global_RummikubGameView_context = this; // updates the RummikubGameView context
-            global_dropped_tiles_btn = dropped_tiles_btn; // updates the dropped_tiles variable, so it'll be accessed outside that class
-            global_game_indicator_lbl = game_indicator_lbl;
+            GlobalPoolBtn = pool_btn;
+            GlobalCurrentPoolSizeLbl = current_pool_size_lbl;
+            GlobalRummikubGameViewContext = this; // updates the RummikubGameView context
+            GlobalDroppedTilesBtn = dropped_tiles_btn; // updates the dropped_tiles variable, so it'll be accessed outside that class
+            GlobalGameIndicatorLbl = game_indicator_lbl;
 
             StartGameObjectCreation();
 
             // change the style of the drop_TileButtons_location
-            global_dropped_tiles_btn.FlatStyle = FlatStyle.Flat;
-            global_dropped_tiles_btn.FlatAppearance.BorderSize = 0;
-            global_dropped_tiles_btn.BackColor = Constants.BackgroundColor;
+            GlobalDroppedTilesBtn.FlatStyle = FlatStyle.Flat;
+            GlobalDroppedTilesBtn.FlatAppearance.BorderSize = 0;
+            GlobalDroppedTilesBtn.BackColor = Constants.BackgroundColor;
 
             // set background color
             computerTiles_groupbox.BackColor = Constants.ComputerBoardColor;
@@ -144,29 +139,29 @@ namespace Rummikub
             StartGameSetTurn();
 
             // if the game is over, and the computer won
-            if (computer_player.board.CheckWinner() == true && RummikubGameView.game_over == false)
+            if (ComputerPlayer.board.CheckWinner() == true && GameOver == false)
             {
                 MessageBox.Show("Computer Won!");
-                RummikubGameView.global_game_indicator_lbl.Text = "Game Over - Computer Won";
-                RummikubGameView.human_player.board.disableHumanBoard();
+                RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - Computer Won";
+                RummikubGameView.HumanPlayer.board.disableHumanBoard();
 
-                if (RummikubGameView.dropped_tiles_stack.Count > 0)
-                    RummikubGameView.dropped_tiles_stack.Peek().TileButton.GetButton().Enabled = false;
-                RummikubGameView.game_over = true;
+                if (RummikubGameView.DroppedTilesStack.Count > 0)
+                    RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
+                GameOver = true;
             }
         }
 
         public static void CheckWinnerWhenPoolOver()
         {
             // tilesQueue is empty -> tiles are over -> game over -> decide who is the winner(fewer files in hand)
-            if (RummikubGameView.computer_player.board.getHandTilesNumber() == RummikubGameView.human_player.board.GetHandTilesNumber())
+            if (RummikubGameView.ComputerPlayer.board.getHandTilesNumber() == RummikubGameView.HumanPlayer.board.GetHandTilesNumber())
                 MessageBox.Show("Tie!");
-            else if (RummikubGameView.computer_player.board.getHandTilesNumber() > RummikubGameView.human_player.board.GetHandTilesNumber())
+            else if (RummikubGameView.ComputerPlayer.board.getHandTilesNumber() > RummikubGameView.HumanPlayer.board.GetHandTilesNumber())
                 MessageBox.Show("You Won!");
             else
                 MessageBox.Show("Computer Won!");
-            RummikubGameView.game_over = true;
-            RummikubGameView.human_player.board.disableHumanBoard();
+            GameOver = true;
+            RummikubGameView.HumanPlayer.board.disableHumanBoard();
         }
 
         public static bool CheckWinner(List<List<Tile>> melds)
@@ -284,14 +279,14 @@ namespace Rummikub
         {
             // generate a card to the last-empty place in the board
             bool found_last_empty_location = false;
-            for (int i = HUMAN_PLAYER_BOARD_HEIGHT - 1; i >= 0 && !found_last_empty_location; i--)
+            for (int i = HumanPlayerBoardHeight - 1; i >= 0 && !found_last_empty_location; i--)
             {
-                for (int j = HUMAN_PLAYER_BOARD_WIDTH - 1; j >= 0 && !found_last_empty_location; j--)
+                for (int j = HumanPlayerBoardWidth - 1; j >= 0 && !found_last_empty_location; j--)
                 {
-                    if (human_player.board.TileButton_slot[i, j].SlotState == Constants.Available)
+                    if (HumanPlayer.board.TileButton_slot[i, j].SlotState == Constants.Available)
                     {
                         int[] location_arr = { i, j }; // last empty place in board
-                        human_player.board.GenerateNewTileByClickingPool(location_arr); // generate tile in that location
+                        HumanPlayer.board.GenerateNewTileByClickingPool(location_arr); // generate tile in that location
                         found_last_empty_location = true; // skip future iterations
                     }
                 }
@@ -300,15 +295,15 @@ namespace Rummikub
 
         private void sort_value_btn_click(object sender, EventArgs e)
         {
-            List<VisualTile> sorted_cards = human_player.board.GetTilesDictionary().Values.ToList();
+            List<VisualTile> sorted_cards = HumanPlayer.board.GetTilesDictionary().Values.ToList();
             sorted_cards = sorted_cards.OrderBy(card => card.Number).ToList();
-            human_player.board.ArrangeCardsOnBoard(sorted_cards);
+            HumanPlayer.board.ArrangeCardsOnBoard(sorted_cards);
         }
 
         private void sort_color_btn_click(object sender, EventArgs e)
         {
             // getting the tiles of the user
-            List<VisualTile> tiles = human_player.board.GetTilesDictionary().Values.ToList();
+            List<VisualTile> tiles = HumanPlayer.board.GetTilesDictionary().Values.ToList();
             List<VisualTile>[] colors_lst = new List<VisualTile>[Constants.ColorsCount];
 
             // initializing the lists
@@ -337,20 +332,20 @@ namespace Rummikub
                 sorted_tiles.AddRange(colors_lst[i]);
             }
 
-            human_player.board.ArrangeCardsOnBoard(sorted_tiles);
+            HumanPlayer.board.ArrangeCardsOnBoard(sorted_tiles);
         }
 
         private void clearAllTilesFromScreen()
         {
             // Clearning the boards
-            human_player.board.ClearBoard();
-            computer_player.board.ClearBoard();
+            HumanPlayer.board.ClearBoard();
+            ComputerPlayer.board.ClearBoard();
 
             // Clearing dropped tiles
-            while (RummikubGameView.dropped_tiles_stack.Count > 0)
+            while (RummikubGameView.DroppedTilesStack.Count > 0)
             {
-                RummikubGameView.global_RummikubGameView_context.Controls.Remove(RummikubGameView.dropped_tiles_stack.Peek().TileButton.GetButton());
-                RummikubGameView.dropped_tiles_stack.Pop();
+                RummikubGameView.GlobalRummikubGameViewContext.Controls.Remove(RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton());
+                RummikubGameView.DroppedTilesStack.Pop();
             }
         }
 
@@ -359,8 +354,8 @@ namespace Rummikub
             clearAllTilesFromScreen();
 
             // Sets more vars
-            RummikubGameView.game_over = false;
-            RummikubGameView.global_dropped_tiles_btn.Enabled = true;
+            RummikubGameView.GameOver = false;
+            RummikubGameView.GlobalDroppedTilesBtn.Enabled = true;
             PlayerBoard.tookCard = false;
 
             // reset dragging var
@@ -389,17 +384,17 @@ namespace Rummikub
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
                     Stream stream = new FileStream(SaveFileDialog.FileName, FileMode.Create);
-                    formatter.Serialize(stream, human_player);
-                    formatter.Serialize(stream, computer_player);
+                    formatter.Serialize(stream, HumanPlayer);
+                    formatter.Serialize(stream, ComputerPlayer);
 
                     // saving game info
-                    formatter.Serialize(stream, RummikubGameView.current_turn);
-                    formatter.Serialize(stream, RummikubGameView.game_over);
-                    formatter.Serialize(stream, RummikubGameView.pool);
-                    formatter.Serialize(stream, RummikubGameView.dropped_tiles_stack);
+                    formatter.Serialize(stream, RummikubGameView.CurrentTurn);
+                    formatter.Serialize(stream, RummikubGameView.GameOver);
+                    formatter.Serialize(stream, RummikubGameView.Pool);
+                    formatter.Serialize(stream, RummikubGameView.DroppedTilesStack);
                     formatter.Serialize(stream, PlayerBoard.tookCard);
                     formatter.Serialize(stream, PlayerBoard.TAG_NUMBER);
-                    formatter.Serialize(stream, RummikubGameView.global_game_indicator_lbl.Text);
+                    formatter.Serialize(stream, RummikubGameView.GlobalGameIndicatorLbl.Text);
                     stream.Close();
                 }
             }
@@ -426,20 +421,20 @@ namespace Rummikub
                     // loading game info from binary file called save.rummikub
                     BinaryFormatter formatter = new BinaryFormatter();
                     Stream stream = new FileStream(Constants.SavedGameFileName, FileMode.Open);
-                    human_player = (HumanPlayer)formatter.Deserialize(stream);
-                    computer_player = (ComputerPlayer)formatter.Deserialize(stream);
+                    HumanPlayer = (HumanPlayer)formatter.Deserialize(stream);
+                    ComputerPlayer = (ComputerPlayer)formatter.Deserialize(stream);
 
-                    RummikubGameView.current_turn = (int)formatter.Deserialize(stream);
-                    RummikubGameView.game_over = (bool)formatter.Deserialize(stream);
-                    RummikubGameView.pool = (Pool)formatter.Deserialize(stream);
-                    RummikubGameView.dropped_tiles_stack = (Stack<VisualTile>)formatter.Deserialize(stream);
+                    RummikubGameView.CurrentTurn = (int)formatter.Deserialize(stream);
+                    RummikubGameView.GameOver = (bool)formatter.Deserialize(stream);
+                    RummikubGameView.Pool = (Pool)formatter.Deserialize(stream);
+                    RummikubGameView.DroppedTilesStack = (Stack<VisualTile>)formatter.Deserialize(stream);
                     PlayerBoard.tookCard = (bool)formatter.Deserialize(stream);
                     PlayerBoard.TAG_NUMBER = (int)formatter.Deserialize(stream);
-                    RummikubGameView.global_game_indicator_lbl.Text = (string)formatter.Deserialize(stream);
+                    RummikubGameView.GlobalGameIndicatorLbl.Text = (string)formatter.Deserialize(stream);
                     stream.Close();
 
                     // fix dropped tiles stack
-                    Stack<VisualTile> temp_dropped_tiles = dropped_tiles_stack;
+                    Stack<VisualTile> temp_dropped_tiles = DroppedTilesStack;
                     Stack<VisualTile> revered_dropped_tiles = new Stack<VisualTile>();
                     while (temp_dropped_tiles.Count > 0)
                     {
@@ -448,28 +443,28 @@ namespace Rummikub
 
                     while (revered_dropped_tiles.Count > 1)
                     {
-                        computer_player.board.GenerateComputerThrownTile(revered_dropped_tiles.Pop());
-                        human_player.board.DisableLastDroppedTile();
+                        ComputerPlayer.board.GenerateComputerThrownTile(revered_dropped_tiles.Pop());
+                        HumanPlayer.board.DisableLastDroppedTile();
                     }
                     if (revered_dropped_tiles.Count > 0 && revered_dropped_tiles.Peek() != null)
                     {
-                        computer_player.board.GenerateComputerThrownTile(revered_dropped_tiles.Pop());
+                        ComputerPlayer.board.GenerateComputerThrownTile(revered_dropped_tiles.Pop());
                         if (PlayerBoard.tookCard == true)
-                            human_player.board.DisableLastDroppedTile();
+                            HumanPlayer.board.DisableLastDroppedTile();
                     }
 
                     // fix to the computer player board
-                    computer_player.board.drawn_computer_cards = new List<Label>();
+                    ComputerPlayer.board.drawn_computer_cards = new List<Label>();
 
-                    human_player.board.GenerateTiles();
-                    computer_player.board.GenerateBoard();
+                    HumanPlayer.board.GenerateTiles();
+                    ComputerPlayer.board.GenerateBoard();
 
                     // changing the labels
-                    pool.UpdatePoolSizeLabel();
+                    Pool.UpdatePoolSizeLabel();
 
                     // checking if game over
-                    if (game_over)
-                        human_player.board.disableHumanBoard();
+                    if (GameOver)
+                        HumanPlayer.board.disableHumanBoard();
                 }
             }
             catch (Exception ex)
@@ -499,8 +494,8 @@ namespace Rummikub
             if (((ToolStripMenuItem)sender).Checked == true)
             {
                 computerTiles_groupbox.Visible = false;
-                computer_player.board.ClearBoard();
-                show_computer_tiles_toggle = false;
+                ComputerPlayer.board.ClearBoard();
+                ShowComputerTilesToggle = false;
                 ((ToolStripMenuItem)sender).Checked = false;
 
                 // center the groupbox
@@ -510,8 +505,8 @@ namespace Rummikub
             else
             {
                 computerTiles_groupbox.Visible = true;
-                computer_player.board.GenerateBoard();
-                show_computer_tiles_toggle = true;
+                ComputerPlayer.board.GenerateBoard();
+                ShowComputerTilesToggle = true;
                 ((ToolStripMenuItem)sender).Checked = true;
             }
         }
