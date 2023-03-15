@@ -365,12 +365,12 @@ namespace rummikubGame
                 MessageBox.Show("You Won!");
                 RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - You Won";
                 RummikubGameView.GameOver = true;
-                RummikubGameView.HumanPlayer.board.disableHumanBoard();
+                RummikubGameView.HumanPlayer.board.DisableHumanBoard();
                 RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
             }
         }
         
-        private List<List<Tile>> meldsArrangedByPlayer()
+        private List<List<Tile>> MeldsArrangedByPlayer()
         {
             List<VisualTile> topBoard_tiles = new List<VisualTile>();
             List<VisualTile> bottomBoard_tiles = new List<VisualTile>();
@@ -393,14 +393,14 @@ namespace rummikubGame
 
             List<List<Tile>> converted_melds_computer_format = new List<List<Tile>>();
             for (int i = 0; i < melds.Count(); i++)
-                converted_melds_computer_format.Add(convertTilesButtonListToComputerFormat(melds[i]));
+                converted_melds_computer_format.Add(ConvertTilesButtonListToComputerFormat(melds[i]));
 
             return converted_melds_computer_format;
         }
 
         public int GetHandTilesNumber()
         {
-            List<List<Tile>> melds = meldsArrangedByPlayer();
+            List<List<Tile>> melds = MeldsArrangedByPlayer();
             int tiles_in_sets = 0;
 
             for(int set_index = 0; set_index < melds.Count(); set_index++)
@@ -410,7 +410,7 @@ namespace rummikubGame
             return Constants.RummikubTilesInGame - tiles_in_sets;
         }
 
-        public static List<Tile> convertTilesButtonListToComputerFormat(List<VisualTile> tiles)
+        public static List<Tile> ConvertTilesButtonListToComputerFormat(List<VisualTile> tiles)
         {
             List<Tile> new_tiles_format = new List<Tile>();
             for(int i=0; i<tiles.Count(); i++)
@@ -460,7 +460,7 @@ namespace rummikubGame
             }
         }
 
-        public void disableHumanBoard()
+        public void DisableHumanBoard()
         {
             for(int i=0; i < TileButtons.Keys.ToList().Count(); i++)
             {
@@ -581,7 +581,7 @@ namespace rummikubGame
 
         public bool CheckWinner()
         {
-            List<List<Tile>> melds = meldsArrangedByPlayer();
+            List<List<Tile>> melds = MeldsArrangedByPlayer();
             return RummikubGameView.CheckWinner(melds);
         }
     }

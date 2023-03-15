@@ -82,7 +82,7 @@ namespace rummikubGame
                 AddJokersAfterMeldsSets(ref temp_partial_set, ref temp_sequences, ref jokers, ref temp_hand);
 
                 // check current situation is better than the optimal
-                if (board.getNumberOfTilesInAllSets(better_option_sequences) < board.getNumberOfTilesInAllSets(temp_sequences))
+                if (board.GetNumberOfTilesInAllSets(better_option_sequences) < board.GetNumberOfTilesInAllSets(temp_sequences))
                 {
                     better_option_sequences = temp_sequences;
                     better_option_hand = temp_hand;
@@ -247,7 +247,7 @@ namespace rummikubGame
             {
                 MessageBox.Show("Computer Won!");
                 RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - Computer Won";
-                RummikubGameView.HumanPlayer.board.disableHumanBoard();
+                RummikubGameView.HumanPlayer.board.DisableHumanBoard();
 
                 if (RummikubGameView.DroppedTilesStack.Count > 0)
                     RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;

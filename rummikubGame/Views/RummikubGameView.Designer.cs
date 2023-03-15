@@ -67,7 +67,7 @@ namespace Rummikub
             this.sort_value_btn.TabIndex = 8;
             this.sort_value_btn.Text = "Sort By Value";
             this.sort_value_btn.UseVisualStyleBackColor = true;
-            this.sort_value_btn.Click += new System.EventHandler(this.sort_value_btn_click);
+            this.sort_value_btn.Click += new System.EventHandler(this.SortValueBtn_Click);
             // 
             // computerTiles_groupbox
             // 
@@ -140,21 +140,21 @@ namespace Rummikub
             this.saveGameToolStripMenuItem.Name = "saveGameToolStripMenuItem";
             this.saveGameToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.saveGameToolStripMenuItem.Text = "Save Game";
-            this.saveGameToolStripMenuItem.Click += new System.EventHandler(this.saveGameToolStripMenuItem_Click);
+            this.saveGameToolStripMenuItem.Click += new System.EventHandler(this.SaveGameToolStripMenuItem_Click);
             // 
             // loadGameToolStripMenuItem
             // 
             this.loadGameToolStripMenuItem.Name = "loadGameToolStripMenuItem";
             this.loadGameToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.loadGameToolStripMenuItem.Text = "Load Game";
-            this.loadGameToolStripMenuItem.Click += new System.EventHandler(this.loadGameToolStripMenuItem_Click);
+            this.loadGameToolStripMenuItem.Click += new System.EventHandler(this.LoadGameToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.exitToolStripMenuItem.Text = "Exit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // gameToolStripMenuItem
             // 
@@ -171,14 +171,14 @@ namespace Rummikub
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
             this.resetToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
             this.resetToolStripMenuItem.Text = "Reset";
-            this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
+            this.resetToolStripMenuItem.Click += new System.EventHandler(this.ResetToolStripMenuItem_Click);
             // 
             // instructionsToolStripMenuItem
             // 
             this.instructionsToolStripMenuItem.Name = "instructionsToolStripMenuItem";
             this.instructionsToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
             this.instructionsToolStripMenuItem.Text = "Instructions";
-            this.instructionsToolStripMenuItem.Click += new System.EventHandler(this.instructionsToolStripMenuItem_Click);
+            this.instructionsToolStripMenuItem.Click += new System.EventHandler(this.InstructionsToolStripMenuItem_Click);
             // 
             // showComputerTilesToggleToolStripMenuItem
             // 
@@ -187,7 +187,7 @@ namespace Rummikub
             this.showComputerTilesToggleToolStripMenuItem.Name = "showComputerTilesToggleToolStripMenuItem";
             this.showComputerTilesToggleToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
             this.showComputerTilesToggleToolStripMenuItem.Text = "Show Computer Tiles Toggle";
-            this.showComputerTilesToggleToolStripMenuItem.Click += new System.EventHandler(this.showComputerTilesToggleToolStripMenuItem_Click);
+            this.showComputerTilesToggleToolStripMenuItem.Click += new System.EventHandler(this.ShowComputerTilesToggleToolStripMenuItem_Click);
             // 
             // sort_color_btn
             // 
@@ -198,7 +198,7 @@ namespace Rummikub
             this.sort_color_btn.TabIndex = 9;
             this.sort_color_btn.Text = "Sort By Color";
             this.sort_color_btn.UseVisualStyleBackColor = false;
-            this.sort_color_btn.Click += new System.EventHandler(this.sort_color_btn_click);
+            this.sort_color_btn.Click += new System.EventHandler(this.SortColorBtn_Click);
             // 
             // board_panel
             // 
@@ -218,7 +218,7 @@ namespace Rummikub
             this.pool_btn.Size = new System.Drawing.Size(99, 135);
             this.pool_btn.TabIndex = 3;
             this.pool_btn.UseVisualStyleBackColor = true;
-            this.pool_btn.Click += new System.EventHandler(this.pool_btn_Click);
+            this.pool_btn.Click += new System.EventHandler(this.PoolBtn_Click);
             // 
             // dropped_tiles_btn
             // 

@@ -92,7 +92,7 @@ namespace Rummikub
             switch (keyData)
             {
                 case Keys.F5:
-                    startNewGame();
+                    StartNewGame();
                     bHandled = true;
                     break;
             }
@@ -143,7 +143,7 @@ namespace Rummikub
             {
                 MessageBox.Show("Computer Won!");
                 RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - Computer Won";
-                RummikubGameView.HumanPlayer.board.disableHumanBoard();
+                RummikubGameView.HumanPlayer.board.DisableHumanBoard();
 
                 if (RummikubGameView.DroppedTilesStack.Count > 0)
                     RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
@@ -154,14 +154,14 @@ namespace Rummikub
         public static void CheckWinnerWhenPoolOver()
         {
             // tilesQueue is empty -> tiles are over -> game over -> decide who is the winner(fewer files in hand)
-            if (RummikubGameView.ComputerPlayer.board.getHandTilesNumber() == RummikubGameView.HumanPlayer.board.GetHandTilesNumber())
+            if (RummikubGameView.ComputerPlayer.board.GetHandTilesNumber() == RummikubGameView.HumanPlayer.board.GetHandTilesNumber())
                 MessageBox.Show("Tie!");
-            else if (RummikubGameView.ComputerPlayer.board.getHandTilesNumber() > RummikubGameView.HumanPlayer.board.GetHandTilesNumber())
+            else if (RummikubGameView.ComputerPlayer.board.GetHandTilesNumber() > RummikubGameView.HumanPlayer.board.GetHandTilesNumber())
                 MessageBox.Show("You Won!");
             else
                 MessageBox.Show("Computer Won!");
             GameOver = true;
-            RummikubGameView.HumanPlayer.board.disableHumanBoard();
+            RummikubGameView.HumanPlayer.board.DisableHumanBoard();
         }
 
         public static bool CheckWinner(List<List<Tile>> melds)
@@ -188,7 +188,7 @@ namespace Rummikub
             int first_non_joker_index = 0;
             for (int i = 0; i < meld.Count; i++)
             {
-                if (!isJoker(meld[i]))
+                if (!IsJoker(meld[i]))
                 {
                     first_non_joker_index = i;
                     break;
@@ -202,11 +202,11 @@ namespace Rummikub
             {
                 // if meld number is not equal to the value + the index of the tile in the meld its cant be a run
                 if ((meld[i].Number != value + i - first_non_joker_index
-                    || meld[i].Color != color) && !isJoker(meld[i]))
+                    || meld[i].Color != color) && !IsJoker(meld[i]))
                 {
                     isRun = false;
                 }
-                if (isJoker(meld[i]))
+                if (IsJoker(meld[i]))
                 {
                     // Skip over jokers and continue checking the rest of the tiles
                     continue;
@@ -236,13 +236,13 @@ namespace Rummikub
             }
             for (int i = 0; i < meld.Count() - 1; i++)
             {
-                if (meld[i + 1].Number != value && !isJoker(meld[i + 1]))
+                if (meld[i + 1].Number != value && !IsJoker(meld[i + 1]))
                 {
                     return false; // its cannot be group
                 }
                 for (int j = i + 1; j < meld.Count(); j++)
                 {
-                    if (meld[i].Color == meld[j].Color && !isJoker(meld[i]) && !isJoker(meld[j]))
+                    if (meld[i].Color == meld[j].Color && !IsJoker(meld[i]) && !IsJoker(meld[j]))
                     {
                         return false;
                     }
@@ -250,7 +250,7 @@ namespace Rummikub
             }
 
             // check if there are too many jokers used
-            int numJokers = countJokers(meld);
+            int numJokers = CountJokers(meld);
             if (numJokers > 2)
             {
                 return false; // too many jokers used
@@ -259,23 +259,23 @@ namespace Rummikub
             return true;
         }
 
-        private static int countJokers(List<Tile> meld)
+        private static int CountJokers(List<Tile> meld)
         {
             int count = 0;
             foreach (Tile tile in meld)
             {
-                if (isJoker(tile))
+                if (IsJoker(tile))
                     count++;
             }
             return count;
         }
 
-        private static bool isJoker(Tile tile)
+        private static bool IsJoker(Tile tile)
         {
             return tile.Number == Constants.JokerNumber;
         }
 
-        private void pool_btn_Click(object sender, EventArgs e)
+        private void PoolBtn_Click(object sender, EventArgs e)
         {
             // generate a card to the last-empty place in the board
             bool found_last_empty_location = false;
@@ -293,14 +293,14 @@ namespace Rummikub
             }
         }
 
-        private void sort_value_btn_click(object sender, EventArgs e)
+        private void SortValueBtn_Click(object sender, EventArgs e)
         {
             List<VisualTile> sorted_cards = HumanPlayer.board.GetTilesDictionary().Values.ToList();
             sorted_cards = sorted_cards.OrderBy(card => card.Number).ToList();
             HumanPlayer.board.ArrangeCardsOnBoard(sorted_cards);
         }
 
-        private void sort_color_btn_click(object sender, EventArgs e)
+        private void SortColorBtn_Click(object sender, EventArgs e)
         {
             // getting the tiles of the user
             List<VisualTile> tiles = HumanPlayer.board.GetTilesDictionary().Values.ToList();
@@ -335,7 +335,7 @@ namespace Rummikub
             HumanPlayer.board.ArrangeCardsOnBoard(sorted_tiles);
         }
 
-        private void clearAllTilesFromScreen()
+        private void ClearAllTilesFromScreen()
         {
             // Clearning the boards
             HumanPlayer.board.ClearBoard();
@@ -349,9 +349,9 @@ namespace Rummikub
             }
         }
 
-        public void startNewGame()
+        public void StartNewGame()
         {
-            clearAllTilesFromScreen();
+            ClearAllTilesFromScreen();
 
             // Sets more vars
             RummikubGameView.GameOver = false;
@@ -366,12 +366,12 @@ namespace Rummikub
             StartGameSetTurn();
         }
 
-        private void resetToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ResetToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            startNewGame();
+            StartNewGame();
         }
 
-        private void saveGameToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
@@ -404,7 +404,7 @@ namespace Rummikub
             }
         }
 
-        private void loadGameToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
@@ -416,7 +416,7 @@ namespace Rummikub
                     OpenFileDialog.FileName != "")
                 {
                     // Clearning the boards
-                    clearAllTilesFromScreen();
+                    ClearAllTilesFromScreen();
 
                     // loading game info from binary file called save.rummikub
                     BinaryFormatter formatter = new BinaryFormatter();
@@ -464,17 +464,17 @@ namespace Rummikub
 
                     // checking if game over
                     if (GameOver)
-                        HumanPlayer.board.disableHumanBoard();
+                        HumanPlayer.board.DisableHumanBoard();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
-                startNewGame();
+                StartNewGame();
             }
         }
 
-        private void instructionsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void InstructionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GameRulesView gameRules_form = new GameRulesView();
             gameRules_form.StartPosition = FormStartPosition.Manual;
@@ -484,12 +484,12 @@ namespace Rummikub
             gameRules_form.ShowDialog();
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void showComputerTilesToggleToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ShowComputerTilesToggleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (((ToolStripMenuItem)sender).Checked == true)
             {

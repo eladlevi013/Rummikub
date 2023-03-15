@@ -33,9 +33,9 @@ namespace rummikubGame
         [NonSerialized]
         public List<Label> drawn_computer_cards;
 
-        public int getHandTilesNumber()
+        public int GetHandTilesNumber()
         {
-            return Constants.RummikubTilesInGame - RummikubGameView.ComputerPlayer.board.getNumberOfTilesInAllSets(sequences);
+            return Constants.RummikubTilesInGame - RummikubGameView.ComputerPlayer.board.GetNumberOfTilesInAllSets(sequences);
         }
 
         public bool CheckWinner()
@@ -402,7 +402,7 @@ namespace rummikubGame
                 jokers.Remove(tiles_to_remove[i]);
         }
 
-        public int getNumberOfTilesInAllSets(List<List<Tile>> sequences)
+        public int GetNumberOfTilesInAllSets(List<List<Tile>> sequences)
         {
             int sum = 0;
             if (sequences != null)
