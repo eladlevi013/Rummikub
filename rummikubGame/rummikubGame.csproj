@@ -50,6 +50,7 @@
     <Compile Include="Draggable\DraggableComponent.cs" />
     <Compile Include="Draggable\Elements\DraggableButton.cs" />
     <Compile Include="Draggable\IDraggable.cs" />
+    <Compile Include="Exceptions\EmptyPoolException.cs" />
     <Compile Include="Models\IBoard.cs" />
     <Compile Include="Models\PartialSet.cs" />
     <Compile Include="Models\Pool.cs" />

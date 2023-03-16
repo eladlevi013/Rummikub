@@ -1,4 +1,5 @@
 ﻿using Rummikub;
+using rummikubGame.Exceptions;
 using rummikubGame.Utilities;
 using RummikubGame.Utilities;
 using System;
@@ -15,15 +16,15 @@ namespace rummikubGame
     public class PlayerBoard : IBoard
     {
         // Consts
-        const int STARTING_X_LOCATION = 70;
-        const int STARTING_Y_LOCATION = 410;
-        const int X_SPACE_BETWEEN_TileButtons = 85;
-        const int Y_SPACE_BETWEEN_TileButtons = 115;
+        const int StartingXLocation = 70;
+        const int StartingYLocation = 410;
+        const int XSpaceBetweenTileButtonsButtons = 85;
+        const int YSpaceBetweenTileButtons = 115;
         const int DROPPED_CARD_LOCATION = -1;
         const int RUMMIKUB_CARDS_NUMBER = 14;
 
         // statics
-        public static int TAG_NUMBER = 0;
+        public static int TagNumber = 0;
         public static bool tookCard = false;
 
         // board elements
@@ -67,7 +68,7 @@ namespace rummikubGame
                 if (RummikubGameView.DroppedTilesStack != null && RummikubGameView.DroppedTilesStack.Count() != 0)
                 {
                     //RummikubGameView.dropped_tiles_stack.Peek().TileButton.GetButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
-                    //RummikubGameView.dropped_tiles_stack.Peek().TileButton.GetButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown);
+                    //RummikubGameViw.dropped_tiles_stack.Peek().TileButton.GetButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown);
                     RummikubGameView.DroppedTilesStack.Peek().TileButton.SetDraggable(false);
                 }
             }
@@ -75,19 +76,23 @@ namespace rummikubGame
 
         private void GenerateNewTileToSlotLocation(int[] slot_location, bool animation)
         {
-            Tile current_tile_from_pool = RummikubGameView.Pool.GetTile();
-            if (current_tile_from_pool == null)
+            try
+            {
+                Tile current_tile_from_pool = RummikubGameView.Pool.GetTile();
+
+                TileButtons[TagNumber] = (new VisualTile(current_tile_from_pool.Color, current_tile_from_pool.Number, slot_location));
+                TileButton_slot[TileButtons[TagNumber].SlotLocation[0], TileButtons[TagNumber].SlotLocation[1]].SlotState = true;
+                TileDesigner(TileButtons[TagNumber], current_tile_from_pool, true);
+
+                if (animation)
+                    ControlTransition.Move(TileButtons[TagNumber - 1].TileButton.GetButton(), RummikubGameView.GlobalPoolBtn.Location, TileButton_slot[slot_location[0], slot_location[1]].SlotButton.Location);
+                else
+                    TileButtons[TagNumber - 1].TileButton.GetButton().Location = TileButton_slot[slot_location[0], slot_location[1]].SlotButton.Location;
+            }
+            catch (EmptyPoolException)
+            {
                 return;
-
-            TileButtons[TAG_NUMBER] = (new VisualTile(current_tile_from_pool.Color, current_tile_from_pool.Number, slot_location));
-            // TileButtons[TAG_NUMBER].TileButton.GetButton().Location = TileButton_slot[slot_location[0], slot_location[1]].SlotButton.Location;
-            TileButton_slot[TileButtons[TAG_NUMBER].SlotLocation[0], TileButtons[TAG_NUMBER].SlotLocation[1]].SlotState = true;
-            TileDesigner(TileButtons[TAG_NUMBER], current_tile_from_pool, true);
-
-            if (animation)
-                ControlTransition.Move(TileButtons[TAG_NUMBER - 1].TileButton.GetButton(), RummikubGameView.GlobalPoolBtn.Location, TileButton_slot[slot_location[0], slot_location[1]].SlotButton.Location);
-            else
-                TileButtons[TAG_NUMBER - 1].TileButton.GetButton().Location = TileButton_slot[slot_location[0], slot_location[1]].SlotButton.Location;
+            }
         }
 
         public void TileDesigner(VisualTile tile, Tile tile_info, bool tag_update)
@@ -151,7 +156,7 @@ namespace rummikubGame
             }
 
             if (tag_update)
-                tile.TileButton.GetButton().Tag = TAG_NUMBER++;
+                tile.TileButton.GetButton().Tag = TagNumber++;
             else 
                 tile.TileButton.GetButton().Tag = tile.Tag;
             
@@ -479,8 +484,8 @@ namespace rummikubGame
             // slots from loading.
             Slot[,] loaded_slots = TileButton_slot;
 
-            int x_location = STARTING_X_LOCATION;
-            int y_location = STARTING_Y_LOCATION;
+            int x_location = StartingXLocation;
+            int y_location = StartingYLocation;
             TileButton_slot = new Slot[RummikubGameView.HumanPlayerBoardHeight, RummikubGameView.HumanPlayerBoardWidth];
 
             // Generating the slots
@@ -505,10 +510,10 @@ namespace rummikubGame
                     TileButton_slot[i, j].SlotButton.Location = new Point(x_location, y_location);
                     TileButton_slot[i, j].SlotState = loaded_slots[i, j].SlotState;
                     RummikubGameView.GlobalRummikubGameViewContext.Controls.Add(TileButton_slot[i, j].SlotButton);
-                    x_location += X_SPACE_BETWEEN_TileButtons;
+                    x_location += XSpaceBetweenTileButtonsButtons;
                 }
-                y_location += Y_SPACE_BETWEEN_TileButtons;
-                x_location = STARTING_X_LOCATION;
+                y_location += YSpaceBetweenTileButtons;
+                x_location = StartingXLocation;
             }
 
             // loaded tileButtons dictionary
@@ -529,8 +534,8 @@ namespace rummikubGame
 
         public void GenerateBoard()
         {
-            int x_location = STARTING_X_LOCATION;
-            int y_location = STARTING_Y_LOCATION;
+            int x_location = StartingXLocation;
+            int y_location = StartingYLocation;
             TileButton_slot = new Slot[RummikubGameView.HumanPlayerBoardHeight, RummikubGameView.HumanPlayerBoardWidth];
             TileButtons = new Dictionary<int, VisualTile>();
 
@@ -556,10 +561,10 @@ namespace rummikubGame
                     TileButton_slot[i, j].SlotButton.Location = new Point(x_location, y_location);
                     TileButton_slot[i, j].SlotState = Constants.Available;
                     RummikubGameView.GlobalRummikubGameViewContext.Controls.Add(TileButton_slot[i, j].SlotButton);
-                    x_location += X_SPACE_BETWEEN_TileButtons;
+                    x_location += XSpaceBetweenTileButtonsButtons;
                 }
-                y_location += Y_SPACE_BETWEEN_TileButtons;
-                x_location = STARTING_X_LOCATION;
+                y_location += YSpaceBetweenTileButtons;
+                x_location = StartingXLocation;
             }
 
             // Generating the TileButtons

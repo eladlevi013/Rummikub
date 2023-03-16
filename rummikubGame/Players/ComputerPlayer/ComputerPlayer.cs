@@ -1,4 +1,5 @@
 ﻿using Rummikub;
+using rummikubGame.Exceptions;
 using rummikubGame.Models;
 using rummikubGame.Utilities;
 using RummikubGame.Utilities;
@@ -133,125 +134,132 @@ namespace rummikubGame
         // -----------------------------------------------------------------
         public void ComputerPlay(Tile to_be_replaced)
         {
-            // humanPlayer dropped tile, not giving better result 
-            if(to_be_replaced != null && !BetterArrangementFound(to_be_replaced))
+            try
             {
-                Tile tile = RummikubGameView.Pool.GetTile();
-                if (tile == null) // pool is empty
-                    return;
-
-                // better option with tile from pool
-                if (!BetterArrangementFound(tile))
+                // humanPlayer dropped tile, not giving better result 
+                if (to_be_replaced != null && !BetterArrangementFound(to_be_replaced))
                 {
-                    // if partial set found from dropped tile stack
-                    if (board.hand.Count() > 1)
+                    Tile tile = RummikubGameView.Pool.GetTile();
+                    if (tile == null) // pool is empty
+                        return;
+
+                    // better option with tile from pool
+                    if (!BetterArrangementFound(tile))
                     {
-                        if(tile.Number == 0)
+                        // if partial set found from dropped tile stack
+                        if (board.hand.Count() > 1)
                         {
-                            board.unused_jokers.Add(tile);
-                        }
-                        else
-                        {
-                            board.hand.Add(tile);
-                        }
-
-                        // board.partial_sets = CreatePartialSets(ref board.hand);
-                        // AddJokers();
-
-                        if (board.hand.Count() > 0)
-                        {
-                            Random rnd = new Random();
-                            int random_tile_to_drop_index = rnd.Next(board.hand.Count());
-                            Tile random_tile_to_drop = board.hand[random_tile_to_drop_index];
-                            board.hand.Remove(random_tile_to_drop);
-                            board.GenerateComputerThrownTile(random_tile_to_drop);
-                        }
-                        // hand cannot be 0. if it is, it means that the tile we dropped is not part of a set
-                    }
-                    else
-                    {
-                        // if all tiles in partial sets
-                        if (board.hand.Count() == 0 && board.partial_sets.Count() > 0)
-                        {
-                            // if tile from pool didnt gave us better result drop random tile from partial sets
-                            Random rnd_partial_sets_index = new Random();
-                            bool partial_sets_null = true;
-                            Tile random_tile_to_drop = null;
-                            int random_tile_to_drop_index = 0;
-
-                            while (partial_sets_null)
-                            {
-                                random_tile_to_drop_index = rnd_partial_sets_index.Next(board.partial_sets.Count());
-                                random_tile_to_drop = (Tile)board.partial_sets[random_tile_to_drop_index].Tile1;
-                                if (random_tile_to_drop != null)
-                                {
-                                    partial_sets_null = false;
-                                }
-                            }
-
-                            if(tile.Number == 0)
-                                board.unused_jokers.Add(tile);
-                            else
-                                board.hand.Add(tile);
-                            
-                            board.hand.Add(board.partial_sets[random_tile_to_drop_index].Tile2);
-                            board.partial_sets.RemoveAt(random_tile_to_drop_index);
-                            board.GenerateComputerThrownTile(random_tile_to_drop);
-                        }
-                        else
-                        {
-                            // if tile from pool didnt gave us better result drop random tile from hand
-                            Random rnd_hand_index = new Random();
-                            bool hand_null = true;
-                            Tile random_tile_to_drop = null;
-                            int random_tile_to_drop_index = 0;
-
-                            while (hand_null && board.hand.Count() > 0)
-                            {
-                                random_tile_to_drop_index = rnd_hand_index.Next(board.hand.Count());
-                                random_tile_to_drop = board.hand[random_tile_to_drop_index];
-                                if (random_tile_to_drop != null)
-                                {
-                                    hand_null = false;
-                                }
-                            }
-
-                            if(board.hand.Count() > 0)
-                                board.hand.RemoveAt(random_tile_to_drop_index);
-
                             if (tile.Number == 0)
+                            {
                                 board.unused_jokers.Add(tile);
+                            }
                             else
+                            {
                                 board.hand.Add(tile);
+                            }
 
-                            board.GenerateComputerThrownTile(random_tile_to_drop);
+                            // board.partial_sets = CreatePartialSets(ref board.hand);
+                            // AddJokers();
+
+                            if (board.hand.Count() > 0)
+                            {
+                                Random rnd = new Random();
+                                int random_tile_to_drop_index = rnd.Next(board.hand.Count());
+                                Tile random_tile_to_drop = board.hand[random_tile_to_drop_index];
+                                board.hand.Remove(random_tile_to_drop);
+                                board.GenerateComputerThrownTile(random_tile_to_drop);
+                            }
+                            // hand cannot be 0. if it is, it means that the tile we dropped is not part of a set
+                        }
+                        else
+                        {
+                            // if all tiles in partial sets
+                            if (board.hand.Count() == 0 && board.partial_sets.Count() > 0)
+                            {
+                                // if tile from pool didnt gave us better result drop random tile from partial sets
+                                Random rnd_partial_sets_index = new Random();
+                                bool partial_sets_null = true;
+                                Tile random_tile_to_drop = null;
+                                int random_tile_to_drop_index = 0;
+
+                                while (partial_sets_null)
+                                {
+                                    random_tile_to_drop_index = rnd_partial_sets_index.Next(board.partial_sets.Count());
+                                    random_tile_to_drop = (Tile)board.partial_sets[random_tile_to_drop_index].Tile1;
+                                    if (random_tile_to_drop != null)
+                                    {
+                                        partial_sets_null = false;
+                                    }
+                                }
+
+                                if (tile.Number == 0)
+                                    board.unused_jokers.Add(tile);
+                                else
+                                    board.hand.Add(tile);
+
+                                board.hand.Add(board.partial_sets[random_tile_to_drop_index].Tile2);
+                                board.partial_sets.RemoveAt(random_tile_to_drop_index);
+                                board.GenerateComputerThrownTile(random_tile_to_drop);
+                            }
+                            else
+                            {
+                                // if tile from pool didnt gave us better result drop random tile from hand
+                                Random rnd_hand_index = new Random();
+                                bool hand_null = true;
+                                Tile random_tile_to_drop = null;
+                                int random_tile_to_drop_index = 0;
+
+                                while (hand_null && board.hand.Count() > 0)
+                                {
+                                    random_tile_to_drop_index = rnd_hand_index.Next(board.hand.Count());
+                                    random_tile_to_drop = board.hand[random_tile_to_drop_index];
+                                    if (random_tile_to_drop != null)
+                                    {
+                                        hand_null = false;
+                                    }
+                                }
+
+                                if (board.hand.Count() > 0)
+                                    board.hand.RemoveAt(random_tile_to_drop_index);
+
+                                if (tile.Number == 0)
+                                    board.unused_jokers.Add(tile);
+                                else
+                                    board.hand.Add(tile);
+
+                                board.GenerateComputerThrownTile(random_tile_to_drop);
+                            }
                         }
                     }
                 }
+
+                // updating partial-set after taking tiles
+                board.partial_sets = board.CreatePartialSets(ref board.hand, board.partial_sets);
+
+                // done in both cases(better option or not)
+                RummikubGameView.CurrentTurn = Constants.HumanPlayerTurn;
+                RummikubGameView.GlobalGameIndicatorLbl.Text = RummikubGameView.TakeTileFromPoolStackMsg;
+                PlayerBoard.tookCard = false;
+                RummikubGameView.ComputerPlayer.board.ClearBoard();
+
+                if (RummikubGameView.ShowComputerTilesToggle)
+                    RummikubGameView.ComputerPlayer.board.GenerateBoard();
+
+                // if the game is over, and the computer won
+                if (board.CheckWinner() == true && RummikubGameView.GameOver == false)
+                {
+                    MessageBox.Show("Computer Won!");
+                    RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - Computer Won";
+                    RummikubGameView.HumanPlayer.board.DisableHumanBoard();
+                    
+                    if (RummikubGameView.DroppedTilesStack.Count > 0)
+                        RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
+                    RummikubGameView.GameOver = true;
+                }
             }
-
-            // updating partial-set after taking tiles
-            board.partial_sets = board.CreatePartialSets(ref board.hand, board.partial_sets);
-
-            // done in both cases(better option or not)
-            RummikubGameView.CurrentTurn = Constants.HumanPlayerTurn;
-            RummikubGameView.GlobalGameIndicatorLbl.Text = RummikubGameView.TakeTileFromPoolStackMsg;
-            PlayerBoard.tookCard = false;
-            RummikubGameView.ComputerPlayer.board.ClearBoard();
-
-            if (RummikubGameView.ShowComputerTilesToggle)
-                RummikubGameView.ComputerPlayer.board.GenerateBoard();
-
-            // if the game is over, and the computer won
-            if (board.CheckWinner() == true && RummikubGameView.GameOver == false)
+            catch (EmptyPoolException)
             {
-                MessageBox.Show("Computer Won!");
-                RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - Computer Won";
-                RummikubGameView.HumanPlayer.board.DisableHumanBoard();
-
-                if (RummikubGameView.DroppedTilesStack.Count > 0)
-                    RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
-                RummikubGameView.GameOver = true;
+                return;
             }
         }
 

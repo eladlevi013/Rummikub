@@ -393,7 +393,7 @@ namespace Rummikub
                     formatter.Serialize(stream, RummikubGameView.Pool);
                     formatter.Serialize(stream, RummikubGameView.DroppedTilesStack);
                     formatter.Serialize(stream, PlayerBoard.tookCard);
-                    formatter.Serialize(stream, PlayerBoard.TAG_NUMBER);
+                    formatter.Serialize(stream, PlayerBoard.TagNumber);
                     formatter.Serialize(stream, RummikubGameView.GlobalGameIndicatorLbl.Text);
                     stream.Close();
                 }
@@ -429,7 +429,7 @@ namespace Rummikub
                     RummikubGameView.Pool = (Pool)formatter.Deserialize(stream);
                     RummikubGameView.DroppedTilesStack = (Stack<VisualTile>)formatter.Deserialize(stream);
                     PlayerBoard.tookCard = (bool)formatter.Deserialize(stream);
-                    PlayerBoard.TAG_NUMBER = (int)formatter.Deserialize(stream);
+                    PlayerBoard.TagNumber = (int)formatter.Deserialize(stream);
                     RummikubGameView.GlobalGameIndicatorLbl.Text = (string)formatter.Deserialize(stream);
                     stream.Close();
 

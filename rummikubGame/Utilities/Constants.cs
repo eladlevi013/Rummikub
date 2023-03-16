@@ -17,9 +17,9 @@ namespace RummikubGame.Utilities
         public const int JokerNumber = 0;
 
         // Pool related consts
-        public const int NumberOfTimes = 2;
+        public const int NumberOfTimes = 1;
         public const int ColorsCount = 4;
-        public const int N = 13;
+        public const int N = 8;
 
         // Slot related consts
         public const bool Available = false;
