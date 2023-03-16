@@ -65,6 +65,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Utilities\ControlTransition.cs" />
+    <Compile Include="Utilities\GameGlobals.cs" />
     <Compile Include="Views\GameRulesView.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -1,5 +1,4 @@
-﻿using rummikubGame.Utilities;
-using RummikubGame.Utilities;
+﻿using RummikubGame.Utilities;
 using System;
 using System.Windows.Forms;
 

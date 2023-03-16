@@ -1,7 +1,6 @@
 ﻿using Rummikub;
 using rummikubGame.Exceptions;
 using rummikubGame.Models;
-using rummikubGame.Utilities;
 using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
@@ -112,8 +111,8 @@ namespace rummikubGame
                 AddJokersAfterMeldsSets(ref board.partial_sets, ref board.sequences, ref board.unused_jokers, ref board.hand);
 
                 // take the last thrown tile from the dropped tiles stack(graphically)
-                if (RummikubGameView.DroppedTilesStack.Count() > 0)
-                    RummikubGameView.GlobalRummikubGameViewContext.Controls.Remove(RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton());
+                if (GameGlobals.DroppedTilesStack.Count() > 0)
+                    RummikubGameView.GlobalRummikubGameViewContext.Controls.Remove(GameGlobals.DroppedTilesStack.Peek().TileButton.GetButton());
 
                 // generate computer thrown tile in Stack
                 int[] tile_in_dropped_tiles_location = { Constants.DroppedTileLocation, Constants.DroppedTileLocation };
@@ -139,7 +138,7 @@ namespace rummikubGame
                 // humanPlayer dropped tile, not giving better result 
                 if (to_be_replaced != null && !BetterArrangementFound(to_be_replaced))
                 {
-                    Tile tile = RummikubGameView.Pool.GetTile();
+                    Tile tile = GameGlobals.Pool.GetTile();
                     if (tile == null) // pool is empty
                         return;
 
@@ -237,24 +236,24 @@ namespace rummikubGame
                 board.partial_sets = board.CreatePartialSets(ref board.hand, board.partial_sets);
 
                 // done in both cases(better option or not)
-                RummikubGameView.CurrentTurn = Constants.HumanPlayerTurn;
+                GameGlobals.CurrentTurn = Constants.HumanPlayerTurn;
                 RummikubGameView.GlobalGameIndicatorLbl.Text = RummikubGameView.TakeTileFromPoolStackMsg;
                 PlayerBoard.tookCard = false;
-                RummikubGameView.ComputerPlayer.board.ClearBoard();
+                GameGlobals.ComputerPlayer.board.ClearBoard();
 
                 if (RummikubGameView.ShowComputerTilesToggle)
-                    RummikubGameView.ComputerPlayer.board.GenerateBoard();
+                    GameGlobals.ComputerPlayer.board.GenerateBoard();
 
                 // if the game is over, and the computer won
-                if (board.CheckWinner() == true && RummikubGameView.GameOver == false)
+                if (board.CheckWinner() == true && GameGlobals.GameOver == false)
                 {
                     MessageBox.Show("Computer Won!");
                     RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - Computer Won";
-                    RummikubGameView.HumanPlayer.board.DisableHumanBoard();
+                    GameGlobals.HumanPlayer.board.DisableHumanBoard();
                     
-                    if (RummikubGameView.DroppedTilesStack.Count > 0)
-                        RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
-                    RummikubGameView.GameOver = true;
+                    if (GameGlobals.DroppedTilesStack.Count > 0)
+                        GameGlobals.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
+                    GameGlobals.GameOver = true;
                 }
             }
             catch (EmptyPoolException)

@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace rummikubGame.Utilities
+namespace RummikubGame.Utilities
 {
     public static class ControlTransition
     {

@@ -1,6 +1,5 @@
 ﻿using Rummikub;
 using rummikubGame.Models;
-using rummikubGame.Utilities;
 using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
@@ -35,7 +34,7 @@ namespace rummikubGame
 
         public int GetHandTilesNumber()
         {
-            return Constants.RummikubTilesInGame - RummikubGameView.ComputerPlayer.board.GetNumberOfTilesInAllSets(sequences);
+            return Constants.RummikubTilesInGame - GameGlobals.ComputerPlayer.board.GetNumberOfTilesInAllSets(sequences);
         }
 
         public bool CheckWinner()
@@ -56,7 +55,8 @@ namespace rummikubGame
             for (int i = 0; i < Constants.RummikubTilesInGame; i++)
             {
                 // change this
-                Tile tile = RummikubGameView.Pool.GetTile();
+                Tile tile = GameGlobals.Pool.GetTile();
+                
 
                 if (tile.Number == 0)
                 {
@@ -360,16 +360,16 @@ namespace rummikubGame
 
         public void GenerateComputerThrownTile(Tile thrownTile)
         {
-            if (RummikubGameView.DroppedTilesStack.Count() > 1)
-                RummikubGameView.DroppedTilesStack.Peek().TileButton.SetDraggable(false);
+            if (GameGlobals.DroppedTilesStack.Count() > 1)
+                GameGlobals.DroppedTilesStack.Peek().TileButton.SetDraggable(false);
 
             Tile current_tile_from_pool = thrownTile;
             int[] slot_location = {Constants.DroppedTileLocation, Constants.DroppedTileLocation };
 
             VisualTile computers_thrown_tile = new VisualTile(current_tile_from_pool.Color, current_tile_from_pool.Number, slot_location);
             computers_thrown_tile.TileButton.GetButton().Location = new Point(RummikubGameView.GlobalDroppedTilesBtn.Location.X + 10, RummikubGameView.GlobalDroppedTilesBtn.Location.Y + 18);
-            RummikubGameView.HumanPlayer.board.TileDesigner(computers_thrown_tile, current_tile_from_pool, true);
-            RummikubGameView.DroppedTilesStack.Push(computers_thrown_tile);
+            GameGlobals.HumanPlayer.board.TileDesigner(computers_thrown_tile, current_tile_from_pool, true);
+            GameGlobals.DroppedTilesStack.Push(computers_thrown_tile);
         }
 
         // ---------------------------------------------------------

@@ -1,6 +1,5 @@
 ﻿using Rummikub;
 using rummikubGame.Exceptions;
-using rummikubGame.Utilities;
 using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;

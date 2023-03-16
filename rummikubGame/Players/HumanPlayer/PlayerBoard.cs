@@ -1,6 +1,5 @@
 ﻿using Rummikub;
 using rummikubGame.Exceptions;
-using rummikubGame.Utilities;
 using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
@@ -43,33 +42,33 @@ namespace rummikubGame
         public PlayerBoard()
         {
             GenerateBoard();
-            RummikubGameView.DroppedTilesStack = new Stack<VisualTile>();
+            GameGlobals.DroppedTilesStack = new Stack<VisualTile>();
         }
 
         public void DisableLastDroppedTile()
         {
-            if (RummikubGameView.DroppedTilesStack.Count > 0)
+            if (GameGlobals.DroppedTilesStack.Count > 0)
             {
-                RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
-                RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
-                RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown); ;
+                GameGlobals.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
+                GameGlobals.DroppedTilesStack.Peek().TileButton.GetButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
+                GameGlobals.DroppedTilesStack.Peek().TileButton.GetButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown); ;
             }
         }
 
         public void GenerateNewTileByClickingPool(int[] slot_location)
         {
-            if (tookCard == false && Constants.HumanPlayerTurn == RummikubGameView.CurrentTurn && RummikubGameView.GameOver == false)
+            if (tookCard == false && Constants.HumanPlayerTurn == GameGlobals.CurrentTurn && GameGlobals.GameOver == false)
             {
                 GenerateNewTileToSlotLocation(slot_location, true);
                 tookCard = true; // prevent unlimited tile picking
                 RummikubGameView.GlobalGameIndicatorLbl.Text = RummikubGameView.DropTileFromBoardMsg;
 
                 // tile in stack won't be interactable after we generated one
-                if (RummikubGameView.DroppedTilesStack != null && RummikubGameView.DroppedTilesStack.Count() != 0)
+                if (GameGlobals.DroppedTilesStack != null && GameGlobals.DroppedTilesStack.Count() != 0)
                 {
                     //RummikubGameView.dropped_tiles_stack.Peek().TileButton.GetButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
                     //RummikubGameViw.dropped_tiles_stack.Peek().TileButton.GetButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown);
-                    RummikubGameView.DroppedTilesStack.Peek().TileButton.SetDraggable(false);
+                    GameGlobals.DroppedTilesStack.Peek().TileButton.SetDraggable(false);
                 }
             }
         }
@@ -78,7 +77,7 @@ namespace rummikubGame
         {
             try
             {
-                Tile current_tile_from_pool = RummikubGameView.Pool.GetTile();
+                Tile current_tile_from_pool = GameGlobals.Pool.GetTile();
 
                 TileButtons[TagNumber] = (new VisualTile(current_tile_from_pool.Color, current_tile_from_pool.Number, slot_location));
                 TileButton_slot[TileButtons[TagNumber].SlotLocation[0], TileButtons[TagNumber].SlotLocation[1]].SlotState = true;
@@ -260,12 +259,12 @@ namespace rummikubGame
         public void TileButton_MouseUp(object sender, MouseEventArgs e)
         {
             Button current_card = (Button)sender; // the card that we dragged with the mouse
-            if (TileButtons.ContainsKey((int)current_card.Tag) || (RummikubGameView.DroppedTilesStack.Count > 0 
-                && (int)RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().Tag == (int)current_card.Tag))
+            if (TileButtons.ContainsKey((int)current_card.Tag) || (GameGlobals.DroppedTilesStack.Count > 0 
+                && (int)GameGlobals.DroppedTilesStack.Peek().TileButton.GetButton().Tag == (int)current_card.Tag))
             {
                 // first, we would like to check if the user wanted to put the TileButton on the drop_TileButton location
                 if (GetDistance(current_card, RummikubGameView.GlobalDroppedTilesBtn) < 100 
-                    && RummikubGameView.CurrentTurn == Constants.HumanPlayerTurn 
+                    && GameGlobals.CurrentTurn == Constants.HumanPlayerTurn 
                     && tookCard == true && TileButtons.ContainsKey((int)current_card.Tag))
                 {
                     current_card.Location = new Point(RummikubGameView.GlobalDroppedTilesBtn.Location.X 
@@ -275,28 +274,28 @@ namespace rummikubGame
                     TileButtons[(int)current_card.Tag].SlotLocation = current_location;
 
                     // add the dropped card to stack
-                    RummikubGameView.DroppedTilesStack.Push(TileButtons[(int)current_card.Tag]);
+                    GameGlobals.DroppedTilesStack.Push(TileButtons[(int)current_card.Tag]);
 
                     // remove the tiles button
                     TileButtons.Remove((int)current_card.Tag);
 
                     // after we dropped a card, it is the end of the turn
                     tookCard = false;
-                    RummikubGameView.CurrentTurn = Constants.ComputerPlayerTurn;
+                    GameGlobals.CurrentTurn = Constants.ComputerPlayerTurn;
                     RummikubGameView.GlobalGameIndicatorLbl.Text = "Computer's Turn";
 
                     // sleep
                     Thread.Sleep(5);
 
                     // call the computerPlayer play function in another thread in order to prevent crashes
-                    RummikubGameView.ComputerPlayer.ComputerPlay(RummikubGameView.DroppedTilesStack.Peek());
+                    GameGlobals.ComputerPlayer.ComputerPlay(GameGlobals.DroppedTilesStack.Peek());
                 }
                 // otherwise we would like to search the first empty slot to put in the TileButton
                 else
                 {
                     if (TileButtons.ContainsKey((int)current_card.Tag) == false)
                     {
-                        TileButtons[(int)current_card.Tag] = RummikubGameView.DroppedTilesStack.Peek();
+                        TileButtons[(int)current_card.Tag] = GameGlobals.DroppedTilesStack.Peek();
                         tookCard = true;
                         RummikubGameView.GlobalGameIndicatorLbl.Text = RummikubGameView.DropTileFromBoardMsg;
                     }
@@ -365,13 +364,13 @@ namespace rummikubGame
                         TileButtons[(int)current_card.Tag].SlotLocation = updated_TileButton_location;
                 }
             }
-            if (CheckWinner() == true && RummikubGameView.GameOver == false)
+            if (CheckWinner() == true && GameGlobals.GameOver == false)
             {
                 MessageBox.Show("You Won!");
                 RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - You Won";
-                RummikubGameView.GameOver = true;
-                RummikubGameView.HumanPlayer.board.DisableHumanBoard();
-                RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
+                GameGlobals.GameOver = true;
+                GameGlobals.HumanPlayer.board.DisableHumanBoard();
+                GameGlobals.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
             }
         }
         
@@ -471,11 +470,11 @@ namespace rummikubGame
             {
                 TileButtons[TileButtons.Keys.ElementAt(i)].TileButton.GetButton().Enabled = false;
             }
-            if (RummikubGameView.DroppedTilesStack.Count > 0)
+            if (GameGlobals.DroppedTilesStack.Count > 0)
             {
-                RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
-                RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
-                RummikubGameView.DroppedTilesStack.Peek().TileButton.GetButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown); ;
+                GameGlobals.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
+                GameGlobals.DroppedTilesStack.Peek().TileButton.GetButton().MouseUp -= new MouseEventHandler(this.TileButton_MouseUp);
+                GameGlobals.DroppedTilesStack.Peek().TileButton.GetButton().MouseDown -= new MouseEventHandler(this.TileButton_MouseDown); ;
             }
         }
 
