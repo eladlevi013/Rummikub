@@ -1,9 +1,11 @@
-﻿namespace rummikubGame
+﻿using System.Drawing;
+
+namespace rummikubGame
 {
     public interface IBoard
     {
         void GenerateBoard();
+        void GenerateTilesToBoard();
         void ClearBoard();
-        bool CheckWinner();
     }
 }

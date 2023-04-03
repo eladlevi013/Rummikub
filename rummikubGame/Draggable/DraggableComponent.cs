@@ -62,7 +62,7 @@ namespace rummikubGame.Draggable
             dragStart = e.Location;
 
             moveTimer = new Timer();
-            moveTimer.Interval = 10; // update every 10 milliseconds
+            moveTimer.Interval = 1; // update every 10 milliseconds
             moveTimer.Tick += MoveTimer_Tick;
             moveTimer.Start();
         }

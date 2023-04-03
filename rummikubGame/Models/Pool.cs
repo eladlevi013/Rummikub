@@ -1,5 +1,6 @@
 ﻿using Rummikub;
 using rummikubGame.Exceptions;
+using rummikubGame.Utilities;
 using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,7 @@ namespace rummikubGame
             // if tilesQueue is done check winner and return null
             if (tilesQueue.Count() == 0)
             {
-                RummikubGameView.CheckWinnerWhenPoolOver();
+                GameContext.ResolveWinnerOnPoolOver();
                 throw new EmptyPoolException("Pool is empty");
             }
 

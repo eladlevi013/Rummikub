@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -20,7 +16,8 @@ namespace RummikubGame.Utilities
 
             for (int i = 0; i <= steps; i++)
             {
-                Point location = new Point((int)Math.Round(startPoint.X + i * dx), (int)Math.Round(startPoint.Y + i * dy));
+                Point location = new Point((int)Math.Round(startPoint.X + i * dx)
+                    , (int)Math.Round(startPoint.Y + i * dy));
                 control.Location = location;
                 await Task.Delay(interval);
             }

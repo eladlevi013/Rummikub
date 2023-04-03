@@ -1,6 +1,7 @@
 ﻿using Rummikub;
 using rummikubGame.Exceptions;
 using rummikubGame.Models;
+using rummikubGame.Utilities;
 using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
@@ -23,12 +24,12 @@ namespace rummikubGame
         public ComputerPlayer()
         {
             board = new ComputerBoard();
-            board.sequences = MeldsSets(ref board.hand, ref board.unused_jokers);
+            board.sequences = MeldsSets(ref board.hand, ref board.unusedJokers);
             
             // removing jokers that are in sequences
-            board.UpdatingUnusedJokers(ref board.unused_jokers, ref board.sequences);
-            board.partial_sets = board.CreatePartialSets(ref board.hand);
-            AddJokersAfterMeldsSets(ref board.partial_sets, ref board.sequences, ref board.unused_jokers, ref board.hand);
+            board.UpdatingUnusedJokers(ref board.unusedJokers, ref board.sequences);
+            board.partialSets = board.CreatePartialSets(ref board.hand);
+            AddJokersAfterMeldsSets(ref board.partialSets, ref board.sequences, ref board.unusedJokers, ref board.hand);
 
             // takes care of the graphical board of the computer
             if (RummikubGameView.ShowComputerTilesToggle)
@@ -44,7 +45,7 @@ namespace rummikubGame
             // vars for finding the best option
             List<Tile> better_option_hand = board.hand;
             List<List<Tile>> better_option_sequences = board.sequences;
-            List<PartialSet> better_option_partial_sets = board.partial_sets;
+            List<PartialSet> better_option_partial_sets = board.partialSets;
             List<Tile> starting_jokers = board.GetAllJokers();
 
             bool better_option_found = false;
@@ -100,24 +101,24 @@ namespace rummikubGame
                 board.hand = better_option_hand;
 
                 // updating unused jokers
-                board.unused_jokers = new List<Tile>(starting_jokers);
-                board.UpdatingUnusedJokers(ref board.unused_jokers, ref board.sequences);
+                board.unusedJokers = new List<Tile>(starting_jokers);
+                board.UpdatingUnusedJokers(ref board.unusedJokers, ref board.sequences);
 
                 // create partial sets from the given hand
-                board.partial_sets = better_option_partial_sets;
+                board.partialSets = better_option_partial_sets;
                 //board.partial_sets = new List<PartialSet>();
                 //board.partial_sets = CreatePartialSets(ref board.hand);
 
-                AddJokersAfterMeldsSets(ref board.partial_sets, ref board.sequences, ref board.unused_jokers, ref board.hand);
+                AddJokersAfterMeldsSets(ref board.partialSets, ref board.sequences, ref board.unusedJokers, ref board.hand);
 
                 // take the last thrown tile from the dropped tiles stack(graphically)
-                if (GameGlobals.DroppedTilesStack.Count() > 0)
-                    RummikubGameView.GlobalRummikubGameViewContext.Controls.Remove(GameGlobals.DroppedTilesStack.Peek().TileButton.GetButton());
+                if (GameContext.DroppedTilesStack.Count() > 0)
+                    RummikubGameView.GlobalRummikubGameViewContext.Controls.Remove(GameContext.DroppedTilesStack.Peek());
 
                 // generate computer thrown tile in Stack
                 int[] tile_in_dropped_tiles_location = { Constants.DroppedTileLocation, Constants.DroppedTileLocation };
                 VisualTile dropped_tile = new VisualTile(optimal_dropped_tile.Color, optimal_dropped_tile.Number, tile_in_dropped_tiles_location);
-                board.GenerateComputerThrownTile(dropped_tile);
+                GameContext.GenerateComputerThrownTile(dropped_tile.TileData);
                 
                 // returns true because better option found
                 return (true);
@@ -138,7 +139,7 @@ namespace rummikubGame
                 // humanPlayer dropped tile, not giving better result 
                 if (to_be_replaced != null && !BetterArrangementFound(to_be_replaced))
                 {
-                    Tile tile = GameGlobals.Pool.GetTile();
+                    Tile tile = GameContext.Pool.GetTile();
                     if (tile == null) // pool is empty
                         return;
 
@@ -150,7 +151,7 @@ namespace rummikubGame
                         {
                             if (tile.Number == 0)
                             {
-                                board.unused_jokers.Add(tile);
+                                board.unusedJokers.Add(tile);
                             }
                             else
                             {
@@ -166,14 +167,14 @@ namespace rummikubGame
                                 int random_tile_to_drop_index = rnd.Next(board.hand.Count());
                                 Tile random_tile_to_drop = board.hand[random_tile_to_drop_index];
                                 board.hand.Remove(random_tile_to_drop);
-                                board.GenerateComputerThrownTile(random_tile_to_drop);
+                                GameContext.GenerateComputerThrownTile(random_tile_to_drop);
                             }
                             // hand cannot be 0. if it is, it means that the tile we dropped is not part of a set
                         }
                         else
                         {
                             // if all tiles in partial sets
-                            if (board.hand.Count() == 0 && board.partial_sets.Count() > 0)
+                            if (board.hand.Count() == 0 && board.partialSets.Count() > 0)
                             {
                                 // if tile from pool didnt gave us better result drop random tile from partial sets
                                 Random rnd_partial_sets_index = new Random();
@@ -183,8 +184,8 @@ namespace rummikubGame
 
                                 while (partial_sets_null)
                                 {
-                                    random_tile_to_drop_index = rnd_partial_sets_index.Next(board.partial_sets.Count());
-                                    random_tile_to_drop = (Tile)board.partial_sets[random_tile_to_drop_index].Tile1;
+                                    random_tile_to_drop_index = rnd_partial_sets_index.Next(board.partialSets.Count());
+                                    random_tile_to_drop = (Tile)board.partialSets[random_tile_to_drop_index].Tile1;
                                     if (random_tile_to_drop != null)
                                     {
                                         partial_sets_null = false;
@@ -192,13 +193,13 @@ namespace rummikubGame
                                 }
 
                                 if (tile.Number == 0)
-                                    board.unused_jokers.Add(tile);
+                                    board.unusedJokers.Add(tile);
                                 else
                                     board.hand.Add(tile);
 
-                                board.hand.Add(board.partial_sets[random_tile_to_drop_index].Tile2);
-                                board.partial_sets.RemoveAt(random_tile_to_drop_index);
-                                board.GenerateComputerThrownTile(random_tile_to_drop);
+                                board.hand.Add(board.partialSets[random_tile_to_drop_index].Tile2);
+                                board.partialSets.RemoveAt(random_tile_to_drop_index);
+                                GameContext.GenerateComputerThrownTile(random_tile_to_drop);
                             }
                             else
                             {
@@ -222,38 +223,38 @@ namespace rummikubGame
                                     board.hand.RemoveAt(random_tile_to_drop_index);
 
                                 if (tile.Number == 0)
-                                    board.unused_jokers.Add(tile);
+                                    board.unusedJokers.Add(tile);
                                 else
                                     board.hand.Add(tile);
 
-                                board.GenerateComputerThrownTile(random_tile_to_drop);
+                                GameContext.GenerateComputerThrownTile(random_tile_to_drop);
                             }
                         }
                     }
                 }
 
                 // updating partial-set after taking tiles
-                board.partial_sets = board.CreatePartialSets(ref board.hand, board.partial_sets);
+                board.partialSets = board.CreatePartialSets(ref board.hand, board.partialSets);
 
                 // done in both cases(better option or not)
-                GameGlobals.CurrentTurn = Constants.HumanPlayerTurn;
+                GameContext.CurrentTurn = Constants.HumanPlayerTurn;
                 RummikubGameView.GlobalGameIndicatorLbl.Text = RummikubGameView.TakeTileFromPoolStackMsg;
-                PlayerBoard.tookCard = false;
-                GameGlobals.ComputerPlayer.board.ClearBoard();
+                GameContext.HumanPlayer.board.TookCard = false;
+                GameContext.ComputerPlayer.board.ClearBoard();
 
                 if (RummikubGameView.ShowComputerTilesToggle)
-                    GameGlobals.ComputerPlayer.board.GenerateBoard();
+                    GameContext.ComputerPlayer.board.GenerateBoard();
 
                 // if the game is over, and the computer won
-                if (board.CheckWinner() == true && GameGlobals.GameOver == false)
+                if (board.CheckWinner() == true && GameContext.GameOver == false)
                 {
                     MessageBox.Show("Computer Won!");
                     RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - Computer Won";
-                    GameGlobals.HumanPlayer.board.DisableHumanBoard();
+                    GameContext.HumanPlayer.board.DisableBoard();
                     
-                    if (GameGlobals.DroppedTilesStack.Count > 0)
-                        GameGlobals.DroppedTilesStack.Peek().TileButton.GetButton().Enabled = false;
-                    GameGlobals.GameOver = true;
+                    if (GameContext.DroppedTilesStack.Count > 0)
+                        GameContext.DroppedTilesStack.Peek().Enabled = false;
+                    GameContext.GameOver = true;
                 }
             }
             catch (EmptyPoolException)
@@ -287,7 +288,7 @@ namespace rummikubGame
                     {
                         List<Tile> tempSequenceAddRight = sequences[i].Select(item => item.Clone(item.Color, item.Number)).ToList();
                         tempSequenceAddRight.Add(hand_tiles[hand_tile_index]);
-                        if (RummikubGameView.IsLegalMeld(tempSequenceAddRight) == true)
+                        if (GameContext.IsLegalMeld(tempSequenceAddRight) == true)
                         {
                             sequences[i] = tempSequenceAddRight;
                             hand_tiles[hand_tile_index] = null;
@@ -297,7 +298,7 @@ namespace rummikubGame
                     {
                         List<Tile> tempSequenceAddLeft = sequences[i].Select(item => item.Clone(item.Color, item.Number)).ToList();
                         tempSequenceAddLeft.Insert(0, hand_tiles[hand_tile_index]);
-                        if (RummikubGameView.IsLegalMeld(tempSequenceAddLeft) == true)
+                        if (GameContext.IsLegalMeld(tempSequenceAddLeft) == true)
                         {
                             sequences[i] = tempSequenceAddLeft;
                             hand_tiles[hand_tile_index] = null;
@@ -679,7 +680,7 @@ namespace rummikubGame
             {
                 for(int j=0; j< hand.Count() && unused_jokers.Count() > 0; j++)
                 {
-                    if (board.IsRun(sequences[i]))
+                    if (GameContext.IsRun(sequences[i]))
                     {
                         if (sequences[i][sequences[i].Count() - 1].Number + 2 == hand[j].Number
                             && sequences[i][sequences[i].Count() - 1].Color == hand[j].Color)
@@ -719,13 +720,13 @@ namespace rummikubGame
                 temp_sequence_from_bottom.Insert(0, unused_jokers[0]);
 
                 // Checking if the sequence can be extended with a joker
-                if (RummikubGameView.IsLegalMeld(temp_sequence_from_top))
+                if (GameContext.IsLegalMeld(temp_sequence_from_top))
                 {
                     sequences[i].Add(unused_jokers[0]);
                     unused_jokers.RemoveAt(0);
                     continue;
                 }
-                else if (RummikubGameView.IsLegalMeld(temp_sequence_from_bottom))
+                else if (GameContext.IsLegalMeld(temp_sequence_from_bottom))
                 {
                     sequences[i].Insert(0, unused_jokers[0]);
                     unused_jokers.RemoveAt(0);
