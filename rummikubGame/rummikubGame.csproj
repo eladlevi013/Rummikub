@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BrightnessOnHover\BrightnessOnHoverComponent.cs" />
     <Compile Include="Draggable\DraggableComponent.cs" />
     <Compile Include="Draggable\IDraggable.cs" />
     <Compile Include="Exceptions\EmptyPoolException.cs" />

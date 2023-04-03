@@ -12,17 +12,9 @@ namespace rummikubGame
     [Serializable]
     public class VisualTile : Button
     {
-        // Brightness on hover effect constants
-        private const float DefaultBrightnessLevel = 1.0f;
-        private const float HoverBrightnessLevel = 1.2f;
-
-        // Varibales for brightness hovering effect
-        private Image _brightnessImage;
-        private Image _originalBackgroundImage;
-        private float _currentBrightnessLevel = DefaultBrightnessLevel;
-
         private int[] _slotLocation;
         private DraggableComponent _draggable;
+        private BrightnessEffectComponent _brightnessOnHover;
         public Tile _tileData;
 
         public VisualTile(int color, int number, int[] slotLocation)
@@ -30,10 +22,9 @@ namespace rummikubGame
             _tileData = new Tile(color, number);
             _slotLocation = slotLocation;
             _draggable = new DraggableComponent(this);
+            _brightnessOnHover = new BrightnessEffectComponent(this);
 
             // Sets mouse events
-            MouseEnter += VisualTile_MouseEnter;
-            MouseLeave += VisualTile_MouseLeave;
             MouseDown += TileButton_MouseDown;
             MouseUp += TileButton_MouseUp;
         }
@@ -42,6 +33,12 @@ namespace rummikubGame
         {
             get { return _slotLocation; }
             set { _slotLocation = value; }
+        }
+
+        public BrightnessEffectComponent BrightnessOnHover
+        {
+            get { return _brightnessOnHover; }
+            set { _brightnessOnHover = value; }
         }
 
         public DraggableComponent Draggable
@@ -56,71 +53,12 @@ namespace rummikubGame
             set { _tileData = value; }
         }
 
-        public void RemoveBrightness()
-        {
-            if (BackgroundImage == null || _originalBackgroundImage == null 
-                || _currentBrightnessLevel == DefaultBrightnessLevel)
-            {
-                return;
-            }
-            BackgroundImage = _originalBackgroundImage;
-            _currentBrightnessLevel = DefaultBrightnessLevel;
-        }
-
-        public void ApplyBrightness()
-        {
-            _originalBackgroundImage = BackgroundImage;
-
-            if (BackgroundImage == null || HoverBrightnessLevel == _currentBrightnessLevel)
-            {
-                return;
-            }
-
-            if (_brightnessImage == null)
-            {
-                // Generate brightness image
-                float[][] matrixItems ={
-                    new float[] { HoverBrightnessLevel, 0, 0, 0, 0},
-                    new float[] {0, HoverBrightnessLevel, 0, 0, 0},
-                    new float[] {0, 0, HoverBrightnessLevel, 0, 0},
-                    new float[] {0, 0, 0, 1, 0},
-                    new float[] {0, 0, 0, 0, 1}
-                };
-                ColorMatrix colorMatrix = new ColorMatrix(matrixItems);
-                ImageAttributes attributes = new ImageAttributes();
-                attributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                Bitmap bmp = new Bitmap(_originalBackgroundImage.Width, _originalBackgroundImage.Height);
-
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
-                    g.DrawImage(_originalBackgroundImage, new Rectangle(0, 0, bmp.Width, bmp.Height),
-                        0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
-                }
-
-                _brightnessImage = bmp;
-            }
-            BackgroundImage = _brightnessImage;
-            _currentBrightnessLevel = HoverBrightnessLevel;
-        }
-
         public void DisableTile()
         {
             // Removing mouse events
-            MouseEnter -= VisualTile_MouseEnter;
-            MouseLeave -= VisualTile_MouseLeave;
             MouseDown -= TileButton_MouseDown;
             MouseUp -= TileButton_MouseUp;
             Draggable.SetDraggable(false);
-        }
-
-        public void VisualTile_MouseEnter(object sender, EventArgs e)
-        {
-            ApplyBrightness();
-        }
-
-        public void VisualTile_MouseLeave(object sender, EventArgs e)
-        {
-            RemoveBrightness();
         }
 
         public void TileButton_MouseDown(object sender, MouseEventArgs e)
@@ -135,7 +73,7 @@ namespace rummikubGame
         }
 
         public void TileButton_MouseUp(object sender, MouseEventArgs e)
-        {
+        {   
             VisualTile currTile = (VisualTile)sender;
 
             if (GameContext.GetDistance(currTile, RummikubGameView.GlobalDroppedTilesBtn) < 100
