@@ -163,7 +163,7 @@ namespace Rummikub
         private void SortValueBtn_Click(object sender, EventArgs e)
         {
             List<VisualTile> sorted_cards = GameContext.HumanPlayer.board.TileButtons;
-            sorted_cards = sorted_cards.OrderBy(card => card.TileData.Number).ToList();
+            sorted_cards = sorted_cards.OrderBy(card => card.VisualTileData.TileData.Number).ToList();
             GameContext.HumanPlayer.board.ArrangeCardsOnBoard(sorted_cards);
         }
 
@@ -182,13 +182,13 @@ namespace Rummikub
             // Classiying the hand to N colors;
             for(int i=0; i< tiles.Count; i++)
             {
-                colors_lst[tiles[i].TileData.Color].Add(tiles[i]);
+                colors_lst[tiles[i].VisualTileData.TileData.Color].Add(tiles[i]);
             }
             
             // Sorting every array by number
             for(int i=0; i<colors_lst.Length; i++)
             {
-                colors_lst[i] = colors_lst[i].OrderBy(card => card.TileData.Number).ToList();
+                colors_lst[i] = colors_lst[i].OrderBy(card => card.VisualTileData.TileData.Number).ToList();
             }
 
             // merging the arrays
@@ -305,13 +305,13 @@ namespace Rummikub
 
                     while (revered_dropped_tiles.Count > 1)
                     {
-                        GameContext.GenerateComputerThrownTile(revered_dropped_tiles.Pop().TileData);
+                        GameContext.GenerateComputerThrownTile(revered_dropped_tiles.Pop().VisualTileData.TileData);
                         if(GameContext.DroppedTilesStack.Count() > 0)
                             GameContext.DroppedTilesStack.Peek().DisableTile();
                     }
                     if (revered_dropped_tiles.Count > 0 && revered_dropped_tiles.Peek() != null)
                     {
-                        GameContext.GenerateComputerThrownTile(revered_dropped_tiles.Pop().TileData);
+                        GameContext.GenerateComputerThrownTile(revered_dropped_tiles.Pop().VisualTileData.TileData);
                         if (GameContext.HumanPlayer.board.TookCard == true)
                             if (GameContext.DroppedTilesStack.Count() > 0)
                                 GameContext.DroppedTilesStack.Peek().DisableTile();

@@ -11,12 +11,11 @@ namespace rummikubGame
     [Serializable]
     public class Pool
     {
-        private Queue<Tile> tilesQueue;
+        private Queue<Tile> _tilesQueue;
         
         public Pool()
         {
-            tilesQueue = new Queue<Tile>();
-            List<Tile> tiles_list = new List<Tile>();
+            List<Tile> tilesList = new List<Tile>();
             
             for (int times = 0; times < Constants.NumberOfTimes; times++)
             {
@@ -24,38 +23,38 @@ namespace rummikubGame
                 {
                     for (int n = 1; n <= Constants.N; n++)
                     {
-                        tiles_list.Add(new Tile(color, n));
+                        tilesList.Add(new Tile(color, n));
                     }
                 }
             }
 
             // adding jokers
-            tiles_list.Add(new Tile(Constants.BlackColor, Constants.JokerNumber));
-            tiles_list.Add(new Tile(Constants.RedColor, Constants.JokerNumber));
+            tilesList.Add(new Tile(Constants.BlackColor, Constants.JokerNumber));
+            tilesList.Add(new Tile(Constants.RedColor, Constants.JokerNumber));
 
-            // Shuffeling the tiles
+            // Shuffeling the tiles list
             Random rand = new Random();
-            List<Tile> randomized_list = tiles_list.OrderBy(c => rand.Next()).ToList();
+            List<Tile> randomized_list = tilesList.OrderBy(c => rand.Next()).ToList();
 
             // now insert that list into the queue
-            for(int i=0; i<randomized_list.Count; i++)
+            _tilesQueue = new Queue<Tile>();
+            for (int i=0; i < randomized_list.Count; i++)
             {
-                tilesQueue.Enqueue(randomized_list[i]);
+                _tilesQueue.Enqueue(randomized_list[i]);
             }
         }
 
         public Tile GetTile()
         {
-            // if tilesQueue is done check winner and return null
-            if (tilesQueue.Count() == 0)
+            // if queue is empty, we need to resolve the winner
+            if (_tilesQueue.Count() == 0)
             {
                 GameContext.ResolveWinnerOnPoolOver();
                 throw new EmptyPoolException("Pool is empty");
             }
 
-            // minus 1, because we havent removed any tile yet
             RummikubGameView.GlobalCurrentPoolSizeLbl.Text = GetPoolSize() - 1 + " tiles in pool";
-            return tilesQueue.Dequeue();
+            return _tilesQueue.Dequeue();
         }
 
         public void UpdatePoolSizeLabel()
@@ -65,7 +64,7 @@ namespace rummikubGame
 
         private int GetPoolSize()
         {
-            return tilesQueue.Count();
+            return _tilesQueue.Count();
         }
     }
 }

@@ -1,17 +1,19 @@
 ﻿using Rummikub;
 using rummikubGame.Exceptions;
+using rummikubGame.Models;
 using rummikubGame.Utilities;
 using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows.Forms;
 
 namespace rummikubGame
 {
     [Serializable]
-    public class HumanPlayerBoard : IBoard
+    public class HumanPlayerBoard : IBoard, ISerializable
     {
         // PlayerBoard Constants
         const int StartingXDrawingLocation = 70;
@@ -42,9 +44,48 @@ namespace rummikubGame
             set { _tookCard = value; }
         }
 
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("TileButtons", ConvertVisualTileToSerealilzableFormat());
+        }
+
+        public HumanPlayerBoard(SerializationInfo info, StreamingContext context)
+        {
+            List<VisualTileData> tileButtonsData = (List<VisualTileData>)info.GetValue("TileButtons", typeof(List<VisualTileData>));
+            TileButtons = new List<VisualTile>();
+
+            // Building the tiles from the data
+            for (int i = 0; i < tileButtonsData.Count(); i++)
+            {
+                TileButtons.Add(GenerateSingleTile(tileButtonsData[i].TileData, tileButtonsData[i].SlotLocation));
+            }
+
+            GenerateBoardSlots();
+
+            // Arrange the tiles on the board
+            for (int i = 0; i < TileButtons.Count; i++)
+            {
+                int[] tileSlotLocation = _tileButtons[i].VisualTileData.SlotLocation;
+                BoardSlots[tileSlotLocation[0], tileSlotLocation[1]].SlotState = Constants.Allocated;
+                _tileButtons[i].Location = BoardSlots[tileSlotLocation[0], tileSlotLocation[1]].SlotButton.Location;
+            }
+        }
+
         public HumanPlayerBoard()
         {
             GenerateBoard();
+        }
+
+        public List<VisualTileData> ConvertVisualTileToSerealilzableFormat()
+        {
+            List<VisualTileData> result = new List<VisualTileData>();
+
+            for(int i = 0; i < TileButtons.Count(); i++)
+            {
+                result.Add(TileButtons[i].VisualTileData);
+            }
+
+            return result;
         }
 
         public void ArrangeCardsOnBoard(List<VisualTile> sortedCards)
@@ -61,7 +102,7 @@ namespace rummikubGame
                         sortedCards[index].Location = BoardSlots[i, j].SlotButton.Location;
                         BoardSlots[i, j].SlotState = true;
                         int[] location_arr = { i, j };
-                        sortedCards[index].SlotLocation = location_arr;
+                        sortedCards[index].VisualTileData.SlotLocation = location_arr;
                     }
                     index++;
                 }
@@ -70,10 +111,15 @@ namespace rummikubGame
 
         public void GenerateBoard()
         {
+            GenerateBoardSlots();
+            GenerateTilesToBoard();
+        }
+
+        public void GenerateBoardSlots()
+        {
             int x_location = StartingXDrawingLocation;
             int y_location = StartingYDrawingLocation;
             BoardSlots = new Slot[RummikubGameView.HumanPlayerBoardHeight, RummikubGameView.HumanPlayerBoardWidth];
-            TileButtons = new List<VisualTile>();
 
             // Generating the slots
             for (int i = 0; i < RummikubGameView.HumanPlayerBoardHeight; i++)
@@ -103,12 +149,12 @@ namespace rummikubGame
                 y_location += YSpaceBetweenVisualTileButtons;
                 x_location = StartingXDrawingLocation;
             }
-
-            GenerateTilesToBoard();
         }
 
         public void GenerateTilesToBoard()
         {
+            TileButtons = new List<VisualTile>();
+
             // Generating the TileButtons
             for (int i = 0; i < Constants.RummikubTilesInGame; i++)
             {
@@ -127,7 +173,7 @@ namespace rummikubGame
 
                 // Adding tile to board
                 TileButtons.Add(visualTile);
-                BoardSlots[visualTile.SlotLocation[0], visualTile.SlotLocation[1]].SlotState = Constants.Allocated;
+                BoardSlots[visualTile.VisualTileData.SlotLocation[0], visualTile.VisualTileData.SlotLocation[1]].SlotState = Constants.Allocated;
 
                 // Moving tile to slot location
                 if (animation)

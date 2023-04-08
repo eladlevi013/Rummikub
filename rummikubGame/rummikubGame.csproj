@@ -47,18 +47,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BrightnessOnHover\BrightnessOnHoverComponent.cs" />
+    <Compile Include="BrightnessOnHover\BrightnessEffectComponent.cs" />
+    <Compile Include="BrightnessOnHover\IBrightnessEffect.cs" />
     <Compile Include="Draggable\DraggableComponent.cs" />
     <Compile Include="Draggable\IDraggable.cs" />
     <Compile Include="Exceptions\EmptyPoolException.cs" />
     <Compile Include="Models\IBoard.cs" />
     <Compile Include="Models\PartialSet.cs" />
-    <Compile Include="Models\VisualTile.cs">
+    <Compile Include="Models\VisualTile\VisualTile.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Models\Pool.cs" />
     <Compile Include="Models\Slot.cs" />
     <Compile Include="Models\Tile.cs" />
+    <Compile Include="Models\VisualTile\VisualTileData.cs" />
     <Compile Include="Players\ComputerPlayer\ComputerBoard.cs" />
     <Compile Include="Players\ComputerPlayer\ComputerPlayer.cs" />
     <Compile Include="Players\HumanPlayer\HumanPlayer.cs" />

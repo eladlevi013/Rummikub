@@ -1,9 +1,5 @@
-﻿using Rummikub;
-using rummikubGame.Models;
-using System;
+﻿using System;
 using System.Drawing;
-using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace rummikubGame.Draggable
@@ -17,54 +13,57 @@ namespace rummikubGame.Draggable
         */
 
         public static bool IsCurrentlyDragging = false;
-        protected Point dragStart;
-        protected Control control;
-        protected bool draggableEnabled;
-
-        Timer moveTimer;
+        private Point _dragStart;
+        private Control _control;
+        private bool _draggableEnabled;
+        private Timer _moveTimer;
 
         public DraggableComponent(Control control)
         {
-            this.control = control;
-            draggableEnabled = false;
+            _control = control;
+            _draggableEnabled = false;
+
+            // sets the timer
+            _moveTimer = new Timer();
+            _moveTimer.Interval = 1;
+            _moveTimer.Tick += MoveTimer_Tick;
         }
 
         public Control Control
         {
-            get { return control; }
-            set { control = value; }
+            get { return _control; }
+            set { _control = value; }
         }
 
         public bool DraggableEnabled
         {
-            get { return draggableEnabled; }
-            set { draggableEnabled = value; }
+            get { return _draggableEnabled; }
+            set { _draggableEnabled = value; }
         }
 
-        public virtual void SetDraggable(bool draggable)
+        public void SetDraggable(bool draggable)
         {
-            draggableEnabled = draggable;
+            _draggableEnabled = draggable;
+
+            // if draggable is true, add the event handlers
             if (draggable)
             {
-                control.MouseDown += StartDragging;
-                control.MouseUp += StopDragging;
+                _control.MouseDown += StartDragging;
+                _control.MouseUp += StopDragging;
             }
             else
             {
-                control.MouseDown -= StartDragging;
-                control.MouseUp -= StopDragging;
+                _control.MouseDown -= StartDragging;
+                _control.MouseUp -= StopDragging;
             }
         }
 
         public void StartDragging(object sender, MouseEventArgs e)
         {
             IsCurrentlyDragging = true;
-            dragStart = e.Location;
+            _dragStart = e.Location;
 
-            moveTimer = new Timer();
-            moveTimer.Interval = 1; // update every 10 milliseconds
-            moveTimer.Tick += MoveTimer_Tick;
-            moveTimer.Start();
+            _moveTimer.Start();
         }
 
         private void MoveTimer_Tick(object sender, EventArgs e)
@@ -72,10 +71,10 @@ namespace rummikubGame.Draggable
             if (IsCurrentlyDragging)
             {
                 Point screenPos = Cursor.Position;
-                Point clientPos = control.PointToClient(screenPos);
-                int deltaX = clientPos.X - dragStart.X;
-                int deltaY = clientPos.Y - dragStart.Y;
-                control.Location = new Point(control.Location.X + deltaX, control.Location.Y + deltaY);
+                Point clientPos = _control.PointToClient(screenPos);
+                int deltaX = clientPos.X - _dragStart.X;
+                int deltaY = clientPos.Y - _dragStart.Y;
+                _control.Location = new Point(_control.Location.X + deltaX, _control.Location.Y + deltaY);
             }
         }
 
@@ -84,9 +83,9 @@ namespace rummikubGame.Draggable
         {
             IsCurrentlyDragging = false;
 
-            moveTimer.Stop();
-            moveTimer.Dispose();
+            // Stopping timer
+            _moveTimer.Stop();
+            _moveTimer.Dispose();
         }
-
     }
 }

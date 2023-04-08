@@ -3,6 +3,7 @@ using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace rummikubGame
 {
@@ -38,15 +39,15 @@ namespace rummikubGame
 
             for (int i = 0; i < board._tileButtons.Count; i++)
             {
-                if (board._tileButtons[i].SlotLocation[0] == 0)
+                if (board._tileButtons[i].VisualTileData.SlotLocation[0] == 0)
                     topBoard_tiles.Add(board._tileButtons[i]);
                 else
                     bottomBoard_tiles.Add(board._tileButtons[i]);
             }
 
             // after we have two lists, we will sort them by value and analyze the melds
-            topBoard_tiles = topBoard_tiles.OrderBy(card => card.SlotLocation[1]).ToList();
-            bottomBoard_tiles = bottomBoard_tiles.OrderBy(card => card.SlotLocation[1]).ToList();
+            topBoard_tiles = topBoard_tiles.OrderBy(card => card.VisualTileData.SlotLocation[1]).ToList();
+            bottomBoard_tiles = bottomBoard_tiles.OrderBy(card => card.VisualTileData.SlotLocation[1]).ToList();
 
             GetSequencesFromTileList(topBoard_tiles, melds);
             GetSequencesFromTileList(bottomBoard_tiles, melds);
@@ -63,7 +64,7 @@ namespace rummikubGame
             List<VisualTile> meld = new List<VisualTile>();
             for (int i = 0; i < tiles_sequence.Count(); i++)
             {
-                if (meld.Count() != 0 && meld[meld.Count - 1].SlotLocation[1] + 1 == tiles_sequence[i].SlotLocation[1])
+                if (meld.Count() != 0 && meld[meld.Count - 1].VisualTileData.SlotLocation[1] + 1 == tiles_sequence[i].VisualTileData.SlotLocation[1])
                 {
                     meld.Add(tiles_sequence[i]);
                 }
@@ -96,7 +97,7 @@ namespace rummikubGame
         {
             List<Tile> new_tiles_format = new List<Tile>();
             for (int i = 0; i < tiles.Count(); i++)
-                new_tiles_format.Add(tiles[i].TileData);
+                new_tiles_format.Add(tiles[i].VisualTileData.TileData);
             return new_tiles_format;
         }
     }

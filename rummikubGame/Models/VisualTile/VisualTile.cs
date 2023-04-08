@@ -1,26 +1,27 @@
 ﻿using Rummikub;
 using rummikubGame.Draggable;
+using rummikubGame.Models;
 using rummikubGame.Utilities;
 using RummikubGame.Utilities;
 using System;
 using System.Drawing;
-using System.Drawing.Imaging;
+using System.Runtime.Serialization;
 using System.Windows.Forms;
 
 namespace rummikubGame
 {
     [Serializable]
-    public class VisualTile : Button
+    public class VisualTile : Button, ISerializable
     {
-        private int[] _slotLocation;
+        [NonSerialized]
         private DraggableComponent _draggable;
+        [NonSerialized]
         private BrightnessEffectComponent _brightnessOnHover;
-        public Tile _tileData;
-
-        public VisualTile(int color, int number, int[] slotLocation)
+        private VisualTileData _tileData;
+        
+        public VisualTile(VisualTileData data)
         {
-            _tileData = new Tile(color, number);
-            _slotLocation = slotLocation;
+            _tileData = data;
             _draggable = new DraggableComponent(this);
             _brightnessOnHover = new BrightnessEffectComponent(this);
 
@@ -29,10 +30,32 @@ namespace rummikubGame
             MouseUp += TileButton_MouseUp;
         }
 
-        public int[] SlotLocation
+        public VisualTile(int color, int number, int[] slotLocation)
         {
-            get { return _slotLocation; }
-            set { _slotLocation = value; }
+            _tileData = new VisualTileData(color, number, slotLocation);
+            _draggable = new DraggableComponent(this);
+            _brightnessOnHover = new BrightnessEffectComponent(this);
+
+            // Sets mouse events
+            MouseDown += TileButton_MouseDown;
+            MouseUp += TileButton_MouseUp;
+        }
+
+        public VisualTile(SerializationInfo info, StreamingContext context)
+        {
+            _tileData = (VisualTileData)info.GetValue("TileData", typeof(VisualTileData));
+            _draggable = new DraggableComponent(this);
+            _brightnessOnHover = new BrightnessEffectComponent(this);
+
+            // Sets mouse events
+            MouseDown += TileButton_MouseDown;
+            MouseUp += TileButton_MouseUp;
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            // Serialize the fields you want to persist
+            info.AddValue("TileData", _tileData);
         }
 
         public BrightnessEffectComponent BrightnessOnHover
@@ -47,7 +70,7 @@ namespace rummikubGame
             set { _draggable = value; }
         }
 
-        public Tile TileData
+        public VisualTileData VisualTileData
         {
             get { return _tileData; }
             set { _tileData = value; }
@@ -67,9 +90,9 @@ namespace rummikubGame
             currTile.BringToFront();
 
             // Update the status of the old slot to Available
-            if (currTile.SlotLocation[0] != Constants.DroppedTileLocation
-                && currTile.SlotLocation[1] != Constants.DroppedTileLocation)
-                GameContext.HumanPlayer.board.BoardSlots[currTile.SlotLocation[0], currTile.SlotLocation[1]].SlotState = Constants.Available;
+            if (currTile.VisualTileData.SlotLocation[0] != Constants.DroppedTileLocation
+                && currTile.VisualTileData.SlotLocation[1] != Constants.DroppedTileLocation)
+                GameContext.HumanPlayer.board.BoardSlots[currTile.VisualTileData.SlotLocation[0], currTile.VisualTileData.SlotLocation[1]].SlotState = Constants.Available;
         }
 
         public void TileButton_MouseUp(object sender, MouseEventArgs e)
@@ -82,7 +105,7 @@ namespace rummikubGame
             {
                 currTile.Location = new Point(RummikubGameView.GlobalDroppedTilesBtn.Location.X
                     + 10, RummikubGameView.GlobalDroppedTilesBtn.Location.Y + 18);
-                currTile.SlotLocation = new int[] { Constants.DroppedTileLocation, Constants.DroppedTileLocation };
+                currTile.VisualTileData.SlotLocation = new int[] { Constants.DroppedTileLocation, Constants.DroppedTileLocation };
                 currTile.Draggable.SetDraggable(false);
 
                 // Adding tile to dropped tiles stack
@@ -93,7 +116,7 @@ namespace rummikubGame
                 GameContext.HumanPlayer.board.TookCard = false;
                 GameContext.CurrentTurn = Constants.ComputerPlayerTurn;
                 RummikubGameView.GlobalGameIndicatorLbl.Text = "Computer's Turn";
-                GameContext.ComputerPlayer.ComputerPlay(currTile.TileData);
+                GameContext.ComputerPlayer.ComputerPlay(currTile.VisualTileData.TileData);
             }
             else
             {
@@ -125,7 +148,7 @@ namespace rummikubGame
                     }
                 }
 
-                if (currTile.SlotLocation[0] == Constants.DroppedTileLocation && currTile.SlotLocation[1] == Constants.DroppedTileLocation)
+                if (currTile.VisualTileData.SlotLocation[0] == Constants.DroppedTileLocation && currTile.VisualTileData.SlotLocation[1] == Constants.DroppedTileLocation)
                 {
                     GameContext.HumanPlayer.board.TookCard = true;
                     GameContext.HumanPlayer.board.TileButtons.Add(currTile);
@@ -138,17 +161,16 @@ namespace rummikubGame
 
                     // Update the status of the old slot to
                     GameContext.HumanPlayer.board.BoardSlots[min_i, min_j].SlotState = Constants.Allocated;
-                    currTile.SlotLocation = new int[] { min_i, min_j };
+                    currTile.VisualTileData.SlotLocation = new int[] { min_i, min_j };
                 }
                 else
                 {
                     ControlTransition.Move(currTile, currTile.Location, firstEmptySlot.Location);
-                    GameContext.HumanPlayer.board.BoardSlots[currTile.SlotLocation[0], currTile.SlotLocation[1]].SlotState = Constants.Available;
+                    GameContext.HumanPlayer.board.BoardSlots[currTile.VisualTileData.SlotLocation[0], currTile.VisualTileData.SlotLocation[1]].SlotState = Constants.Available;
                     GameContext.HumanPlayer.board.BoardSlots[min_i, min_j].SlotState = Constants.Allocated;
-                    currTile.SlotLocation = new int[] { min_i, min_j };
+                    currTile.VisualTileData.SlotLocation = new int[] { min_i, min_j };
                 }
             }
-
             // Check Winning every moving tile
             if (GameContext.HumanPlayer.CheckWinner() == true && GameContext.GameOver == false)
             {

@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace rummikubGame
+﻿namespace rummikubGame
 {
     public interface IBoard
     {

@@ -118,7 +118,7 @@ namespace rummikubGame
                 // generate computer thrown tile in Stack
                 int[] tile_in_dropped_tiles_location = { Constants.DroppedTileLocation, Constants.DroppedTileLocation };
                 VisualTile dropped_tile = new VisualTile(optimal_dropped_tile.Color, optimal_dropped_tile.Number, tile_in_dropped_tiles_location);
-                GameContext.GenerateComputerThrownTile(dropped_tile.TileData);
+                GameContext.GenerateComputerThrownTile(dropped_tile.VisualTileData.TileData);
                 
                 // returns true because better option found
                 return (true);

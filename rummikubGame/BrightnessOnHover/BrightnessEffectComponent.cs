@@ -1,11 +1,7 @@
 ﻿using rummikubGame.BrightnessOnHover;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace rummikubGame.Draggable
@@ -25,9 +21,9 @@ namespace rummikubGame.Draggable
 
         public BrightnessEffectComponent(Control control)
         {
+            _control = control;
             control.MouseEnter += ControlApplyBrightness_MouseEnter;
             control.MouseLeave += ControlRemoveBrightness_MouseLeave;
-            _control = control;
         }
 
         public bool IsEnabled
@@ -47,42 +43,48 @@ namespace rummikubGame.Draggable
 
         public void ApplyBrightness()
         {
+            // If the effect is disabled, do nothing
             if (!_isEnabled)
             {
                 return;
             }
-
-            _originalBackgroundImage = _control.BackgroundImage;
-            if (_control.BackgroundImage == null || HoverBrightnessLevel == _currentBrightnessLevel)
+            else
             {
-                return;
-            }
+                _originalBackgroundImage = _control.BackgroundImage;
 
-            if (_brightnessImage == null)
-            {
-                // Generate brightness image
-                float[][] matrixItems ={
-                    new float[] { HoverBrightnessLevel, 0, 0, 0, 0},
-                    new float[] {0, HoverBrightnessLevel, 0, 0, 0},
-                    new float[] {0, 0, HoverBrightnessLevel, 0, 0},
-                    new float[] {0, 0, 0, 1, 0},
-                    new float[] {0, 0, 0, 0, 1}
-                };
-                ColorMatrix colorMatrix = new ColorMatrix(matrixItems);
-                ImageAttributes attributes = new ImageAttributes();
-                attributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                Bitmap bmp = new Bitmap(_originalBackgroundImage.Width, _originalBackgroundImage.Height);
-
-                using (Graphics g = Graphics.FromImage(bmp))
+                if (_control.BackgroundImage == null || HoverBrightnessLevel == _currentBrightnessLevel)
                 {
-                    g.DrawImage(_originalBackgroundImage, new Rectangle(0, 0, bmp.Width, bmp.Height),
-                        0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+                    return;
                 }
 
-                _brightnessImage = bmp;
+                if (_brightnessImage == null)
+                {
+                    // Generate brightness image
+                    float[][] matrixItems ={
+                        new float[] { HoverBrightnessLevel, 0, 0, 0, 0},
+                        new float[] {0, HoverBrightnessLevel, 0, 0, 0},
+                        new float[] {0, 0, HoverBrightnessLevel, 0, 0},
+                        new float[] {0, 0, 0, 1, 0},
+                        new float[] {0, 0, 0, 0, 1}
+                    };
+
+                    ColorMatrix colorMatrix = new ColorMatrix(matrixItems);
+                    ImageAttributes attributes = new ImageAttributes();
+                    attributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                    Bitmap bmp = new Bitmap(_originalBackgroundImage.Width, _originalBackgroundImage.Height);
+
+                    using (Graphics g = Graphics.FromImage(bmp))
+                    {
+                        g.DrawImage(_originalBackgroundImage, new Rectangle(0, 0, bmp.Width, bmp.Height),
+                            0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+                    }
+
+                    _brightnessImage = bmp;
+                }
+
+                _control.BackgroundImage = _brightnessImage;
+                _currentBrightnessLevel = HoverBrightnessLevel;
             }
-            _control.BackgroundImage = _brightnessImage;
-            _currentBrightnessLevel = HoverBrightnessLevel;
         }
 
         public void RemoveBrightness()

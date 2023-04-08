@@ -1,5 +1,6 @@
 ﻿using RummikubGame.Utilities;
 using System;
+using System.Runtime.Serialization;
 using System.Windows.Forms;
 
 namespace rummikubGame
@@ -10,7 +11,7 @@ namespace rummikubGame
         [NonSerialized]
         private Button slotButton;
         private bool slotState;
-        
+
         public Slot()
         {
             slotState = Constants.Available;
