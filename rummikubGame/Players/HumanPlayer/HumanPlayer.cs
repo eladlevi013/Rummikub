@@ -1,4 +1,5 @@
-﻿using rummikubGame.Utilities;
+﻿using rummikubGame.Logic;
+using rummikubGame.Utilities;
 using RummikubGame.Utilities;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace rummikubGame
             // Iterating over arranged melds
             for (int i = 0; i < melds.Count(); i++)
             {
-                if (!GameContext.IsLegalMeld(melds[i]))
+                if (!GameLogic.IsLegalMeld(melds[i]))
                     return false;
             }
 
@@ -87,7 +88,7 @@ namespace rummikubGame
             int tiles_in_sets = 0;
 
             for (int set_index = 0; set_index < melds.Count(); set_index++)
-                if (GameContext.IsLegalMeld(melds[set_index]))
+                if (GameLogic.IsLegalMeld(melds[set_index]))
                     tiles_in_sets += melds[set_index].Count();
 
             return Constants.RummikubTilesInGame - tiles_in_sets;

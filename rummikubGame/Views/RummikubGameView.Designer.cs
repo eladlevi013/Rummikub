@@ -54,6 +54,7 @@ namespace Rummikub
             this.dropped_tiles_lbl = new System.Windows.Forms.Label();
             this.game_indicator_lbl = new System.Windows.Forms.Label();
             this.current_pool_size_lbl = new System.Windows.Forms.Label();
+            this.hint_btn = new System.Windows.Forms.Button();
             this.computerTiles_groupbox.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -61,7 +62,7 @@ namespace Rummikub
             // sort_value_btn
             // 
             this.sort_value_btn.BackColor = System.Drawing.Color.Sienna;
-            this.sort_value_btn.Location = new System.Drawing.Point(502, 674);
+            this.sort_value_btn.Location = new System.Drawing.Point(503, 677);
             this.sort_value_btn.Name = "sort_value_btn";
             this.sort_value_btn.Size = new System.Drawing.Size(148, 32);
             this.sort_value_btn.TabIndex = 8;
@@ -192,7 +193,7 @@ namespace Rummikub
             // sort_color_btn
             // 
             this.sort_color_btn.BackColor = System.Drawing.Color.Sienna;
-            this.sort_color_btn.Location = new System.Drawing.Point(335, 674);
+            this.sort_color_btn.Location = new System.Drawing.Point(336, 677);
             this.sort_color_btn.Name = "sort_color_btn";
             this.sort_color_btn.Size = new System.Drawing.Size(148, 32);
             this.sort_color_btn.TabIndex = 9;
@@ -270,11 +271,24 @@ namespace Rummikub
             this.current_pool_size_lbl.Text = "Pool Size";
             this.current_pool_size_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // hint_btn
+            // 
+            this.hint_btn.BackColor = System.Drawing.Color.Transparent;
+            this.hint_btn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("hint_btn.BackgroundImage")));
+            this.hint_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.hint_btn.Location = new System.Drawing.Point(665, 677);
+            this.hint_btn.Name = "hint_btn";
+            this.hint_btn.Size = new System.Drawing.Size(28, 33);
+            this.hint_btn.TabIndex = 12;
+            this.hint_btn.UseVisualStyleBackColor = false;
+            this.hint_btn.Click += new System.EventHandler(this.hint_btn_Click);
+            // 
             // RummikubGameView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(967, 721);
+            this.Controls.Add(this.hint_btn);
             this.Controls.Add(this.current_pool_size_lbl);
             this.Controls.Add(this.sort_color_btn);
             this.Controls.Add(this.sort_value_btn);
@@ -325,5 +339,6 @@ namespace Rummikub
         private Label pool_lbl;
         private Label dropped_tiles_lbl;
         private Button pool_btn;
+        private Button hint_btn;
     }
 }

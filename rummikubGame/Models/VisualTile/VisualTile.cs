@@ -96,7 +96,7 @@ namespace rummikubGame
         }
 
         public void TileButton_MouseUp(object sender, MouseEventArgs e)
-        {   
+        {
             VisualTile currTile = (VisualTile)sender;
 
             if (GameContext.GetDistance(currTile, RummikubGameView.GlobalDroppedTilesBtn) < 100

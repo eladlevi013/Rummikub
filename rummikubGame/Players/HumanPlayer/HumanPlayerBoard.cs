@@ -1,5 +1,6 @@
 ﻿using Rummikub;
 using rummikubGame.Exceptions;
+using rummikubGame.Logic;
 using rummikubGame.Models;
 using rummikubGame.Utilities;
 using RummikubGame.Utilities;
@@ -201,7 +202,7 @@ namespace rummikubGame
             visualTile.Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
             visualTile.Draggable.SetDraggable(true);
 
-            if (GameContext.IsJoker(tile))
+            if (GameLogic.IsJoker(tile))
             {
                 if (tile.Color == Constants.BlackColor)
                 {
@@ -267,6 +268,41 @@ namespace rummikubGame
             for (int i = 0; i < TileButtons.Count(); i++)
             {
                 TileButtons[i].DisableTile();
+            }
+        }
+
+        public  void hint()
+        {
+            List<Tile> all_tiles = new List<Tile>();
+            List<Tile> jokers = new List<Tile>();
+
+            // separating the jokers from the tiles
+            for(int i=0; i<_tileButtons.Count; i++)
+            {
+                if (_tileButtons[i].VisualTileData.TileData.Number == 0)
+                {
+                    jokers.Add(_tileButtons[i].VisualTileData.TileData);
+                }
+                else
+                {
+                    all_tiles.Add(_tileButtons[i].VisualTileData.TileData);
+                }
+            }
+
+            // get sequences and partial sets
+            List<List<Tile>> sequences = GameLogic.MeldsSets(ref all_tiles, ref jokers);
+            List<PartialSet> parial_sets = GameLogic.CreatePartialSets(ref all_tiles);
+
+            // find the not nessesary tiles and highlight it
+            if(all_tiles.Count > 0)
+            {
+                for (int i = 0; i < _tileButtons.Count; i++)
+                {
+                    if (_tileButtons[i].VisualTileData.TileData == all_tiles[0])
+                    {
+                        _tileButtons[i].BrightnessOnHover.BrightnessTime(3);
+                    }
+                }
             }
         }
     }

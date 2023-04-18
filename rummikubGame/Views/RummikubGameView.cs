@@ -127,6 +127,11 @@ namespace Rummikub
             // this will send back the panel(the board)
             board_panel.SendToBack();
 
+            // sets hint background
+            hint_btn.BackColor = Constants.BackgroundColor;
+            hint_btn.FlatStyle = FlatStyle.Flat;
+            hint_btn.FlatAppearance.BorderSize = 0;
+
             StartGameSetTurn();
 
             // if the game is over, and the computer won
@@ -368,6 +373,11 @@ namespace Rummikub
                 ShowComputerTilesToggle = true;
                 ((ToolStripMenuItem)sender).Checked = true;
             }
+        }
+
+        private void hint_btn_Click(object sender, EventArgs e)
+        {
+            GameContext.HumanPlayer.board.hint(); ;
         }
     }
 }

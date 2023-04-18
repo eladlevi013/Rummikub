@@ -22,7 +22,6 @@ namespace rummikubGame
         const int SecondSequencesYLocationComputerTiles = 170;
         const int XSpaceBetweenComputerTiles = 31;
         const int YSpaceBetweenSequences = 50;
-        const List<PartialSet> PartialSetVarPassed = null;
 
         // Board Variables
         public List<Tile> hand;
@@ -47,7 +46,7 @@ namespace rummikubGame
             hand = new List<Tile>();
 
             // generating starting tiles
-            for (int i = 0; i < Constants.RummikubTilesInGame - 14; i++)
+            for (int i = 0; i < Constants.RummikubTilesInGame; i++)
             {
                 Tile tile = GameContext.Pool.GetTile();
 
@@ -56,96 +55,6 @@ namespace rummikubGame
                 else
                     hand.Add(tile);
             }
-
-            // generating starting sequences
-            hand.Add(new Tile(2, 1));
-            hand.Add(new Tile(2, 2));
-            hand.Add(new Tile(2, 3));
-            hand.Add(new Tile(2, 4));
-
-            hand.Add(new Tile(2, 1));
-            hand.Add(new Tile(2, 2));
-            hand.Add(new Tile(2, 3));
-
-            hand.Add(new Tile(2, 1));
-            hand.Add(new Tile(2, 2));
-            hand.Add(new Tile(2, 3));
-
-            hand.Add(new Tile(1, 1));
-            unusedJokers.Add(new Tile(3, 0));
-            unusedJokers.Add(new Tile(1, 0));
-            hand.Add(new Tile(1, 4));
-        }
-
-        public List<PartialSet> CreatePartialSets(ref List<Tile> hand, List<PartialSet> existing_partial_set = PartialSetVarPassed)
-        {
-            // use the existing partial sets if passed
-            if (existing_partial_set == PartialSetVarPassed)
-                existing_partial_set = new List<PartialSet>();
-
-            List<PartialSet> currPartialSets = existing_partial_set;
-            List<int> indexes = new List<int>();
-
-            // find runs
-            for (int i = 0; i < hand.Count(); i++)
-            {
-                for (int j = 0; j < hand.Count(); j++)
-                {
-                    Tile tile1 = hand[i];
-                    Tile tile2 = hand[j];
-
-                    if (i != j && (Math.Abs(tile1.Number - tile2.Number) == 1
-                        && tile1.Color == tile2.Color))
-                    {
-                        if (!indexes.Contains(i) && !indexes.Contains(j))
-                        {
-                            // create partial set
-                            PartialSet partialSet = new PartialSet(tile1, tile2);
-                            partialSet.SortPartialSet();
-                            currPartialSets.Add(partialSet);
-                            // add the indexes of the tiles that are in the partial set
-                            indexes.Add(i);
-                            indexes.Add(j);
-                        }
-                    }
-                }
-            }
-
-            // find groups
-            for (int i = 0; i < hand.Count(); i++)
-            {
-                for (int j = 0; j < hand.Count(); j++)
-                {
-                    Tile tile1 = hand[i];
-                    Tile tile2 = hand[j];
-                    if (i != j && (tile1.Number == tile2.Number && tile1.Color != tile2.Color) ||
-                    ((Math.Abs(tile1.Number - tile2.Number) == 2 || Math.Abs(tile1.Number - tile2.Number) == 1)
-                    && tile1.Color == tile2.Color))
-                    {
-                        if (!indexes.Contains(i) && !indexes.Contains(j))
-                        {
-                            currPartialSets.Add(new PartialSet(tile1, tile2));
-                            indexes.Add(i);
-                            indexes.Add(j);
-                        }
-                    }
-                }
-            }
-
-            // duplicating the hand
-            List<Tile> temp_hand = new List<Tile>();
-            for (int i = 0; i < hand.Count(); i++)
-            {
-                temp_hand.Add(hand[i]);
-            }
-
-            // remove the tiles that are in partial sets
-            for (int i = 0; i < indexes.Count(); i++)
-            {
-                hand.Remove(temp_hand[indexes[i]]);
-            }
-
-            return currPartialSets;
         }
 
         public List<Tile> GetAllJokers()

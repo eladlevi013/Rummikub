@@ -2,7 +2,9 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+
 
 namespace rummikubGame.Draggable
 {
@@ -17,7 +19,7 @@ namespace rummikubGame.Draggable
         private Image _originalBackgroundImage;
         private float _currentBrightnessLevel = DefaultBrightnessLevel;
         private Control _control;
-        private bool _isEnabled = true;
+        private bool _isEnabled = false;
 
         public BrightnessEffectComponent(Control control)
         {
@@ -33,34 +35,27 @@ namespace rummikubGame.Draggable
 
         public void ControlApplyBrightness_MouseEnter(object sender, EventArgs e)
         {
-            ApplyBrightness();
+            SetEffectState(true);
         }
 
         public void ControlRemoveBrightness_MouseLeave(object sender, EventArgs e)
         {
-            RemoveBrightness();
+            SetEffectState(false);
         }
 
         public void ApplyBrightness()
         {
-            // If the effect is disabled, do nothing
-            if (!_isEnabled)
+            _originalBackgroundImage = _control.BackgroundImage;
+
+            if (_control.BackgroundImage == null || HoverBrightnessLevel == _currentBrightnessLevel)
             {
                 return;
             }
-            else
+
+            if (_brightnessImage == null)
             {
-                _originalBackgroundImage = _control.BackgroundImage;
-
-                if (_control.BackgroundImage == null || HoverBrightnessLevel == _currentBrightnessLevel)
-                {
-                    return;
-                }
-
-                if (_brightnessImage == null)
-                {
-                    // Generate brightness image
-                    float[][] matrixItems ={
+                // Generate brightness image
+                float[][] matrixItems ={
                         new float[] { HoverBrightnessLevel, 0, 0, 0, 0},
                         new float[] {0, HoverBrightnessLevel, 0, 0, 0},
                         new float[] {0, 0, HoverBrightnessLevel, 0, 0},
@@ -68,23 +63,20 @@ namespace rummikubGame.Draggable
                         new float[] {0, 0, 0, 0, 1}
                     };
 
-                    ColorMatrix colorMatrix = new ColorMatrix(matrixItems);
-                    ImageAttributes attributes = new ImageAttributes();
-                    attributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    Bitmap bmp = new Bitmap(_originalBackgroundImage.Width, _originalBackgroundImage.Height);
+                ColorMatrix colorMatrix = new ColorMatrix(matrixItems);
+                ImageAttributes attributes = new ImageAttributes();
+                attributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                Bitmap bmp = new Bitmap(_originalBackgroundImage.Width, _originalBackgroundImage.Height);
 
-                    using (Graphics g = Graphics.FromImage(bmp))
-                    {
-                        g.DrawImage(_originalBackgroundImage, new Rectangle(0, 0, bmp.Width, bmp.Height),
-                            0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
-                    }
-
-                    _brightnessImage = bmp;
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.DrawImage(_originalBackgroundImage, new Rectangle(0, 0, bmp.Width, bmp.Height),
+                        0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
                 }
-
-                _control.BackgroundImage = _brightnessImage;
-                _currentBrightnessLevel = HoverBrightnessLevel;
+                _brightnessImage = bmp;
             }
+            _control.BackgroundImage = _brightnessImage;
+            _currentBrightnessLevel = HoverBrightnessLevel;
         }
 
         public void RemoveBrightness()
@@ -100,7 +92,29 @@ namespace rummikubGame.Draggable
 
         public void SetEffectState(bool value)
         {
-            _isEnabled = value;
+            if(_isEnabled == value)
+            {
+                return;
+            }
+            else
+            {
+                _isEnabled = value;
+                if (_isEnabled)
+                {
+                    ApplyBrightness();
+                }
+                else
+                {
+                    RemoveBrightness();
+                }
+            }
+        }
+
+        public async void BrightnessTime(int seconds)
+        {
+            SetEffectState(true);
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            SetEffectState(false);
         }
     }
 }

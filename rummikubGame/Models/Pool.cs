@@ -1,5 +1,6 @@
 ﻿using Rummikub;
 using rummikubGame.Exceptions;
+using rummikubGame.Logic;
 using rummikubGame.Utilities;
 using RummikubGame.Utilities;
 using System;
@@ -49,7 +50,7 @@ namespace rummikubGame
             // if queue is empty, we need to resolve the winner
             if (_tilesQueue.Count() == 0)
             {
-                GameContext.ResolveWinnerOnPoolOver();
+                GameLogic.ResolveWinnerOnPoolOver();
                 throw new EmptyPoolException("Pool is empty");
             }
 

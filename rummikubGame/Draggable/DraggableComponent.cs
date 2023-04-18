@@ -44,7 +44,6 @@ namespace rummikubGame.Draggable
         public void SetDraggable(bool draggable)
         {
             _draggableEnabled = draggable;
-
             // if draggable is true, add the event handlers
             if (draggable)
             {
@@ -77,7 +76,6 @@ namespace rummikubGame.Draggable
                 _control.Location = new Point(_control.Location.X + deltaX, _control.Location.Y + deltaY);
             }
         }
-
 
         public void StopDragging(object sender, MouseEventArgs e)
         {
