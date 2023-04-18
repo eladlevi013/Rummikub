@@ -209,5 +209,15 @@ namespace rummikubGame.Utilities
             // assuming valid sequence(group or run)
             return sequence[0].Color == sequence[1].Color;
         }
+
+        public static bool HandContains(List<Tile> hand, Tile tile)
+        {
+            for(int i=0; i < hand.Count; i++)
+            {
+                if (hand[i] == tile)
+                    return true;
+            }
+            return false;
+        }
     }
 }

@@ -47,7 +47,7 @@ namespace rummikubGame
             hand = new List<Tile>();
 
             // generating starting tiles
-            for (int i = 0; i < Constants.RummikubTilesInGame; i++)
+            for (int i = 0; i < Constants.RummikubTilesInGame - 14; i++)
             {
                 Tile tile = GameContext.Pool.GetTile();
 
@@ -56,6 +56,25 @@ namespace rummikubGame
                 else
                     hand.Add(tile);
             }
+
+            // generating starting sequences
+            hand.Add(new Tile(2, 1));
+            hand.Add(new Tile(2, 2));
+            hand.Add(new Tile(2, 3));
+            hand.Add(new Tile(2, 4));
+
+            hand.Add(new Tile(2, 1));
+            hand.Add(new Tile(2, 2));
+            hand.Add(new Tile(2, 3));
+
+            hand.Add(new Tile(2, 1));
+            hand.Add(new Tile(2, 2));
+            hand.Add(new Tile(2, 3));
+
+            hand.Add(new Tile(1, 1));
+            unusedJokers.Add(new Tile(3, 0));
+            unusedJokers.Add(new Tile(1, 0));
+            hand.Add(new Tile(1, 4));
         }
 
         public List<PartialSet> CreatePartialSets(ref List<Tile> hand, List<PartialSet> existing_partial_set = PartialSetVarPassed)

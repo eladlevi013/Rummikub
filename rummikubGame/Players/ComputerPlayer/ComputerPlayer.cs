@@ -267,7 +267,7 @@ namespace rummikubGame
         // Extends existing sequences with remaning tiles in hand
         // Being called on the recursive function MeldsSets
         // -----------------------------------------------------------------
-        public void ExtendSets(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
+        public static void ExtendSets(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
         {
             List<Tile> hand_no_null = new List<Tile>();
             for(int i=0; i<hand_tiles.Count(); i++)
@@ -351,7 +351,7 @@ namespace rummikubGame
              return (result);
         }
 
-        public List<PartialSet> FindRunPartialSets(List<Tile> hand)
+        public static List<PartialSet> FindRunPartialSets(List<Tile> hand)
         {
             List<PartialSet> run_partial_sets = new List<PartialSet>();
             List<int> indexes = new List<int>();
@@ -378,7 +378,7 @@ namespace rummikubGame
             return run_partial_sets;
         }
 
-        public List<Tile>[] CloneColorSortedHand(List<Tile>[] color_sorted_hand)
+        public static List<Tile>[] CloneColorSortedHand(List<Tile>[] color_sorted_hand)
         {
             List<Tile>[] color_sorted_hand_temp = new List<Tile>[4];
 
@@ -398,7 +398,7 @@ namespace rummikubGame
         // ---------------------------------------------------------
         // finds the optimal way arranging the given tiles
         // ---------------------------------------------------------
-        public void MeldsSets(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, List<Tile> jokers, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
+        public static void MeldsSets(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, List<Tile> jokers, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
         {
             List<Tile> hand = new List<Tile>();
             hand.AddRange(color_sorted_hand[0]); hand.AddRange(color_sorted_hand[1]); hand.AddRange(color_sorted_hand[2]); hand.AddRange(color_sorted_hand[3]);
@@ -583,14 +583,15 @@ namespace rummikubGame
             return;
         }
 
-        public void AddJokersAfterMeldsSets(ref List<PartialSet> partial_set, ref List<List<Tile>> sequences, ref List<Tile> jokers, ref List<Tile> hand)
+        public static void AddJokersAfterMeldsSets(ref List<PartialSet> partial_set, ref List<List<Tile>> sequences, ref List<Tile> jokers, ref List<Tile> hand)
         {
            JokerCompletePartialSet(ref partial_set, ref sequences, ref jokers);
            JokerCombineSequencesWithHand(ref sequences, ref jokers, ref hand);
+           JokerJoinHandTiles(ref jokers, ref hand, ref sequences);
            JokerExtendSequenceWithJoker(ref jokers, ref sequences);
         }
 
-        public void JokerCompletePartialSet(ref List<PartialSet> partial_set, ref List<List<Tile>> sequences, ref List<Tile> jokers)
+        public static void JokerCompletePartialSet(ref List<PartialSet> partial_set, ref List<List<Tile>> sequences, ref List<Tile> jokers)
         {
             List<PartialSet> best_runs_values = new List<PartialSet>();
             List<PartialSet> runs_values = new List<PartialSet>();
@@ -674,7 +675,7 @@ namespace rummikubGame
             }
         }
 
-        public void JokerCombineSequencesWithHand(ref List<List<Tile>> sequences, ref List<Tile> unused_jokers, ref List<Tile> hand)
+        public static void JokerCombineSequencesWithHand(ref List<List<Tile>> sequences, ref List<Tile> unused_jokers, ref List<Tile> hand)
         {
             for(int i=0; i< sequences.Count() && unused_jokers.Count() > 0; i++)
             {
@@ -709,7 +710,39 @@ namespace rummikubGame
             }
         }
 
-        public void JokerExtendSequenceWithJoker(ref List<Tile> unused_jokers, ref List<List<Tile>> sequences)
+        public static void JokerJoinHandTiles(ref List<Tile> unused_jokers, ref List<Tile> hand, ref List<List<Tile>> sequences)
+        {
+            for (int i=0; i<hand.Count && unused_jokers.Count >= 2; i++)
+            {
+                for(int j = 2; j <= unused_jokers.Count; j++)
+                {
+                    Tile temp = new Tile(hand[i].Color, hand[i].Number + 1 + j);
+                    if (GameContext.HandContains(hand, temp))
+                    {
+                        // Removing jokers from hand and make sequence with them
+                        List<Tile> temp_list = new List<Tile>();
+                        temp_list.Add(hand[i]);
+                        temp_list.Add(unused_jokers[0]);
+                        temp_list.Add(unused_jokers[1]);
+                        temp_list.Add(temp);
+
+                        // removing jokers
+                        unused_jokers.RemoveAt(0);
+                        unused_jokers.RemoveAt(0);
+
+                        // adding sequence
+                        sequences.Add(temp_list);
+
+                        // removing tiles from hand
+                        hand.Remove(hand[i]);
+                        hand.Remove(temp);
+                        i--;
+                    }
+                }
+            }
+        }
+
+        public static void JokerExtendSequenceWithJoker(ref List<Tile> unused_jokers, ref List<List<Tile>> sequences)
         {
             for(int i=0; i < sequences.Count() && unused_jokers.Count() > 0; i++)
             {
