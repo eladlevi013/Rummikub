@@ -2,6 +2,14 @@
 
 namespace rummikubGame.Models
 {
+    /*
+        This class represents PartialSet, which is a set of two cards,
+        which are missed another single card in order to be a valid set.
+        an example of that can be, {1,2}, {1,3}, {2,2} and so on
+        (of course the colors match accordingly to the rules of the game.)
+        we use that class mainly in the Logic of the game while finding optimal sets.
+    */
+
     [Serializable]
     public class PartialSet
     {

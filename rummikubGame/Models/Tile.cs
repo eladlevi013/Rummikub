@@ -5,6 +5,16 @@ namespace rummikubGame
     [Serializable]
     public class Tile
     {
+        /*
+            This class represents a data of a tile.
+            we also implmented a operation-overloading of the actions
+            == and != in order to compare between tiles more easily,
+            this class is used mainly on the computer-logic because 
+            visualTiles(that the user sees, is built different altough 
+            its using this class).
+            
+        */
+
         protected int color;
         protected int number;
 
@@ -31,7 +41,6 @@ namespace rummikubGame
             set { number = value; }
         }
         public static bool operator ==(Tile t1, Tile t2)
-
         {
             if (ReferenceEquals(t1, t2)) return true;
             if (ReferenceEquals(t1, null)) return false;

@@ -12,6 +12,12 @@ namespace rummikubGame
     [Serializable]
     public class Pool
     {
+        /*
+            This class purpose, is to serve easy card getting from pool,
+            its managing its own cards and all you need to do is make a single
+            object of that, and call GetTile function.
+        */
+
         private Queue<Tile> _tilesQueue;
         
         public Pool()

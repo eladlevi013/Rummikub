@@ -10,6 +10,12 @@ namespace rummikubGame.Utilities
 {
     public class GameContext
     {
+        /*
+            The purpose of this class is to serve 
+            general function that are used in various
+            areas of the code.
+        */
+
         // Private fields
         private static int _currentTurn;
         private static bool _gameOver = false;

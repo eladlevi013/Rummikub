@@ -4,6 +4,11 @@ namespace RummikubGame.Utilities
 {
     public class Constants
     {
+        /*
+            class created in order to serve global const variables
+            for the game, to all the other classes.
+        */
+
         // Global consts
         public const int ComputerPlayerTurn = 0;
         public const int HumanPlayerTurn = 1;
