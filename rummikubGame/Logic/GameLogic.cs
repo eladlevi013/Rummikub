@@ -10,15 +10,28 @@ namespace rummikubGame.Logic
 {
     public class GameLogic
     {
+        /*
+            In this class, we'll have game-logic related functions,
+            so the we are thinking of a way making the computer play.
+            we'll have functions, such as:
+            - extendSets = which extends existing sets.
+            - MeldSets = which are actually 2 functions
+                - one of the them is just orgenizing the parameters to the real function
+                - the real function, which handles the finding sets problem.
+            - 
+        */
+
+
         // Constants
         const List<PartialSet> PartialSetVarPassed = null;
 
         // -----------------------------------------------------------------
         // Extends existing sequences with remaning tiles in hand
-        // Being called on the recursive function MeldsSets
+        // Being called while using the recursive function MeldsSets
         // -----------------------------------------------------------------
         public static void ExtendSets(ref List<List<Tile>> sequences, ref List<Tile> hand_tiles)
         {
+            // we'll start by finding the not null list of hand sorted by value
             List<Tile> hand_no_null = new List<Tile>();
             for (int i = 0; i < hand_tiles.Count(); i++)
             {
@@ -30,6 +43,12 @@ namespace rummikubGame.Logic
             hand_tiles = hand_no_null;
             hand_tiles = hand_tiles.OrderBy(card => card.Number).ToList();
 
+            /*
+                for every hand_tile we'll iterate over all the sequences and we'll
+                check if we can append the sequence from the right, if we can
+                we'll set tile to null, and after that we'll check from the left.
+                every-time we found a matched tile, we'll set it to null.
+            */
             for (int hand_tile_index = 0; hand_tile_index < hand_tiles.Count(); hand_tile_index++)
             {
                 for (int i = 0; i < sequences.Count(); i++)
@@ -74,7 +93,7 @@ namespace rummikubGame.Logic
         // -----------------------------------------------------------------
         public static List<List<Tile>> MeldsSets(ref List<Tile> all_tiles, ref List<Tile> jokers)
         {
-            // sorting the hand tiles
+            // sorting the hand tiles by value
             all_tiles = all_tiles.OrderBy(card => card.Number).ToList();
 
             // prepering the hand tiles for the MeldsSets function
@@ -101,6 +120,10 @@ namespace rummikubGame.Logic
             return (result);
         }
 
+        // -----------------------------------------------------------------
+        // Finds the run partial-sets, called in the recursive meldsSets
+        // function in the section of the jokers.
+        // -----------------------------------------------------------------
         public static List<PartialSet> FindRunPartialSets(List<Tile> hand)
         {
             List<PartialSet> run_partial_sets = new List<PartialSet>();
@@ -128,6 +151,10 @@ namespace rummikubGame.Logic
             return run_partial_sets;
         }
 
+        // -----------------------------------------------------------------
+        // Duplicates the given Array of list of tiles
+        // used in the first meldsSets function.
+        // -----------------------------------------------------------------
         public static List<Tile>[] CloneColorSortedHand(List<Tile>[] color_sorted_hand)
         {
             List<Tile>[] color_sorted_hand_temp = new List<Tile>[4];
@@ -147,6 +174,7 @@ namespace rummikubGame.Logic
 
         // ---------------------------------------------------------
         // finds the optimal way arranging the given tiles
+        // recursive function, called after the first meldsSets.
         // ---------------------------------------------------------
         public static void MeldsSets(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, List<Tile> jokers, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
         {
