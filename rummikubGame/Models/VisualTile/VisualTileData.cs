@@ -9,6 +9,11 @@ namespace rummikubGame.Models
     [Serializable]
     public class VisualTileData
     {
+        /*
+            This class is used in the VisualTile class,
+            in order to save the tile data in the VisualTile class,
+        */
+
         private int[] _slotLocation;
         private Tile _tileData;
 

@@ -24,7 +24,10 @@ namespace rummikubGame.Utilities
         private static HumanPlayer _humanPlayer;
         private static ComputerPlayer _computerPlayer;
 
-        // Public properties
+        /*
+            Getters and Setters for the private fields.
+            in order to access them from other classes.
+        */
         public static int CurrentTurn
         {
             get { return _currentTurn; }
@@ -61,6 +64,12 @@ namespace rummikubGame.Utilities
             set { _computerPlayer = value; }
         }
 
+        /*
+            This function called after clicking the pool button from the game view,
+            its called from the actual function that's called from the button click event.
+            it generates a new tile to the human player board and handles the required
+            variables.
+        */
         public static void PoolOnClick(int[] slotLocation)
         {
             if (!HumanPlayer.board.TookCard && !GameOver
@@ -78,6 +87,11 @@ namespace rummikubGame.Utilities
             }
         }
 
+        /*
+            function used to calculate the distance between two buttons,
+            in order to know what is the closest slot to a tile.
+            its being used in the MouseUp event of the VisualTile.
+        */
         public static float GetDistance(Button tile, Button slot)
         {
             // Used find the closet slot to a card
@@ -85,6 +99,12 @@ namespace rummikubGame.Utilities
                 + Math.Pow(tile.Location.Y - slot.Location.Y, 2));
         }
 
+        /*
+            Moving the given tile, to the dropped tile stack.
+            function takes care of the visual movement of the tile.
+            and the visual creation of the actual card.
+            its being used mostly on the ComputerPlayer class.
+        */
         public static void GenerateComputerThrownTile(Tile thrownTile)
         {
             if (DroppedTilesStack.Count() > 1)

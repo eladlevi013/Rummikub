@@ -1,15 +1,20 @@
-﻿using System;
+﻿using rummikubGame.Models;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace rummikubGame.Draggable
 {
-    public class DraggableComponent
+    public class DraggableComponent: IDraggable
     {
         /*
-        The main target of the this class, converting any control
-        element(which are components with visual representation).
-        to draggable elements.
+            The main target of the this class, converting any control
+            element(which are components with visual representation).
+            to draggable elements.
+            - SetDraggable
+            - StartDragging
+            - Dragging_TimerTick
+            - StopDragging
         */
 
         public static bool IsCurrentlyDragging = false;
@@ -26,7 +31,7 @@ namespace rummikubGame.Draggable
             // sets the timer
             _moveTimer = new Timer();
             _moveTimer.Interval = 1;
-            _moveTimer.Tick += MoveTimer_Tick;
+            _moveTimer.Tick += Dragging_TimerTick;
         }
 
         public Control Control
@@ -65,7 +70,7 @@ namespace rummikubGame.Draggable
             _moveTimer.Start();
         }
 
-        private void MoveTimer_Tick(object sender, EventArgs e)
+        public void Dragging_TimerTick(object sender, EventArgs e)
         {
             if (IsCurrentlyDragging)
             {

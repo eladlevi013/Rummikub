@@ -13,6 +13,15 @@ namespace rummikubGame
     [Serializable]
     public class VisualTile : Button, ISerializable
     {
+        /*
+            Extends Button in order to catch the mouse events on the actual VisualTile,
+            and ISerializable in order to save and load this class(its compilcated because were dealing with button).
+            in this class there are some main functions:
+            - DisableTile
+            - MouseUp
+            - MouseDown
+        */
+
         [NonSerialized]
         private DraggableComponent _draggable;
         [NonSerialized]

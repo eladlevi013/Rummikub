@@ -10,6 +10,15 @@ namespace rummikubGame.Draggable
 {
     public class BrightnessEffectComponent : IBrightnessEffect
     {
+        /*
+            This is the BrightnessEffectComponent its implementing IBrightnessEffect
+            which is responsible for the brightness hovering effect interface.
+            it contains the functionlity of the methods of the interface:
+            - ApplyBrightness
+            - RemoveBrightness
+            - SetEffectState
+        */
+
         // Brightness on hover effect constants
         private const float DefaultBrightnessLevel = 1.0f;
         private const float HoverBrightnessLevel = 1.2f;
@@ -21,6 +30,7 @@ namespace rummikubGame.Draggable
         private Control _control;
         private bool _isEnabled = false;
 
+        // Constructor getting the control element to apply the effect on
         public BrightnessEffectComponent(Control control)
         {
             _control = control;
@@ -43,15 +53,14 @@ namespace rummikubGame.Draggable
             SetEffectState(false);
         }
 
+        // Apply brightness effect on the control functionality of the interface function
         public void ApplyBrightness()
         {
             _originalBackgroundImage = _control.BackgroundImage;
-
             if (_control.BackgroundImage == null || HoverBrightnessLevel == _currentBrightnessLevel)
             {
                 return;
             }
-
             if (_brightnessImage == null)
             {
                 // Generate brightness image
@@ -61,8 +70,7 @@ namespace rummikubGame.Draggable
                         new float[] {0, 0, HoverBrightnessLevel, 0, 0},
                         new float[] {0, 0, 0, 1, 0},
                         new float[] {0, 0, 0, 0, 1}
-                    };
-
+                };
                 ColorMatrix colorMatrix = new ColorMatrix(matrixItems);
                 ImageAttributes attributes = new ImageAttributes();
                 attributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
@@ -79,6 +87,7 @@ namespace rummikubGame.Draggable
             _currentBrightnessLevel = HoverBrightnessLevel;
         }
 
+        // Remove brightness effect on the control functionality of the interface function
         public void RemoveBrightness()
         {
             if (_control.BackgroundImage == null || _originalBackgroundImage == null
@@ -90,6 +99,7 @@ namespace rummikubGame.Draggable
             _currentBrightnessLevel = DefaultBrightnessLevel;
         }
 
+        // Set Effect on the control functionality of the interface function
         public void SetEffectState(bool value)
         {
             if(_isEnabled == value)
@@ -110,6 +120,7 @@ namespace rummikubGame.Draggable
             }
         }
 
+        // Brightness effect for a specific time
         public async void BrightnessTime(int seconds)
         {
             SetEffectState(true);
