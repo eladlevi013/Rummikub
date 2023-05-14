@@ -178,17 +178,26 @@ namespace rummikubGame.Logic
         // ---------------------------------------------------------
         public static void MeldsSets(List<Tile>[] color_sorted_hand, List<List<Tile>> sequences, List<Tile> jokers, ref List<List<Tile>> best_sequences, ref List<Tile> best_hand)
         {
+            // getting all the non-joker tiles in a sorted list
             List<Tile> hand = new List<Tile>();
             hand.AddRange(color_sorted_hand[0]); hand.AddRange(color_sorted_hand[1]); hand.AddRange(color_sorted_hand[2]); hand.AddRange(color_sorted_hand[3]);
             hand = hand.OrderBy(card => card.Number).ToList();
 
+            // cloning the given sequences into sequence_temp
             List<List<Tile>> sequences_temp = new List<List<Tile>>();
             for (int i = 0; i < sequences.Count; i++)
             {
                 sequences_temp.Add(new List<Tile>(sequences[i]));
             }
 
-            // jokers
+            /*
+                This block of code finds the optimal way placing the jokers while using the
+                run partial-sets. in order to do that, we'll iterate over the run partial-sets
+                while iterating the hand tiles and we'll search for this situation for example:
+                - 1,2 and 4. and the function will make it: 1,2,@,4.
+                it can work on the other direction too, for example: 
+                - 3,4 and 1. and the function will make it: 1,@,3,4.
+            */
             if (jokers.Count() > 0)
             {
                 List<PartialSet> run_partial_sets = FindRunPartialSets(hand);
@@ -248,10 +257,22 @@ namespace rummikubGame.Logic
                 }
             }
 
+            /*
+                We'll call extendsSets twice in order to estimate what would be a better solution,
+                the one we had before this recursion, or this recursion.
+                we call that function because this the one of the last things we can do to the melds.
+                after we find all the possible melds, we'll try to connect with existing sets and free hand tiles
+                that we are not using.
+            */
             ExtendSets(ref sequences_temp, ref hand);
             ExtendSets(ref best_sequences, ref best_hand);
 
-            // if current sequences is better, we would like to replace the global sequences and hand vars
+            /*
+                As we said earlier, this block of code should help us detect if the current melds
+                are better from what we had before this run of recursion.
+                if we are having less hand tiles, the answer is clear,
+                but in the case of the same hand, we'll have to look at the melds number.
+            */
             if (hand.Count() < best_hand.Count())
             {
                 best_sequences = sequences_temp;
@@ -270,7 +291,14 @@ namespace rummikubGame.Logic
                 }
             }
 
-            for (int i = 0; i < 4; i++)
+            /*
+                ~ Find Run Melds ~
+                in this block of code, for each color we would want to
+                sort the list, remove duplicates, and look at the list while trying to detect sequences.
+                for example for: 1,1,2,3,3 => 1,2,3
+                and our condition will catch that and we'll add that to our sequences.
+            */
+            for (int i = 0; i < Constants.ColorsCount; i++)
             {
                 Dictionary<int, Tile> curr_hand_color_no_duplicates = new Dictionary<int, Tile>();
                 for (int k = 0; k < color_sorted_hand[i].Count(); k++) curr_hand_color_no_duplicates[k] = color_sorted_hand[i][k];
@@ -282,7 +310,8 @@ namespace rummikubGame.Logic
                 for (int j = 1; j < curr_hand_color_no_duplicates.Count(); j++)
                 {
 
-                    if (curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]] == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j - 1]])
+                    if (curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]] 
+                        == curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j - 1]])
                     {
                         curr_hand_color_no_duplicates.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]);
                         j--;
@@ -313,6 +342,13 @@ namespace rummikubGame.Logic
                 }
             }
 
+            /*
+                ~ Find Group Melds ~
+                in this section, we would like to search for the group sets,
+                for example 1,1,1 from different colors.
+                in order to do that, we'll sort the list and remove the duplicates.
+                and we'll trying to search for 1,1,1 from different colors.
+            */
             // adding all the remaning tiles to a one sorted long list
             List<Tile> remaning_tiles = new List<Tile>();
             remaning_tiles.AddRange(color_sorted_hand[0]); remaning_tiles.AddRange(color_sorted_hand[1]); remaning_tiles.AddRange(color_sorted_hand[2]); remaning_tiles.AddRange(color_sorted_hand[3]);
@@ -343,7 +379,11 @@ namespace rummikubGame.Logic
                     remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]].Color != remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]].Color)
                 {
                     List<List<Tile>> temp_sequences = new List<List<Tile>>(sequences);
-                    temp_sequences.Add(new List<Tile>() { remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]], remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]], remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]] });
+                    temp_sequences.Add(new List<Tile>() {
+                        remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j]], 
+                        remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]], 
+                        remaning_tiles_dict_no_dup[remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]] 
+                    });
 
                     Dictionary<int, Tile> temp_remaning_tiles_dict = new Dictionary<int, Tile>(remaning_tiles_dict);
                     temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]);

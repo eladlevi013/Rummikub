@@ -157,7 +157,8 @@ namespace rummikubGame
                     }
                 }
 
-                if (currTile.VisualTileData.SlotLocation[0] == Constants.DroppedTileLocation && currTile.VisualTileData.SlotLocation[1] == Constants.DroppedTileLocation)
+                if (currTile.VisualTileData.SlotLocation[0] == Constants.DroppedTileLocation 
+                    && currTile.VisualTileData.SlotLocation[1] == Constants.DroppedTileLocation)
                 {
                     GameContext.HumanPlayer.board.TookCard = true;
                     GameContext.HumanPlayer.board.TileButtons.Add(currTile);

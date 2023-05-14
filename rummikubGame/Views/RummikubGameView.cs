@@ -266,9 +266,6 @@ namespace Rummikub
                     formatter.Serialize(stream, GlobalGameIndicatorLbl.Text);
                     stream.Close();
                 }
-
-                // print human_player tookCard
-                MessageBox.Show(GameContext.HumanPlayer.board.TookCard.ToString());
             }
             catch (Exception ex)
             {
@@ -337,10 +334,6 @@ namespace Rummikub
                     if (GameContext.GameOver)
                         GameContext.HumanPlayer.board.DisableBoard();
                 }
-
-
-                // print human_player tookCard
-                MessageBox.Show(GameContext.HumanPlayer.board.TookCard.ToString());
             }
             catch (Exception ex)
             {
