@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace Rummikub
 {
-    public partial class RummikubGameView : Form
+    public partial class RummikubGameView : Form 
     {
         // Show computer tiles toggle
         public static bool ShowComputerTilesToggle = true;
@@ -266,6 +266,9 @@ namespace Rummikub
                     formatter.Serialize(stream, GlobalGameIndicatorLbl.Text);
                     stream.Close();
                 }
+
+                // print human_player tookCard
+                MessageBox.Show(GameContext.HumanPlayer.board.TookCard.ToString());
             }
             catch (Exception ex)
             {
@@ -289,7 +292,7 @@ namespace Rummikub
 
                     // loading game info from binary file called save.rummikub
                     BinaryFormatter formatter = new BinaryFormatter();
-                    Stream stream = new FileStream(Constants.SavedGameFileName, FileMode.Open);
+                    Stream stream = new FileStream(OpenFileDialog.FileName, FileMode.Open);
                     GameContext.HumanPlayer = (HumanPlayer)formatter.Deserialize(stream);
                     GameContext.ComputerPlayer = (ComputerPlayer)formatter.Deserialize(stream);
 
@@ -334,6 +337,10 @@ namespace Rummikub
                     if (GameContext.GameOver)
                         GameContext.HumanPlayer.board.DisableBoard();
                 }
+
+
+                // print human_player tookCard
+                MessageBox.Show(GameContext.HumanPlayer.board.TookCard.ToString());
             }
             catch (Exception ex)
             {

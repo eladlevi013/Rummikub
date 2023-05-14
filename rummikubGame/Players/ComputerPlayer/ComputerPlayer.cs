@@ -14,11 +14,11 @@ namespace rummikubGame
     [Serializable]
     public class ComputerPlayer
     {
-        // -----------------------------------------------------------------
-        // This class will mainly used for calculations
-        // the computer player has to take in order to play
-        // in the optimal way he can in the current turn.
-        // -----------------------------------------------------------------
+        /*
+            This class will mainly used for calculations
+            the computer player has to take in order to play
+            in the optimal way he can in the current turn.
+        */
 
         public ComputerBoard board;
         

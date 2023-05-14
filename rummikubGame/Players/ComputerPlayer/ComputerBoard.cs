@@ -13,6 +13,14 @@ namespace rummikubGame
     [Serializable]
     public class ComputerBoard : IBoard
     {
+        /*
+            This function is used on the ComputerPlayer class,
+            in order to serve board related function to the computer player.
+            in this class some main function such as:
+            - GetHandTilesNumber
+            - 
+        */
+
         // Board Constants
         const int StartingHandXLocationComputerTiles = 50;
         const int StartingHandYLocationComputerTiles = 95;

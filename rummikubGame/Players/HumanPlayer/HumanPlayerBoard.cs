@@ -48,10 +48,12 @@ namespace rummikubGame
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("TileButtons", ConvertVisualTileToSerealilzableFormat());
+            info.AddValue("TookCard", TookCard);
         }
 
         public HumanPlayerBoard(SerializationInfo info, StreamingContext context)
         {
+            TookCard = (bool)info.GetValue("TookCard", typeof(bool));
             List<VisualTileData> tileButtonsData = (List<VisualTileData>)info.GetValue("TileButtons", typeof(List<VisualTileData>));
             TileButtons = new List<VisualTile>();
 
