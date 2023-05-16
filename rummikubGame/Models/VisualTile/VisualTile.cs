@@ -6,6 +6,7 @@ using RummikubGame.Utilities;
 using System;
 using System.Drawing;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace rummikubGame
@@ -104,7 +105,7 @@ namespace rummikubGame
                 GameContext.HumanPlayer.board.BoardSlots[currTile.VisualTileData.SlotLocation[0], currTile.VisualTileData.SlotLocation[1]].SlotState = Constants.Available;
         }
 
-        public void TileButton_MouseUp(object sender, MouseEventArgs e)
+        public async void TileButton_MouseUp(object sender, MouseEventArgs e)
         {
             VisualTile currTile = (VisualTile)sender;
 
@@ -184,11 +185,12 @@ namespace rummikubGame
             // Check Winning every moving tile
             if (GameContext.HumanPlayer.CheckWinner() == true && GameContext.GameOver == false)
             {
-                MessageBox.Show("You Won!");
                 RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - You Won";
                 GameContext.GameOver = true;
                 GameContext.HumanPlayer.board.DisableBoard();
                 GameContext.DroppedTilesStack.Peek().Enabled = false;
+                await Task.Delay(50);
+                MessageBox.Show("You Won!");
             }
         }
     }
