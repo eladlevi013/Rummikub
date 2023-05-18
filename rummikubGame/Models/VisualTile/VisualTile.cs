@@ -193,6 +193,14 @@ namespace rummikubGame
                 GameContext.DroppedTilesStack.Peek().Enabled = false;
                 await Task.Delay(50);
                 MessageBox.Show("You Won!");
+
+                // Removing all the stacks of tiles
+                // Clearing dropped tiles
+                while (GameContext.DroppedTilesStack.Count > 0)
+                {
+                    RummikubGameView.GlobalRummikubGameViewContext.Controls.Remove(GameContext.DroppedTilesStack.Peek());
+                    GameContext.DroppedTilesStack.Pop();
+                }
             }
         }
     }

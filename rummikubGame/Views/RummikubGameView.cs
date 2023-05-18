@@ -212,7 +212,11 @@ namespace Rummikub
             // Clearning the boards
             GameContext.HumanPlayer.board.ClearBoard();
             GameContext.ComputerPlayer.board.ClearBoard();
+            ClearingDroppedCardStack();
+        }
 
+        public static void ClearingDroppedCardStack()
+        {
             // Clearing dropped tiles
             while (GameContext.DroppedTilesStack.Count > 0)
             {
