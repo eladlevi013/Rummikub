@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace rummikubGame.Utilities
@@ -116,6 +117,36 @@ namespace rummikubGame.Utilities
                 = new Point(RummikubGameView.GlobalDroppedTilesBtn.Location.X + 10, RummikubGameView.GlobalDroppedTilesBtn.Location.Y + 18);
             DroppedTilesStack.Push(visualThrownTile);
 
+        }
+
+        public static void PostWinning()
+        {
+            GameContext.GameOver = true;
+            GameContext.HumanPlayer.board.DisableBoard();
+            // Clearing dropped tiles
+            while (GameContext.DroppedTilesStack.Count > 0)
+            {
+                RummikubGameView.GlobalRummikubGameViewContext.Controls.Remove(GameContext.DroppedTilesStack.Peek());
+                GameContext.DroppedTilesStack.Pop();
+            }
+        }
+
+        public static async Task PostComputerWinningAsync()
+        {
+            PostWinning();
+            await Task.Delay(50);
+
+            RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - Computer Won";
+            MessageBox.Show("Computer Won!");
+        }
+
+        public static async Task PostHumanPlayetWinningAsync()
+        {
+            PostWinning();
+            await Task.Delay(50);
+
+            RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - You Won";
+            MessageBox.Show("You Won!");
         }
     }
 }

@@ -137,13 +137,7 @@ namespace Rummikub
             // if the game is over, and the computer won
             if (GameContext.ComputerPlayer.board.CheckWinner() == true && GameContext.GameOver == false)
             {
-                MessageBox.Show("Computer Won!");
-                RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - Computer Won";
-                GameContext.HumanPlayer.board.DisableBoard();
-
-                if (GameContext.DroppedTilesStack.Count > 0)
-                    GameContext.DroppedTilesStack.Peek().Enabled = false;
-                GameContext.GameOver = true;
+                GameContext.PostComputerWinningAsync();
             }
         }
 

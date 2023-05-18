@@ -124,9 +124,13 @@ namespace rummikubGame
 
                 // Updating Board
                 GameContext.HumanPlayer.board.TookCard = false;
-                GameContext.CurrentTurn = Constants.ComputerPlayerTurn;
-                RummikubGameView.GlobalGameIndicatorLbl.Text = "Computer's Turn";
-                GameContext.ComputerPlayer.ComputerPlay(currTile.VisualTileData.TileData);
+
+                if (!GameContext.GameOver)
+                {
+                    GameContext.CurrentTurn = Constants.ComputerPlayerTurn;
+                    RummikubGameView.GlobalGameIndicatorLbl.Text = "Computer's Turn";
+                    GameContext.ComputerPlayer.ComputerPlay(currTile.VisualTileData.TileData);
+                }
             }
             else
             {
@@ -187,20 +191,7 @@ namespace rummikubGame
                 && GameContext.GameOver == false
                 && GameContext.HumanPlayer.board._tileButtons.Count == 14)
             {
-                RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - You Won";
-                GameContext.GameOver = true;
-                GameContext.HumanPlayer.board.DisableBoard();
-                GameContext.DroppedTilesStack.Peek().Enabled = false;
-                await Task.Delay(50);
-                MessageBox.Show("You Won!");
-
-                // Removing all the stacks of tiles
-                // Clearing dropped tiles
-                while (GameContext.DroppedTilesStack.Count > 0)
-                {
-                    RummikubGameView.GlobalRummikubGameViewContext.Controls.Remove(GameContext.DroppedTilesStack.Peek());
-                    GameContext.DroppedTilesStack.Pop();
-                }
+                GameContext.PostHumanPlayetWinningAsync();
             }
         }
     }
