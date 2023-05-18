@@ -186,6 +186,7 @@ namespace rummikubGame
                     currTile.VisualTileData.SlotLocation = new int[] { min_i, min_j };
                 }
             }
+
             // check winning every moving tile, only if you dropped a tile already
             if (GameContext.HumanPlayer.CheckWinner() == true
                 && GameContext.GameOver == false
