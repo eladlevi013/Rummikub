@@ -182,8 +182,10 @@ namespace rummikubGame
                     currTile.VisualTileData.SlotLocation = new int[] { min_i, min_j };
                 }
             }
-            // Check Winning every moving tile
-            if (GameContext.HumanPlayer.CheckWinner() == true && GameContext.GameOver == false)
+            // check winning every moving tile, only if you dropped a tile already
+            if (GameContext.HumanPlayer.CheckWinner() == true
+                && GameContext.GameOver == false
+                && GameContext.HumanPlayer.board._tileButtons.Count == 14)
             {
                 RummikubGameView.GlobalGameIndicatorLbl.Text = "Game Over - You Won";
                 GameContext.GameOver = true;
