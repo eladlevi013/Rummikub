@@ -327,10 +327,16 @@ namespace rummikubGame.Logic
                     {
                         // add to seq
                         List<List<Tile>> temp_sequences = new List<List<Tile>>(sequences);
-                        temp_sequences.Add(new List<Tile>() { curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]], curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]], curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 2]] });
+                        temp_sequences.Add(new List<Tile>() {
+                            curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j]], 
+                            curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 1]], 
+                            curr_hand_color_no_duplicates[curr_hand_color_no_duplicates.Keys.ToList()[j + 2]] 
+                        });
 
                         Dictionary<int, Tile> temp_curr_hand_color_clone = new Dictionary<int, Tile>(curr_hand_color_clone);
-                        temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]); temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j + 1]); temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j + 2]);
+                        temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j]);
+                        temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j + 1]);
+                        temp_curr_hand_color_clone.Remove(curr_hand_color_no_duplicates.Keys.ToList()[j + 2]);
 
                         color_sorted_hand[i] = new List<Tile>(temp_curr_hand_color_clone.Values.ToList());
                         MeldsSets(color_sorted_hand, temp_sequences, jokers, ref best_sequences, ref best_hand);
@@ -348,6 +354,7 @@ namespace rummikubGame.Logic
                 for example 1,1,1 from different colors.
                 in order to do that, we'll sort the list and remove the duplicates.
                 and we'll trying to search for 1,1,1 from different colors.
+
             */
             // adding all the remaning tiles to a one sorted long list
             List<Tile> remaning_tiles = new List<Tile>();
@@ -386,7 +393,9 @@ namespace rummikubGame.Logic
                     });
 
                     Dictionary<int, Tile> temp_remaning_tiles_dict = new Dictionary<int, Tile>(remaning_tiles_dict);
-                    temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]); temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]);
+                    temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j]); 
+                    temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j + 1]);
+                    temp_remaning_tiles_dict.Remove(remaning_tiles_dict_no_dup.Keys.ToList()[j + 2]);
 
                     // classify to 4 different lists(every color in every array)
                     List<Tile> sorted_tiles_no_dup = new List<Tile>(temp_remaning_tiles_dict.Values.ToList());
@@ -401,6 +410,11 @@ namespace rummikubGame.Logic
             return;
         }
 
+        // ---------------------------------------------------------
+        //  this function called after the meldsSets is done, 
+        //  purpose is to add the jokers to the sequences and partial sets
+        //  while using all the jokers add functions.
+        // ---------------------------------------------------------
         public static void AddJokersAfterMeldsSets(ref List<PartialSet> partial_set, ref List<List<Tile>> sequences, ref List<Tile> jokers, ref List<Tile> hand)
         {
             JokerCompletePartialSet(ref partial_set, ref sequences, ref jokers);
@@ -408,6 +422,12 @@ namespace rummikubGame.Logic
             JokerExtendSequenceWithJoker(ref jokers, ref sequences);
         }
 
+        // ---------------------------------------------------------
+        // for example of a good function use can be:
+        // - 1,3 and @ => 1,@,3
+        // - 1,2 and @ => 1,2,@
+        // and so on...
+        // ---------------------------------------------------------
         public static void JokerCompletePartialSet(ref List<PartialSet> partial_set, ref List<List<Tile>> sequences, ref List<Tile> jokers)
         {
             List<PartialSet> best_runs_values = new List<PartialSet>();
@@ -492,6 +512,11 @@ namespace rummikubGame.Logic
             }
         }
 
+        // ---------------------------------------------------------
+        // for example of a good function use can be:
+        // - 1,2,3 and @,5 => 1,2,3,@,5
+        // and so on...
+        // ---------------------------------------------------------
         public static void JokerCombineSequencesWithHand(ref List<List<Tile>> sequences, ref List<Tile> unused_jokers, ref List<Tile> hand)
         {
             for (int i = 0; i < sequences.Count() && unused_jokers.Count() > 0; i++)
@@ -527,6 +552,11 @@ namespace rummikubGame.Logic
             }
         }
 
+        // ---------------------------------------------------------
+        // for example of a good function use can be:
+        // - 1,2,3 and @ => 1,2,3,@
+        // and so on...
+        // ---------------------------------------------------------
         public static void JokerExtendSequenceWithJoker(ref List<Tile> unused_jokers, ref List<List<Tile>> sequences)
         {
             for (int i = 0; i < sequences.Count() && unused_jokers.Count() > 0; i++)
@@ -553,6 +583,11 @@ namespace rummikubGame.Logic
             }
         }
 
+        // ---------------------------------------------------------
+        // the purpose of this function is to find partialSets
+        // for example of that can be:
+        // - 1,2,4,6 => {1,2}, {4,6}
+        // ---------------------------------------------------------
         public static List<PartialSet> CreatePartialSets(ref List<Tile> hand, List<PartialSet> existing_partial_set = PartialSetVarPassed)
         {
             // use the existing partial sets if passed
@@ -624,6 +659,10 @@ namespace rummikubGame.Logic
             return currPartialSets;
         }
 
+        // ---------------------------------------------------------
+        // the purpose of this function is to decide who is the
+        // winner if the pool is empty before someone won.
+        // ---------------------------------------------------------
         public static void ResolveWinnerOnPoolOver()
         {
             OnGameOver();
@@ -643,6 +682,10 @@ namespace rummikubGame.Logic
             GameContext.HumanPlayer.board.DisableBoard();
         }
 
+        // ---------------------------------------------------------
+        // the purpose of this function is to check if meld
+        // is legal.
+        // ---------------------------------------------------------
         public static bool IsLegalMeld(List<Tile> meld)
         {
             bool isRun = true;
